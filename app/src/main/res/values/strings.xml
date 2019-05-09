@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PeopleNotes</string>
+    <string name="title_activity_temp">Temp</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="addnote_title_suggestion">Note Title...       </string>
+    <string name="addnote_notetype_suggestion">note type...</string>
+    <string name="addnote_nickname_suggestion">nicknames...</string>
 </resources>

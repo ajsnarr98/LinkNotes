@@ -39,17 +39,17 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<View>(R.id.toolbar_search) as Toolbar
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById<View>(R.id.container) as ViewPager
+        mViewPager = findViewById<View>(R.id.viewpager_search_container) as ViewPager
         mViewPager!!.adapter = mSectionsPagerAdapter
 
-        val add = findViewById<View>(R.id.add) as FloatingActionButton
+        val add = findViewById<View>(R.id.fab_search_addbtn) as FloatingActionButton
         add.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
@@ -85,7 +85,7 @@ class SearchActivity : AppCompatActivity() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                                   savedInstanceState: Bundle?): View? {
             val rootView = inflater.inflate(R.layout.fragment_search, container, false)
-            val textView = rootView.findViewById<View>(R.id.section_label) as TextView
+            val textView = rootView.findViewById<View>(R.id.textview_search_sectionlabel) as TextView
             textView.text = getString(R.string.section_format, arguments!!.getInt(ARG_SECTION_NUMBER))
             return rootView
         }

@@ -24,7 +24,7 @@ class AddnoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_addnote)
 
 
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<View>(R.id.toolbar_addnote) as Toolbar
         setSupportActionBar(toolbar)
 
         val fab = findViewById<View>(R.id.fab_addnote_submit) as FloatingActionButton
@@ -34,7 +34,7 @@ class AddnoteActivity : AppCompatActivity() {
         }
 
         // add to autocomplete text view
-        val noteType = findViewById<View>(R.id.autoCompleteNoteType_value) as AutoCompleteTextView
+        val noteType = findViewById<View>(R.id.autocompletetext_addnote_notetype) as AutoCompleteTextView
         val adapter = ArrayAdapter(this,
             android.R.layout.simple_list_item_1, NOTE_TYPES)
         noteType.setAdapter(adapter)
@@ -52,7 +52,7 @@ class AddnoteActivity : AppCompatActivity() {
         tagsBtn.setOnClickListener {
             //instantiate the layout file
             val layoutInflater = this@AddnoteActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val customView = layoutInflater.inflate(R.layout.popup_tags, null)
+            val customView = layoutInflater.inflate(R.layout.view_editnote_tagspopup, null)
 
             val closePopupBtn = customView.findViewById<View>(R.id.closeTagsPopupBtn) as Button
 

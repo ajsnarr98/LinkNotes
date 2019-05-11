@@ -40,32 +40,8 @@ class AddnoteActivity : AppCompatActivity() {
         noteType.setAdapter(adapter)
 
         // set up tags popup window
-        setupTagsPopup()
-    }
-
-    private fun setupTagsPopup() {
-        val tagsBtn = findViewById<View>(R.id.tags_popup_btn) as Button
-
-        val size = Point()
-        this.windowManager.defaultDisplay.getSize(size) // size is an out parameter
-
-        tagsBtn.setOnClickListener {
-            //instantiate the layout file
-            val layoutInflater = this@AddnoteActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val customView = layoutInflater.inflate(R.layout.view_editnote_tagspopup, null)
-
-            val closePopupBtn = customView.findViewById<View>(R.id.closeTagsPopupBtn) as Button
-
-            // instantiate popup window
-            val popupWindow = PopupWindow(customView, (size.x * .80).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT, true)
-
-            //display the popup window
-            val scrolling_layout = findViewById<View>(R.id.layout_addnote_popupcontainer)
-            popupWindow.showAtLocation(scrolling_layout, Gravity.CENTER, 0, 0)
-
-            //close the popup window on button click
-            closePopupBtn.setOnClickListener { popupWindow.dismiss() }
-        }
+        val tagsBtn = findViewById<Button>(R.id.tags_popup_btn)
+        EditNoteTagsPopup(this, R.id.layout_addnote_popupcontainer, tagsBtn)
     }
 
     companion object {

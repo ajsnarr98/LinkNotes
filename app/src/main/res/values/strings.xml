@@ -16,5 +16,6 @@
     <!-- Editnote Activity -->
     <string name="editnote_nickname_suggestion">nicknames...</string>
     <string name="editnote_tagsbtn">TAGS</string>
+    <string name="editnote_addentrybtn">ADD NEW ENTRY</string>
 
 </resources>

@@ -2,13 +2,13 @@ package com.ajsnarr.peoplenotes.notes
 
 import android.content.Context
 import android.graphics.Point
-import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.PopupWindow
+import androidx.appcompat.app.AppCompatActivity
 import com.ajsnarr.peoplenotes.R
 import kotlin.properties.Delegates
 
@@ -20,7 +20,6 @@ import kotlin.properties.Delegates
  * @param parentButton (Optional) Clickable view that will pull up this button
  */
 class EditNoteTagsPopup(val parentActivity: AppCompatActivity, val parentViewId: Int, val parentButton: View? = null) {
-
     var popupWindow: PopupWindow by Delegates.notNull()
 
     init {

@@ -3,6 +3,7 @@ package com.ajsnarr.peoplenotes.notes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
@@ -21,7 +22,15 @@ class EntryAdapter(private val entries: MutableList<Entry>) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: EntryViewHolder, position: Int) {
         val entry = entries[position]
+        holder.onBind(entry)
     }
 
-    class EntryViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class EntryViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun onBind(entry: Entry) {
+            val entry_type = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
+            val entry_content = view.findViewById<EditText>(R.id.edittext_editnote_content)
+
+            entry_content.text.append(entry.content.toString())
+        }
+    }
 }

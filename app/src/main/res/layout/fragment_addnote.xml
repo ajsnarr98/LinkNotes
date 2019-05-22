@@ -14,116 +14,141 @@
             android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textinputL_addnote_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:hint="@string/addnote_title_suggestion"
-                    app:errorEnabled="true"
-                    app:layout_constraintEnd_toStartOf="@+id/tags_popup_btn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                android:id="@+id/textinputL_addnote_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/addnote_title_suggestion"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toStartOf="@+id/tags_popup_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                        android:id="@+id/textinput_addnote_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/addnote_title_suggestion"
-                        android:inputType="text"
-                        android:textSize="24sp"/>
+                    android:id="@+id/textinput_addnote_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/addnote_title_suggestion"
+                    android:inputType="text"
+                    android:textSize="24sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
 
             <ImageView
-                    android:id="@+id/image_addnote_mainimage"
-                    android:layout_width="178dp"
-                    android:layout_height="165dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textinputL_addnote_title"
-                    app:srcCompat="@drawable/default_profile"/>
+                android:id="@+id/image_addnote_mainimage"
+                android:layout_width="178dp"
+                android:layout_height="165dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textinputL_addnote_title"
+                app:srcCompat="@drawable/default_profile" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textinputL_addnote_notetype"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:hint="@string/addnote_notetype_suggestion"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/image_addnote_mainimage"
-                    app:layout_constraintTop_toBottomOf="@+id/textinputL_addnote_title">
+                android:id="@+id/textinputL_addnote_notetype"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/addnote_notetype_suggestion"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/image_addnote_mainimage"
+                app:layout_constraintTop_toBottomOf="@+id/textinputL_addnote_title">
 
                 <AutoCompleteTextView
-                        android:id="@+id/autocompletetext_addnote_notetype"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:completionThreshold="0"
-                        android:hint="@string/addnote_notetype_suggestion"/>
+                    android:id="@+id/autocompletetext_addnote_notetype"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:completionThreshold="0"
+                    android:hint="@string/addnote_notetype_suggestion" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textinputL_addnote_nicknames"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:hint="@string/addnote_nickname_suggestion"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/image_addnote_mainimage"
-                    app:layout_constraintTop_toBottomOf="@+id/textinputL_addnote_notetype">
+                android:id="@+id/textinputL_addnote_nicknames"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/addnote_nickname_suggestion"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/image_addnote_mainimage"
+                app:layout_constraintTop_toBottomOf="@+id/textinputL_addnote_notetype">
 
                 <MultiAutoCompleteTextView
-                        android:id="@+id/multiautocompletetext_addnote_nicknames"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/addnote_nickname_suggestion"/>
+                    android:id="@+id/multiautocompletetext_addnote_nicknames"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/addnote_nickname_suggestion" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                    android:id="@+id/tags_popup_btn"
-                    style="@style/RoundedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:text="@string/addnote_tagsbtn"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                android:id="@+id/tags_popup_btn"
+                style="@style/RoundedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/addnote_tagsbtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_addnote_numentries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="16dp"
+                android:text="TextView"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_addnote_mainimage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_addnote_entries"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recycler_addnote_entries"/>
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:scrollbars="vertical" />
+
         <Button
             android:id="@+id/button_editnote_addentry"
-            android:text="@string/editnote_addentrybtn"
+            style="@style/AddEntryButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/AddEntryButton"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/editnote_addentrybtn" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

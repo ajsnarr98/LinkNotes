@@ -1,6 +1,5 @@
 package com.ajsnarr.peoplenotes.notes
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +25,9 @@ val entries = mutableListOf<Entry>(
 class AddnoteFragment : Fragment() {
 
     lateinit var recyclerView: RecyclerView
+    lateinit var recyclerAdapter: EntryAdapter
+
+    lateinit var numEntriesText: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_addnote, container, false)
@@ -43,20 +45,31 @@ class AddnoteFragment : Fragment() {
         EditNoteTagsPopup(activity!!.layoutInflater, containingView, getScreenSize(activity!!), tagsBtn)
 
         // number of entries text
-        val numEntriesText = view.findViewById<TextView>(R.id.text_addnote_numentries)
-        numEntriesText.text = getString(R.string.editnote_num_entries, entries.size)
+        numEntriesText = view.findViewById(R.id.text_addnote_numentries)
+        updateNumEntriesText()
 
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(activity)
-        val recyclerAdapter = EntryAdapter(entries)
+        recyclerAdapter = EntryAdapter(entries)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.recycler_addnote_entries).apply {
             layoutManager = recyclerManager
             setAdapter(recyclerAdapter)
         }
 
+        // set up add entry button
+        val addEntryBtn = view.findViewById<Button>(R.id.button_editnote_addentry)
+        addEntryBtn.setOnClickListener {
+            entries.add(Entry.newEmpty())
+            recyclerAdapter.notifyDataSetChanged()
+            updateNumEntriesText()
+        }
 
         return view
+    }
+
+    fun updateNumEntriesText() {
+        numEntriesText.text = getString(R.string.editnote_num_entries, entries.size)
     }
 }

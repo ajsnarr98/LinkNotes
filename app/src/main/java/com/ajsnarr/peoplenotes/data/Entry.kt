@@ -35,5 +35,12 @@ class Entry(val id: UUID,
         fun fromDB(): Entry {
             return Entry("12345")
         }
+
+        /**
+         * Returns a new entry with a unique UUID.
+         */
+        fun newEmpty(): Entry {
+            return Entry("12345")
+        }
     }
 }

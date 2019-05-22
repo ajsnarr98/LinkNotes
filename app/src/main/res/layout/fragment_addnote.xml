@@ -114,15 +114,16 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <androidx.cardview.widget.CardView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_marginTop="10dp" android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp" android:layout_margin="10dp">
-            <Button
-                android:text="@string/editnote_addentrybtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/button"
-                android:background="@drawable/button_editnote_addtag"/>
-        </androidx.cardview.widget.CardView>
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_addnote_entries"/>
+        <Button
+            android:id="@+id/button_editnote_addentry"
+            android:text="@string/editnote_addentrybtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AddEntryButton"/>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

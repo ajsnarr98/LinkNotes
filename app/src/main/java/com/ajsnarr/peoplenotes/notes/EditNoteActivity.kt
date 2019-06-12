@@ -7,6 +7,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.MultiAutoCompleteTextView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
@@ -16,20 +17,18 @@ import kotlinx.android.synthetic.main.activity_editnote.*
 
 val NOTE_TYPES = listOf("people", "location")
 
-val entries = mutableListOf<Entry>(
-    Entry("12345"),
-    Entry("123456"))
+class EditNoteActivity : AppCompatActivity() {
 
-class AddNoteActivity : AppCompatActivity() {
+    lateinit var viewModel: EditNoteViewModel
 
     private lateinit var recyclerAdapter: EntryAdapter
-
     private val recyclerActionListener = RecyclerActionListener(this)
 
-    private class RecyclerActionListener(val activity: AddNoteActivity): EntryAdapter.ActionListener {
+    private class RecyclerActionListener(val activity: EditNoteActivity)
+        : EntryAdapter.ActionListener {
 
         override fun onAddButtonPress() {
-
+            activity.viewModel.addEntry(Entry.newEmpty())
         }
 
         override fun onCreateTagsPopup() {
@@ -54,7 +53,7 @@ class AddNoteActivity : AppCompatActivity() {
 
         override fun onUpdateNumEntriesText(numEntriesText: TextView, numEntries: Int) {
             numEntriesText.text =
-                activity.getString(R.string.editnote_num_entries, entries.size)
+                activity.getString(R.string.editnote_num_entries, numEntries)
         }
 
 
@@ -64,13 +63,15 @@ class AddNoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editnote)
 
+        viewModel = ViewModelProviders.of(this).get(EditNoteViewModel::class.java)
+
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = EntryAdapter(entries, recyclerActionListener)
+        recyclerAdapter = EntryAdapter(viewModel.entries, recyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager
-            setAdapter(recyclerAdapter)
+            adapter = recyclerAdapter
         }
     }
 

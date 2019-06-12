@@ -26,8 +26,8 @@ class EntryAdapter(private val entries: MutableList<Entry>,
     }
 
     companion object {
-            val ENTRY_TYPE: Int = 0
-            val NOTE_DETAILS_TYPE = 1
+            val ENTRY_TYPE            = 0
+            val NOTE_DETAILS_TYPE     = 1
             val ADD_ENTRY_BUTTON_TYPE = 2
     }
 
@@ -145,7 +145,6 @@ class EntryAdapter(private val entries: MutableList<Entry>,
 
             // set up add entry button
             addEntryButton.setOnClickListener {
-                entries.add(Entry.newEmpty())
                 actionListener.onAddButtonPress()
                 adapter.notifyDataSetChanged()
                 adapter.updateNumEntriesText()

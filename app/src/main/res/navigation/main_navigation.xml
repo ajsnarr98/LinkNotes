@@ -8,5 +8,5 @@
         android:id="@+id/addNoteFragment"
         android:name="com.ajsnarr.peoplenotes.notes.AddnoteFragment"
         android:label="fragment_addnote"
-        tools:layout="@layout/fragment_addnote" />
+        tools:layout="@layout/activity_addnote" />
 </navigation>

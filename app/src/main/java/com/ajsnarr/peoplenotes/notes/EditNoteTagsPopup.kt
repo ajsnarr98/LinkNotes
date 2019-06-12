@@ -26,7 +26,7 @@ import kotlin.properties.Delegates
 class EditNoteTagsPopup(val inflater: LayoutInflater,
                         val parentView: View,
                         val screenSize: Point,
-                        val parentButton: View? = null) {
+                        parentButton: View? = null) {
 
     lateinit var popupWindow: PopupWindow
 

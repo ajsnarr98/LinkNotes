@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.MultiAutoCompleteTextView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -20,39 +22,55 @@ val entries = mutableListOf<Entry>(
 
 class AddNoteActivity : AppCompatActivity() {
 
-    lateinit var recyclerAdapter: EntryAdapter
+    private lateinit var recyclerAdapter: EntryAdapter
+
+    private val recyclerActionListener = RecyclerActionListener(this)
+
+    private class RecyclerActionListener(val activity: AddNoteActivity): EntryAdapter.ActionListener {
+
+        override fun onAddButtonPress() {
+
+        }
+
+        override fun onCreateTagsPopup() {
+            // set up tags popup window
+            EditNoteTagsPopup(
+                inflater = activity.layoutInflater,
+                parentView = activity.popupcontainer,
+                screenSize = getScreenSize(activity)
+            )
+        }
+
+        override fun onSetupNoteTypes(noteTypeField: AutoCompleteTextView) {
+            // add to autocomplete text view
+            val adapter = ArrayAdapter(activity,
+                android.R.layout.simple_list_item_1, NOTE_TYPES
+            )
+            noteTypeField.setAdapter(adapter)
+        }
+
+        override fun onSetupNicknames(nicknameField: MultiAutoCompleteTextView) {
+        }
+
+        override fun onUpdateNumEntriesText(numEntriesText: TextView, numEntries: Int) {
+            numEntriesText.text =
+                activity.getString(R.string.editnote_num_entries, entries.size)
+        }
+
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editnote)
 
-        // add to autocomplete text view
-        val noteType = findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
-        val adapter = ArrayAdapter(this,
-            android.R.layout.simple_list_item_1, NOTE_TYPES
-        )
-        noteType.setAdapter(adapter)
-
-        // set up tags popup window
-        EditNoteTagsPopup(layoutInflater, popupcontainer, getScreenSize(this), tags_popup_btn)
-
-        // number of entries text
-        updateNumEntriesText()
-
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = EntryAdapter(entries)
+        recyclerAdapter = EntryAdapter(entries, recyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager
             setAdapter(recyclerAdapter)
-        }
-
-        // set up add entry button
-        add_entry_button.setOnClickListener {
-            entries.add(Entry.newEmpty())
-            recyclerAdapter.notifyDataSetChanged()
-            updateNumEntriesText()
         }
     }
 
@@ -66,9 +84,5 @@ class AddNoteActivity : AppCompatActivity() {
             R.id.action_settings -> return true // TODO
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    fun updateNumEntriesText() {
-        num_entries_text.text = getString(R.string.editnote_num_entries, entries.size)
     }
 }

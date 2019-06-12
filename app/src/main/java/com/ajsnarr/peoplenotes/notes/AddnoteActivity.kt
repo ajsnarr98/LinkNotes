@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.getScreenSize
+import kotlinx.android.synthetic.main.activity_addnote.*
 
 val NOTE_TYPES = listOf("people", "location")
 
@@ -22,44 +23,36 @@ val entries = mutableListOf<Entry>(
 
 class AddnoteActivity : AppCompatActivity() {
 
-    lateinit var recyclerView: RecyclerView
     lateinit var recyclerAdapter: EntryAdapter
-
-    lateinit var numEntriesText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_addnote)
 
         // add to autocomplete text view
-        val noteType = findViewById<AutoCompleteTextView>(R.id.autocompletetext_addnote_notetype)
+        val noteType = findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
         val adapter = ArrayAdapter(this,
             android.R.layout.simple_list_item_1, NOTE_TYPES
         )
         noteType.setAdapter(adapter)
 
         // set up tags popup window
-        val tagsBtn = findViewById<Button>(R.id.tags_popup_btn)
-        val containingView = findViewById<View>(R.id.layout_addnote_popupcontainer)
-        EditNoteTagsPopup(layoutInflater, containingView, getScreenSize(this), tagsBtn)
+        EditNoteTagsPopup(layoutInflater, popupcontainer, getScreenSize(this), tags_popup_btn)
 
         // number of entries text
-        numEntriesText = findViewById(R.id.text_addnote_numentries)
         updateNumEntriesText()
-
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
         recyclerAdapter = EntryAdapter(entries)
 
-        recyclerView = findViewById<RecyclerView>(R.id.recycler_addnote_entries).apply {
+        recycler_view.apply {
             layoutManager = recyclerManager
             setAdapter(recyclerAdapter)
         }
 
         // set up add entry button
-        val addEntryBtn = findViewById<Button>(R.id.button_editnote_addentry)
-        addEntryBtn.setOnClickListener {
+        add_entry_button.setOnClickListener {
             entries.add(Entry.newEmpty())
             recyclerAdapter.notifyDataSetChanged()
             updateNumEntriesText()
@@ -79,6 +72,6 @@ class AddnoteActivity : AppCompatActivity() {
     }
 
     fun updateNumEntriesText() {
-        numEntriesText.text = getString(R.string.editnote_num_entries, entries.size)
+        num_entries_text.text = getString(R.string.editnote_num_entries, entries.size)
     }
 }

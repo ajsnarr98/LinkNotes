@@ -4,16 +4,13 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.getScreenSize
-import kotlinx.android.synthetic.main.activity_addnote.*
+import kotlinx.android.synthetic.main.activity_editnote.*
 
 val NOTE_TYPES = listOf("people", "location")
 
@@ -21,13 +18,13 @@ val entries = mutableListOf<Entry>(
     Entry("12345"),
     Entry("123456"))
 
-class AddnoteActivity : AppCompatActivity() {
+class AddNoteActivity : AppCompatActivity() {
 
     lateinit var recyclerAdapter: EntryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_addnote)
+        setContentView(R.layout.activity_editnote)
 
         // add to autocomplete text view
         val noteType = findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)

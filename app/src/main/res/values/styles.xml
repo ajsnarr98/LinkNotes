@@ -25,7 +25,7 @@
     <!-- Text input box -->
     <style name="RoundedEditText">
         <item name="android:background">@drawable/textview_rounded</item>
-        <item name="android:height">150dp</item>
+        <item name="android:height">48sp</item>
     </style><style name="RoundedEditText.Bordered">
         <item name="android:background">@drawable/textview_border_rounded</item>
     </style>

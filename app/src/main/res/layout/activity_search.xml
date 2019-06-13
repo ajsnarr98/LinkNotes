@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".search.SearchActivity">
 
-    <androidx.cardview.widget.CardView
+    <com.ajsnarr.peoplenotes.search.SearchCardView
         android:id="@+id/search_bar_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -21,35 +21,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            style="@style/RoundedEditText.Bordered">
+            android:layout_height="48sp"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:drawableRight="@android:drawable/ic_menu_search"
+            style="@style/RoundedEditText.Bordered" />
 
-            <EditText
-                android:id="@+id/search_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="48sp"
-                android:layout_weight="1"
-                android:paddingRight="16dp"
-                android:paddingLeft="16dp"
-                style="@style/RoundedEditText"
-                android:inputType="text"/>
-
-            <ImageView
-                android:id="@+id/search_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="6dp"
-                android:layout_marginLeft="6dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                app:srcCompat="@android:drawable/ic_menu_search" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+    </com.ajsnarr.peoplenotes.search.SearchCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

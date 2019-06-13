@@ -1,20 +1,13 @@
 package com.ajsnarr.peoplenotes.notes
 
-import android.content.Context
 import android.graphics.Point
-import android.text.Layout
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.PopupWindow
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import com.ajsnarr.peoplenotes.R
-import com.ajsnarr.peoplenotes.getScreenSize
-import java.util.zip.Inflater
-import kotlin.properties.Delegates
 
 /**
  * EditNoteTagsPopup represents a popup window for adding tags, placed in the current activity.

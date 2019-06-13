@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
-import com.ajsnarr.peoplenotes.getScreenSize
+import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
 
 val NOTE_TYPES = listOf("people", "location")

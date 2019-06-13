@@ -1,23 +1,22 @@
 package com.ajsnarr.peoplenotes.search
 
-import android.content.Context
-import android.graphics.drawable.Icon
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.renderscript.ScriptGroup
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.ajsnarr.peoplenotes.R
-import com.ajsnarr.peoplenotes.hideKeyboard
-import com.ajsnarr.peoplenotes.hideKeyboardFrom
+import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import kotlinx.android.synthetic.main.activity_search.*
 
 
 private const val TAG = "SearchActivity"
+
+val SEARCH_FILTERS = listOf<String>("Limit results", "TAG", "NAME")
 
 class SearchActivity : AppCompatActivity() {
 
@@ -58,6 +57,11 @@ class SearchActivity : AppCompatActivity() {
                 false
             }
         }
+
+        // setup filter dropdown
+        val searchFiltersDropdown = search_filters_dropdown
+        searchFiltersDropdown.adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SEARCH_FILTERS)
+        searchFiltersDropdown.onItemSelectedListener = OnItemSelectedListener()
     }
 
     override fun onBackPressed() {
@@ -75,6 +79,14 @@ class SearchActivity : AppCompatActivity() {
         if (!isActive) {
             hideKeyboardFrom(searchBar.context, search_bar)
             searchBar.clearFocus()
+        }
+    }
+
+    private class OnItemSelectedListener() : AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            Log.d(TAG, "onItemSelected | position: $view")
         }
 
     }

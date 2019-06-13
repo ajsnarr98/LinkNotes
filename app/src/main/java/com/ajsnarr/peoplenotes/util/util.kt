@@ -1,4 +1,4 @@
-package com.ajsnarr.peoplenotes
+package com.ajsnarr.peoplenotes.util
 
 import android.app.Activity
 import android.content.Context
@@ -6,11 +6,6 @@ import android.graphics.Point
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentActivity
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.getSystemService
-
-
-
 
 
 fun getScreenSize(activity: FragmentActivity) : Point {

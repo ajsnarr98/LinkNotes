@@ -1,7 +1,7 @@
 package com.ajsnarr.peoplenotes.notes
 
-import android.content.res.Resources
-import android.provider.ContactsContract
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +18,8 @@ import java.lang.IllegalArgumentException
 class EntryAdapter(private val entries: MutableList<Entry>,
                    private val actionListener: ActionListener) : RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
 
-    private lateinit var noteDetails: View
-    private lateinit var numEntriesText: TextView
+    private lateinit var mNoteDetails: View
+    private lateinit var mNumEntriesText: TextView
 
     init {
 
@@ -47,7 +47,12 @@ class EntryAdapter(private val entries: MutableList<Entry>,
         fun onCreateTagsPopup()
 
         /**
-         * Called to setup note type auto completion.
+         * Set mNote title.
+         */
+        fun onSetTitle(title: String)
+
+        /**
+         * Called to setup mNote type auto completion.
          */
         fun onSetupNoteTypes(noteTypeField: AutoCompleteTextView)
 
@@ -63,7 +68,7 @@ class EntryAdapter(private val entries: MutableList<Entry>,
     }
 
     fun updateNumEntriesText() {
-        actionListener.onUpdateNumEntriesText(numEntriesText, entries.size)
+        actionListener.onUpdateNumEntriesText(mNumEntriesText, entries.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryViewHolder {
@@ -75,10 +80,10 @@ class EntryAdapter(private val entries: MutableList<Entry>,
                 this, actionListener
             )
             NOTE_DETAILS_TYPE     -> {
-                noteDetails = LayoutInflater.from(parent.context)
+                mNoteDetails = LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_editnote_details, parent, false)
-                numEntriesText = noteDetails.findViewById(R.id.num_entries_text)
-                EntryViewHolder(noteDetails, this, actionListener)
+                mNumEntriesText = mNoteDetails.findViewById(R.id.num_entries_text)
+                EntryViewHolder(mNoteDetails, this, actionListener)
             }
             ADD_ENTRY_BUTTON_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
@@ -120,6 +125,7 @@ class EntryAdapter(private val entries: MutableList<Entry>,
         }
         fun onBindNoteDetails() {
 
+            val titleInput = view.findViewById<EditText>(R.id.title_input)
             val tagsPopupButton = view.findViewById<View>(R.id.tags_popup_btn)
             val noteTypeInput = view.findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
             val nickNameInput = view.findViewById<MultiAutoCompleteTextView>(R.id.nicknames_auto_multi_input)
@@ -129,7 +135,7 @@ class EntryAdapter(private val entries: MutableList<Entry>,
                 actionListener.onCreateTagsPopup()
             }
 
-            // add to note type autocomplete text view
+            // add to mNote type autocomplete text view
             actionListener.onSetupNoteTypes(noteTypeInput)
 
             // add to nickname autocomplete text view
@@ -137,6 +143,16 @@ class EntryAdapter(private val entries: MutableList<Entry>,
 
             // update num entries text
             adapter.updateNumEntriesText()
+
+            // setup update listeners
+            titleInput.addTextChangedListener(TitleWatcher(actionListener))
+        }
+
+        class TitleWatcher(val actionListener: ActionListener) : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { actionListener.onSetTitle(s?.toString() ?: "") }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
         }
 
         fun onBindAddButton() {

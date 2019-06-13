@@ -21,8 +21,8 @@ class EditNoteActivity : AppCompatActivity() {
 
     lateinit var viewModel: EditNoteViewModel
 
-    private lateinit var recyclerAdapter: EntryAdapter
-    private val recyclerActionListener = RecyclerActionListener(this)
+    private lateinit var mRecyclerAdapter: EntryAdapter
+    private val mRecyclerActionListener = RecyclerActionListener(this)
 
     private class RecyclerActionListener(val activity: EditNoteActivity)
         : EntryAdapter.ActionListener {
@@ -40,6 +40,10 @@ class EditNoteActivity : AppCompatActivity() {
             )
         }
 
+        override fun onSetTitle(title: String) {
+            activity.viewModel.title = title
+        }
+
         override fun onSetupNoteTypes(noteTypeField: AutoCompleteTextView) {
             // add to autocomplete text view
             val adapter = ArrayAdapter(activity,
@@ -55,8 +59,6 @@ class EditNoteActivity : AppCompatActivity() {
             numEntriesText.text =
                 activity.getString(R.string.editnote_num_entries, numEntries)
         }
-
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,11 +69,11 @@ class EditNoteActivity : AppCompatActivity() {
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = EntryAdapter(viewModel.entries, recyclerActionListener)
+        mRecyclerAdapter = EntryAdapter(viewModel.entries, mRecyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager
-            adapter = recyclerAdapter
+            adapter = mRecyclerAdapter
         }
     }
 

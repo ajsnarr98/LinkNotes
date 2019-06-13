@@ -1,9 +1,6 @@
 package com.ajsnarr.peoplenotes.data
 
-import java.lang.IllegalStateException
 import java.util.*
-import kotlin.properties.Delegates
-import kotlin.reflect.KProperty
 
 class Entry(val id: UUID,
             val type: EntryType = EntryType.EMPTY,
@@ -13,9 +10,7 @@ class Entry(val id: UUID,
             val subEntries: MutableList<Entry> = mutableListOf()
 ) {
 
-    /**
-     * Setup content add to datesEdited every time it is updated
-     */
+    // Setup content add to datesEdited every time it is updated
     var content: EntryContent = content
         set(value) {
             this.datesEdited.add(Date())

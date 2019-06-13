@@ -1,6 +1,6 @@
 package com.ajsnarr.peoplenotes.data
 
-class EntryContent(var Content: String) {
+data class EntryContent(var content: String) {
     companion object {
         val EMPTY = EntryContent("")
     }

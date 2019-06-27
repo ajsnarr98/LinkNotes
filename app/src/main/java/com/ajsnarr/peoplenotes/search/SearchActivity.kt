@@ -9,7 +9,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.R
+import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.data.Tag
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import kotlinx.android.synthetic.main.activity_search.*
 
@@ -28,6 +31,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var searchBar: EditText
+    private lateinit var recyclerAdapter: ResultAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,15 @@ class SearchActivity : AppCompatActivity() {
         // setup search bar view to allow handling of back buttn presses within
         // keyboard
         search_bar_view.searchActivity = this
+
+        // setup recycler view
+        val recycler = recycler_view
+        val recyclerManager = LinearLayoutManager(this)
+        recyclerAdapter = ResultAdapter(this, RecyclerActionLister())
+        recycler.apply {
+            layoutManager = recyclerManager
+            adapter = recyclerAdapter
+        }
 
         // setup search bar
         searchBar = search_bar
@@ -62,12 +75,26 @@ class SearchActivity : AppCompatActivity() {
         val searchFiltersDropdown = search_filters_dropdown
         searchFiltersDropdown.adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SEARCH_FILTERS)
         searchFiltersDropdown.onItemSelectedListener = OnItemSelectedListener()
+
+        // load notes
+        loadDefaultNotes()
     }
 
     override fun onBackPressed() {
         // try to set search bar inactive
         Log.d(TAG, "onBackPressed")
         setSearchBarActive(false)
+    }
+
+    private fun loadDefaultNotes() {
+        val notes = mutableListOf<Note>(
+            Note(id="123", name="Devin James", tags=mutableListOf<Tag>(Tag("friend"),
+                Tag("charlotesville"), Tag("JMU"), Tag("1"), Tag("1"),
+                Tag("1"), Tag("1"))),
+            Note(id="1233", name="John Smith"),
+            Note(id="1234", name="Openheimer Shmitt")
+        )
+        recyclerAdapter.updateResults(notes)
     }
 
     private fun setSearchBarActive(isActive: Boolean) {
@@ -78,16 +105,22 @@ class SearchActivity : AppCompatActivity() {
 
         if (!isActive) {
             hideKeyboardFrom(searchBar.context, search_bar)
-            searchBar.clearFocus()
+            searchBar.clearFocus() // un-click from search bar
         }
     }
 
-    private class OnItemSelectedListener() : AdapterView.OnItemSelectedListener {
+    // for spinner (dropdown)
+    private class OnItemSelectedListener : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {}
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             Log.d(TAG, "onItemSelected | position: $view")
         }
+
+    }
+
+    // for recycler view items
+    private class RecyclerActionLister() : ResultAdapter.ActionListener {
 
     }
 }

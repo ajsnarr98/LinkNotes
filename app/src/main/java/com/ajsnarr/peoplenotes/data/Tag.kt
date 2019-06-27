@@ -1,4 +1,4 @@
 package com.ajsnarr.peoplenotes.data
 
 
-data class Tag(val id: UUID, val value: String)
+data class Tag(val text: String, val color: Color = Color.randomTagColor())

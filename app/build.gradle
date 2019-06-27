@@ -11,7 +11,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ajsnarr.peoplenotes"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1

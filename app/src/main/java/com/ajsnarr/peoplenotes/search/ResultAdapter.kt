@@ -49,10 +49,14 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
 
             chipGroup.addView(Chip(context).apply {
                 isClickable = false
+
                 text = tag.text
-                textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 3f, resources.displayMetrics)
+                textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 5f, resources.displayMetrics)
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
-                minHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, resources.displayMetrics).toInt()
+
+                chipMinHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
+                chipStartPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 1f, resources.displayMetrics)
+                chipEndPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 1f, resources.displayMetrics)
                 chipBackgroundColor = ColorStateList.valueOf(Color.rgb(tag.color.r, tag.color.g, tag.color.b))
             })
         }

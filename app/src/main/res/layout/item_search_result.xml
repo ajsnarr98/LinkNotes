@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/note_icon"
-            android:layout_width="95dp"
-            android:layout_height="95dp"
+            android:layout_width="64sp"
+            android:layout_height="64sp"
             android:layout_marginStart="12dp"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="12dp"

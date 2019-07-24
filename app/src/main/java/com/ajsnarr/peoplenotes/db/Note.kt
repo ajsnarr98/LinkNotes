@@ -1,7 +1,26 @@
 package com.ajsnarr.peoplenotes.db
 
+import com.ajsnarr.peoplenotes.util.isNotNullOrBlank
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
+
+/**
+ * A note is marked as a new note, when it has no valid ID.
+ *
+ * An invalid ID will either be null or blank (at most whitespace chars).
+ */
+@ExperimentalContracts
+fun Note.isNewNote(): Boolean {
+    contract {
+        returns(false) implies(this@isNewNote != null)
+        returns(true) implies(this@isNewNote == null)
+    }
+    return this.id.isNullOrBlank()
+}
+
+
 data class Note(
-    var id: String? = null, // if ID is null or empty string, creates a new id when it is inserted
+    val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
     var type: String? = null,
     var name: String? = null,
     val nicknames: MutableList<String>? = null,
@@ -10,4 +29,12 @@ data class Note(
     val tags: MutableList<Tag>? = null,
     val entries: MutableList<Entry>? = null,
     val notes: MutableList<Note>? = null
-)
+) {
+
+    /**
+     * Returns a new note with the given ID.
+     */
+    fun withId(id: String): Note {
+        return this.copy(id=id)
+    }
+}

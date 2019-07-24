@@ -8,6 +8,10 @@ data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null) {
 
     companion object {
 
+        fun fromDBColor(other: com.ajsnarr.peoplenotes.db.Color): Color {
+            return Color(other.r!!, other.g!!, other.b!!, other.a)
+        }
+
         /**
          * @param rgbHex Must be in the format "#rrggbb"
          */

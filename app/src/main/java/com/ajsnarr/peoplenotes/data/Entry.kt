@@ -27,8 +27,14 @@ class Entry(val id: UUID,
         /**
          * Returns an entry from the database.
          */
-        fun fromDB(): Entry {
-            return Entry("12345")
+        fun fromDBObj(other: com.ajsnarr.peoplenotes.db.Entry): Entry {
+            return Entry(
+                id = other.id!!,
+                content = EntryContent.fromDBObj(other.content!!),
+                dateCreated = other.dateCreated!!,
+                datesEdited = other.datesEdited!!,
+                subEntries = other.subEntries!!.map { Entry.fromDBObj(it) }.toMutableList()
+            )
         }
 
         /**

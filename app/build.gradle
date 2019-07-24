@@ -52,4 +52,7 @@ dependencies {
 
     // firestore
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
+
+    // logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }

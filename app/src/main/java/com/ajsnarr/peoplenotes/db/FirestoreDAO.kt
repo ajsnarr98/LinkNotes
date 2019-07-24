@@ -52,7 +52,11 @@ class FirestoreDAO {
      */
     fun removeNotesChangeListener(): Boolean {
         notesListenerReg?.remove()
-        return notesListenerReg != null
+        val removed = notesListenerReg != null
+
+        if (removed) { notesListenerReg = null }
+
+        return removed
     }
 
     /**

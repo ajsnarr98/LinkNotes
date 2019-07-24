@@ -1,10 +1,16 @@
 package com.ajsnarr.peoplenotes.db
 
-import android.util.Log
+import com.google.firebase.firestore.DocumentChange
+import timber.log.Timber
 
+/**
+ * A notes collection that works with firestore.
+ *
+ * MUST clear listeners via call to onActivityEnd.
+ */
 class FirestoreNoteCollection : NoteCollection() {
 
-    val dao = FirestoreDAO.instance
+    private val dao = FirestoreDAO.instance
 
     init {
         if (this.value == null) {
@@ -13,9 +19,44 @@ class FirestoreNoteCollection : NoteCollection() {
 
         // get notes from db
         dao.getAllNotes(
-            onSuccess = {note -> this.add(note) },
-            onFailure = {err  -> /* Log here */}
+            onSuccess = {note -> this.add(note); Timber.v("Received note ${note.id} from database")},
+            onFailure = {err  -> Timber.e("Error getting note from db: $err")}
         )
+    }
+
+    /**
+     * Add a listener for updating notes based on remote changes.
+     */
+    override fun onActivityStart() {
+        dao.addNotesChangeListener { snapshots, firebaseFirestoreException ->
+            if (snapshots?.documentChanges == null) return@addNotesChangeListener
+
+            Timber.d("Remote changes received in note collection")
+
+            for (dc in snapshots.documentChanges) {
+                val note = dc.document.toObject(Note::class.java)
+                when (dc.type) {
+                    DocumentChange.Type.ADDED    -> this.value?.add(note)
+                    DocumentChange.Type.REMOVED  -> this.value?.remove(note)
+                    DocumentChange.Type.MODIFIED -> {
+                        if (this.value?.contains(note) == true) {
+                            this.value?.remove(note)
+                            this.value?.add(note)
+                        }
+                    }
+                    else                         -> return@addNotesChangeListener
+                }
+            }
+            // update based on current changes
+            update()
+        }
+    }
+
+    /**
+     * Remove listener at end of activity.
+     */
+    override fun onActivityStop() {
+        dao.removeNotesChangeListener()
     }
 
     /**

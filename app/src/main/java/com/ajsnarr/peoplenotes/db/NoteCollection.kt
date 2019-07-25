@@ -1,6 +1,9 @@
 package com.ajsnarr.peoplenotes.db
 
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
+import kotlinx.android.parcel.Parcelize
+import timber.log.Timber
 
 /**
  * Represents a collection of notes from the DB. Updates using livedata.
@@ -11,6 +14,12 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
         if (this.value == null) {
             this.value = mutableSetOf<Note>()
         }
+
+        Timber.i("Created note collection")
+    }
+
+    companion object {
+        val instance = FirestoreNoteCollection()
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.ajsnarr.peoplenotes.db
 
 import com.google.firebase.firestore.DocumentChange
-import kotlinx.android.parcel.Parcelize
 import timber.log.Timber
 
 /**

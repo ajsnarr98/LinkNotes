@@ -13,10 +13,6 @@ class FirestoreNoteCollection : NoteCollection() {
     private val dao = FirestoreDAO.instance
 
     init {
-        if (this.value == null) {
-            this.value = mutableSetOf<Note>()
-        }
-
         // get notes from db
         dao.getAllNotes(
             onSuccess = {note -> this.add(note); Timber.v("Received note ${note.id} from database")},
@@ -59,25 +55,30 @@ class FirestoreNoteCollection : NoteCollection() {
         dao.removeNotesChangeListener()
     }
 
-    /**
-     * Sets LiveData value to cause an event.
-     */
-    private fun update() {
-        this.value = this.value
+
+    // inherit mutable set methods (and set to update db)
+    override fun add(element: Note): Boolean {
+        return super.add(element).also {
+            dao.upsertNote(element)
+        }
     }
-
-    // inherit list methods
-    override val size: Int get() = this.value?.size ?: 0
-    override fun contains(element: Note): Boolean = this.value?.contains(element) ?: false
-    override fun containsAll(elements: Collection<Note>): Boolean = this.value?.containsAll(elements) ?: false
-    override fun isEmpty(): Boolean = this.value?.isEmpty() ?: true
-    override fun iterator(): MutableIterator<Note> = this.value?.iterator() ?: mutableSetOf<Note>().iterator()
-
-    // inherit mutable list methods
-    override fun add(element: Note): Boolean = this.value?.add(element).also { update() } ?: false
-    override fun addAll(elements: Collection<Note>): Boolean = this.value?.addAll(elements).also { update() } ?: false
-    override fun clear() { this.value?.clear().also { update() } }
-    override fun remove(element: Note): Boolean = this.value?.remove(element).also { update() } ?: false
-    override fun removeAll(elements: Collection<Note>): Boolean = this.value?.removeAll(elements).also { update() } ?: false
-    override fun retainAll(elements: Collection<Note>): Boolean = this.value?.retainAll(elements).also { update() } ?: false
+    override fun clear() {
+        super.clear()
+        dao.deleteNotes(this)
+    }
+    override fun remove(element: Note): Boolean {
+        return super.remove(element).also {
+            dao.deleteNote(element)
+        }
+    }
+    override fun removeAll(elements: Collection<Note>): Boolean {
+        return super.removeAll(elements).also {
+            dao.deleteNotes(elements)
+        }
+    }
+    override fun retainAll(elements: Collection<Note>): Boolean {
+        // give dao the inverse of elements being kept in the set, to remove
+        dao.deleteNotes(mutableSetOf(*this.toTypedArray()).apply {removeAll(elements)})
+        return super.retainAll(elements)
+    }
 }

@@ -1,21 +1,12 @@
 package com.ajsnarr.peoplenotes.db
 
-import com.ajsnarr.peoplenotes.util.isNotNullOrBlank
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
-
 /**
  * A note is marked as a new note, when it has no valid ID.
  *
  * An invalid ID will either be null or blank (at most whitespace chars).
  */
-@ExperimentalContracts
 fun Note.isNewNote(): Boolean {
-    contract {
-        returns(false) implies(this@isNewNote != null)
-        returns(true) implies(this@isNewNote == null)
-    }
-    return this.id.isNullOrBlank()
+    return this.id == null || this.id.isBlank()
 }
 
 

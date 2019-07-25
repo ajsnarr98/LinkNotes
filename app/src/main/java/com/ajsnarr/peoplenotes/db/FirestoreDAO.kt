@@ -1,8 +1,8 @@
 package com.ajsnarr.peoplenotes.db
 
 import com.google.firebase.firestore.*
+import timber.log.Timber
 import java.lang.Exception
-import kotlin.contracts.ExperimentalContracts
 
 /**
  * Used for pulling notes and related info out of the DB.
@@ -62,10 +62,7 @@ class FirestoreDAO {
     /**
      * Updates an existing note or inserts this one if it does not exist.
      */
-    @ExperimentalContracts
-    fun upsertNote(note: Note,
-                            onSuccess: (Void) -> Unit,
-                            onFailure: (Exception) -> Unit) {
+    fun upsertNote(note: Note) {
 
         // generate a new document if neccesary
         val documentRef: DocumentReference
@@ -75,7 +72,7 @@ class FirestoreDAO {
                 } else {
                     // new document without id
                     db.collection(NOTES_COLLECTION)
-                        .document()
+                        .document(note.id!!)
         }
 
         val savedNote: Note
@@ -87,8 +84,30 @@ class FirestoreDAO {
                 }
 
         documentRef.set(savedNote).apply {
-            addOnSuccessListener { onSuccess }
-            addOnFailureListener { onFailure }
+            addOnSuccessListener { Timber.d("Successfully upserted note") }
+            addOnFailureListener { err -> Timber.e("Failed to upsert note: $err") }
+        }
+    }
+
+    /**
+     * Deletes a note.
+     */
+    fun deleteNote(note: Note) {
+        if (note.isNewNote() == false) {
+            db.collection(NOTES_COLLECTION)
+                .document(note.id!!)
+                .delete()
+                .addOnSuccessListener { Timber.i("Note ${note.id} ${note.name} successfully deleted") }
+                .addOnFailureListener { Timber.e("Note ${note.id} ${note.name} successfully deleted") }
+        }
+    }
+
+    /**
+     * Deletes all given notes
+     */
+    fun deleteNotes(notes: Collection<Note>) {
+        for (note in notes) {
+            deleteNote(note)
         }
     }
 }

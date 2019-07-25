@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
+import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.db.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
 
@@ -24,6 +26,8 @@ class EditNoteActivity : AppCompatActivity() {
     private lateinit var mRecyclerAdapter: EntryAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
 
+    private val mDbNotesCollection = NoteCollection.instance
+
     private class RecyclerActionListener(val activity: EditNoteActivity)
         : EntryAdapter.ActionListener {
 
@@ -31,13 +35,17 @@ class EditNoteActivity : AppCompatActivity() {
             activity.viewModel.addEntry(Entry.newEmpty())
         }
 
-        override fun onCreateTagsPopup() {
+        override fun onAddTag() {
             // set up tags popup window
             EditNoteTagsPopup(
                 inflater = activity.layoutInflater,
                 parentView = activity.popupcontainer,
                 screenSize = getScreenSize(activity)
             )
+        }
+
+        override fun onSaveButtonPress() {
+            activity.mDbNotesCollection.add(activity.viewModel.note.toDBObject())
         }
 
         override fun onSetTitle(title: String) {
@@ -51,25 +59,17 @@ class EditNoteActivity : AppCompatActivity() {
             )
             noteTypeField.setAdapter(adapter)
         }
-
-        override fun onSetupNicknames(nicknameField: MultiAutoCompleteTextView) {
-        }
-
-        override fun onUpdateNumEntriesText(numEntriesText: TextView, numEntries: Int) {
-            numEntriesText.text =
-                activity.getString(R.string.editnote_num_entries, numEntries)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editnote)
 
-        viewModel = ViewModelProviders.of(this).get(EditNoteViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(null)).get(EditNoteViewModel::class.java)
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        mRecyclerAdapter = EntryAdapter(viewModel.entries, mRecyclerActionListener)
+        mRecyclerAdapter = EntryAdapter(viewModel.note, mRecyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager
@@ -87,5 +87,15 @@ class EditNoteActivity : AppCompatActivity() {
             R.id.action_settings -> return true // TODO
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mDbNotesCollection.onActivityStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mDbNotesCollection.onActivityStop()
     }
 }

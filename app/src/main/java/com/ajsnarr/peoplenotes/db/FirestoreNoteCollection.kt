@@ -56,10 +56,19 @@ class FirestoreNoteCollection : NoteCollection() {
     }
 
 
-    // inherit mutable set methods (and set to update db)
+    override fun generateNewUUID(newNote: Note): String {
+        // this method runs right before add is called on this Note, so
+        // upsert note here
+        return dao.upsertNote(newNote)
+    }
+
+    // inherit mutable set methods (and configure to update db)
+
     override fun add(element: Note): Boolean {
         return super.add(element).also {
-            dao.upsertNote(element)
+            // knowing generating a newUUID will upsert, only upsert if element
+            // is not a new note
+            if (element.isNewNote() == false) dao.upsertNote(element)
         }
     }
     override fun clear() {

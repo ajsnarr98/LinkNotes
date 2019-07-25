@@ -61,8 +61,10 @@ class FirestoreDAO {
 
     /**
      * Updates an existing note or inserts this one if it does not exist.
+     *
+     * Returns the note's UUID.
      */
-    fun upsertNote(note: Note) {
+    fun upsertNote(note: Note): String {
 
         // generate a new document if neccesary
         val documentRef: DocumentReference
@@ -87,6 +89,8 @@ class FirestoreDAO {
             addOnSuccessListener { Timber.d("Successfully upserted note") }
             addOnFailureListener { err -> Timber.e("Failed to upsert note: $err") }
         }
+
+        return savedNote.id ?: throw IllegalStateException("Note id should not be null")
     }
 
     /**

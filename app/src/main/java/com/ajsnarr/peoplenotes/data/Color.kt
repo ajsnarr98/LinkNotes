@@ -4,7 +4,8 @@ import com.ajsnarr.peoplenotes.util.getMaxDifference
 import java.lang.IllegalArgumentException
 import kotlin.random.Random
 
-data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null) {
+data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null)
+    : DataObject<com.ajsnarr.peoplenotes.db.Color> {
 
     companion object {
 
@@ -69,5 +70,14 @@ data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null) {
 
             return Color(rgb[0], rgb[1], rgb[2])
         }
+    }
+
+    override fun toDBObject(): com.ajsnarr.peoplenotes.db.Color {
+        return com.ajsnarr.peoplenotes.db.Color(
+            r = this.r,
+            g = this.g,
+            b = this.b,
+            a = this.a
+        )
     }
 }

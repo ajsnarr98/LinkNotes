@@ -1,5 +1,7 @@
 package com.ajsnarr.peoplenotes.data
 
+import com.ajsnarr.peoplenotes.util.isNotNull
+
 
 data class Note(
     val id: UUID,
@@ -11,19 +13,22 @@ data class Note(
     val tags: MutableList<Tag> = mutableListOf(),
     val entries: MutableList<Entry> = mutableListOf(),
     val notes: MutableList<Note>? = null // for noteGroup types
-) {
+) : DataObject<com.ajsnarr.peoplenotes.db.Note> {
     companion object {
+
+        const val DEFAULT_NOTE_TYPE = "default"
+
         fun fromDBNote(other: com.ajsnarr.peoplenotes.db.Note): Note {
             return Note(
                 id = other.id!!,
                 type = other.type!!,
                 name = other.name!!,
                 nicknames = other.nicknames!!,
-                mainPicture = other.mainPicture!!.url,
+                mainPicture = other.mainPicture?.url,
                 pictures = other.pictures!!.map { it.url!! }.toMutableList(),
                 tags = other.tags!!.map { Tag.fromDBTag(it) }.toMutableList(),
                 entries = other.entries!!.map { Entry.fromDBObj(it) }.toMutableList(),
-                notes = other.notes!!.map { Note.fromDBNote(it) }.toMutableList()
+                notes = other.notes?.map { Note.fromDBNote(it) }?.toMutableList()
             )
         }
 
@@ -32,8 +37,34 @@ data class Note(
         }
     }
 
+    /**
+     * Add an entry to this note.
+     */
     fun addEntry(entry: Entry) {
         entries.add(entry)
+    }
+
+    /**
+     * A note is marked as a new note, when it has no valid ID.
+     *
+     * An invalid ID will either be null or blank (at most whitespace chars).
+     */
+    fun isNewNote(): Boolean {
+        return this.id == null || this.id.isBlank()
+    }
+
+    override fun toDBObject(): com.ajsnarr.peoplenotes.db.Note {
+        return com.ajsnarr.peoplenotes.db.Note(
+            id = this.id,
+            type = this.type,
+            name = this.name,
+            nicknames = this.nicknames,
+            mainPicture = if (this.mainPicture != null) com.ajsnarr.peoplenotes.db.Picture(url=this.mainPicture) else null,
+            pictures = this.pictures.map { url -> com.ajsnarr.peoplenotes.db.Picture(url=url) }.toMutableList(),
+            tags = this.tags.map { it.toDBObject() }.toMutableList(),
+            entries = this.entries.map { it.toDBObject() }.toMutableList(),
+            notes = this.notes?.map { it.toDBObject() }?.toMutableList()
+        )
     }
 
     /**

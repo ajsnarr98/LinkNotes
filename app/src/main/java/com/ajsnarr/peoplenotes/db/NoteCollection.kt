@@ -5,6 +5,8 @@ import timber.log.Timber
 
 /**
  * Represents a collection of notes from the DB. Updates using livedata.
+ *
+ * DO NOT modify the value field of this class.
  */
 abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
 
@@ -19,6 +21,13 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
     companion object {
         val instance = FirestoreNoteCollection()
     }
+
+    /**
+     * Gets a new UUID to use with the note.
+     *
+     * Guaranteed to run iff add() is called and note is a newNote.
+     */
+    protected abstract fun generateNewUUID(newNote: Note): String
 
     /**
      * Called when the activity starts.
@@ -46,7 +55,13 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
     override fun iterator(): MutableIterator<Note> = this.value?.iterator() ?: mutableSetOf<Note>().iterator()
 
     // inherit mutable set methods
-    override fun add(element: Note): Boolean = this.value?.add(element).also { update() } ?: false
+    override fun add(element: Note): Boolean {
+        // a new note will need a valid id
+        val note = if (element.isNewNote()) element.copy(id=generateNewUUID(element)) else element
+
+        this.value?.remove(note) // remove old if exists
+        return this.value?.add(note).also { update() } ?: false
+    }
     override fun addAll(elements: Collection<Note>): Boolean = this.value?.addAll(elements).also { update() } ?: false
     override fun clear() { this.value?.clear().also { update() } }
     override fun remove(element: Note): Boolean = this.value?.remove(element).also { update() } ?: false

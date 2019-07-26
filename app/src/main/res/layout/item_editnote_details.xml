@@ -16,9 +16,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:hint="@string/addnote_title_suggestion"
+        android:hint="@string/editnote_title_suggestion"
         app:errorEnabled="true"
-        app:layout_constraintEnd_toStartOf="@+id/tags_popup_btn"
+        app:layout_constraintEnd_toStartOf="@+id/save_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -26,7 +26,7 @@
             android:id="@+id/title_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/addnote_title_suggestion"
+            android:hint="@string/editnote_title_suggestion"
             android:inputType="text"
             android:textSize="24sp" />
 
@@ -53,7 +53,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:hint="@string/addnote_notetype_suggestion"
+        android:hint="@string/editnote_notetype_suggestion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:completionThreshold="0"
-            android:hint="@string/addnote_notetype_suggestion" />
+            android:hint="@string/editnote_notetype_suggestion" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -77,29 +77,29 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:hint="@string/addnote_nickname_suggestion"
+        android:hint="@string/editnote_nickname_suggestion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
         app:layout_constraintTop_toBottomOf="@+id/notetype_inputL">
 
-        <MultiAutoCompleteTextView
+        <com.ajsnarr.peoplenotes.util.MultiEditText
             android:id="@+id/nicknames_auto_multi_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/addnote_nickname_suggestion" />
+            android:hint="@string/editnote_nickname_suggestion" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/tags_popup_btn"
+        android:id="@+id/save_button"
         style="@style/RoundedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:text="@string/addnote_tagsbtn"
+        android:text="@string/editnote_savebtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

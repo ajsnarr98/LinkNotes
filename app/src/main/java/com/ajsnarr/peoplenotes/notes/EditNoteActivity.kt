@@ -2,18 +2,17 @@ package com.ajsnarr.peoplenotes.notes
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.MultiAutoCompleteTextView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
+import com.ajsnarr.peoplenotes.db.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
+import timber.log.Timber
 
 val NOTE_TYPES = listOf("people", "location")
 
@@ -24,20 +23,41 @@ class EditNoteActivity : AppCompatActivity() {
     private lateinit var mRecyclerAdapter: EntryAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
 
+    private val mDbNotesCollection = NoteCollection.instance
+
     private class RecyclerActionListener(val activity: EditNoteActivity)
         : EntryAdapter.ActionListener {
 
         override fun onAddButtonPress() {
-            activity.viewModel.addEntry(Entry.newEmpty())
+            activity.viewModel.addNewEntry()
         }
 
-        override fun onCreateTagsPopup() {
+        override fun onAddTag() {
             // set up tags popup window
             EditNoteTagsPopup(
                 inflater = activity.layoutInflater,
                 parentView = activity.popupcontainer,
                 screenSize = getScreenSize(activity)
             )
+        }
+
+        override fun onEditEntry(entry: Entry) {
+            activity.viewModel.updateExistingEntry(entry)
+        }
+
+        override fun onSaveButtonPress() {
+            val note = activity.viewModel.note
+
+            // saved a valid note, refuse to save invalid note
+            if (note.isValidNote()) {
+                activity.mDbNotesCollection.add(note.toDBObject())
+                Timber.i("Saved new note ${note.name}")
+
+                val msg = if (note.isNewNote()) "Saved new note!" else "Saved note!"
+                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(activity, "Note needs to have a title", Toast.LENGTH_LONG).show()
+            }
         }
 
         override fun onSetTitle(title: String) {
@@ -51,25 +71,17 @@ class EditNoteActivity : AppCompatActivity() {
             )
             noteTypeField.setAdapter(adapter)
         }
-
-        override fun onSetupNicknames(nicknameField: MultiAutoCompleteTextView) {
-        }
-
-        override fun onUpdateNumEntriesText(numEntriesText: TextView, numEntries: Int) {
-            numEntriesText.text =
-                activity.getString(R.string.editnote_num_entries, numEntries)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editnote)
 
-        viewModel = ViewModelProviders.of(this).get(EditNoteViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(null)).get(EditNoteViewModel::class.java)
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        mRecyclerAdapter = EntryAdapter(viewModel.entries, mRecyclerActionListener)
+        mRecyclerAdapter = EntryAdapter(viewModel.note, mRecyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager
@@ -87,5 +99,15 @@ class EditNoteActivity : AppCompatActivity() {
             R.id.action_settings -> return true // TODO
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mDbNotesCollection.onActivityStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mDbNotesCollection.onActivityStop()
     }
 }

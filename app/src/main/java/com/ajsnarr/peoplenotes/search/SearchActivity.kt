@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.Tag
@@ -21,7 +22,7 @@ private const val TAG = "SearchActivity"
 
 val SEARCH_FILTERS = listOf<String>("Limit results", "TAG", "NAME")
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : BaseActivity() {
 
     private val SEARCH_ICON = android.R.drawable.ic_menu_search
     private val X_ICON = android.R.drawable.ic_menu_close_clear_cancel

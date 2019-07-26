@@ -1,6 +1,7 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data
 
 import androidx.lifecycle.LiveData
+import com.ajsnarr.peoplenotes.db.FirestoreNoteCollection
 import timber.log.Timber
 
 /**

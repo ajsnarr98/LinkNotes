@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
-import com.ajsnarr.peoplenotes.db.NoteCollection
+import com.ajsnarr.peoplenotes.data.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
 import timber.log.Timber
@@ -23,7 +23,7 @@ class EditNoteActivity : AppCompatActivity() {
     private lateinit var mRecyclerAdapter: EntryAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
 
-    private val mDbNotesCollection = NoteCollection.instance
+    private val mNotesCollection = NoteCollection.instance
 
     private class RecyclerActionListener(val activity: EditNoteActivity)
         : EntryAdapter.ActionListener {
@@ -50,7 +50,7 @@ class EditNoteActivity : AppCompatActivity() {
 
             // saved a valid note, refuse to save invalid note
             if (note.isValidNote()) {
-                activity.mDbNotesCollection.add(note.toDBObject())
+                activity.mNotesCollection.add(note)
                 Timber.i("Saved new note ${note.name}")
 
                 val msg = if (note.isNewNote()) "Saved new note!" else "Saved note!"
@@ -103,11 +103,11 @@ class EditNoteActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        mDbNotesCollection.onActivityStart()
+        mNotesCollection.onActivityStart()
     }
 
     override fun onStop() {
         super.onStop()
-        mDbNotesCollection.onActivityStop()
+        mNotesCollection.onActivityStop()
     }
 }

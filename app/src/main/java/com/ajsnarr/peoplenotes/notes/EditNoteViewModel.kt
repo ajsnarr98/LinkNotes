@@ -22,6 +22,10 @@ class EditNoteViewModel(inNote: Note?) : ViewModel() {
         note.addNewEntry()
     }
 
+    fun updateExistingEntry(updated: Entry): Boolean {
+        return note.updateExistingEntry(updated)
+    }
+
     /**
      * If passed in inNote is null, creates a new note.
      */

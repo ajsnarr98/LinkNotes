@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
+import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.db.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
@@ -38,6 +39,10 @@ class EditNoteActivity : AppCompatActivity() {
                 parentView = activity.popupcontainer,
                 screenSize = getScreenSize(activity)
             )
+        }
+
+        override fun onEditEntry(entry: Entry) {
+            activity.viewModel.updateExistingEntry(entry)
         }
 
         override fun onSaveButtonPress() {

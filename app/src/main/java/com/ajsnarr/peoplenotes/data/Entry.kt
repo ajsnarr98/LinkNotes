@@ -3,17 +3,17 @@ package com.ajsnarr.peoplenotes.data
 import java.util.*
 
 class Entry(val id: UUID,
-            val type: EntryType = EntryType.EMPTY,
+            var type: EntryType = EntryType.EMPTY,
             content: EntryContent = EntryContent.EMPTY,
             var dateCreated: Date = Date(),
-            val datesEdited: MutableList<Date> = mutableListOf(),
+            var lastDateEdited: Date = Date(),
             val subEntries: MutableList<Entry> = mutableListOf()
 ): DataObject<com.ajsnarr.peoplenotes.db.Entry> {
 
     // Setup content add to datesEdited every time it is updated
     var content: EntryContent = content
         set(value) {
-            this.datesEdited.add(Date())
+            this.lastDateEdited = Date()
             field = value
         }
         get() = field
@@ -33,7 +33,7 @@ class Entry(val id: UUID,
                 type = EntryType.fromDBObj(other.type!!),
                 content = EntryContent.fromDBObj(other.content!!),
                 dateCreated = other.dateCreated!!,
-                datesEdited = other.datesEdited!!,
+                lastDateEdited = other.lastDateEdited!!,
                 subEntries = other.subEntries!!.map { Entry.fromDBObj(it) }.toMutableList()
             )
         }
@@ -45,7 +45,7 @@ class Entry(val id: UUID,
             type = this.type.toDBObject(),
             content = this.content.toDBObject(),
             dateCreated = this.dateCreated,
-            datesEdited = this.datesEdited,
+            lastDateEdited = this.lastDateEdited,
             subEntries = this.subEntries.map { it.toDBObject() }.toMutableList()
         )
     }

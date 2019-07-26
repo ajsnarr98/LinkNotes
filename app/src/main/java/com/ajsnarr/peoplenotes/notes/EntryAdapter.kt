@@ -13,6 +13,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
+import com.ajsnarr.peoplenotes.data.EntryContent
+import com.ajsnarr.peoplenotes.data.EntryType
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.util.MultiEditText
 import timber.log.Timber
@@ -48,6 +50,11 @@ class EntryAdapter(private val note: Note,
          * Called when the tag popup button is pressed.
          */
         fun onAddTag()
+
+        /**
+         * Called when an entry is edited.
+         */
+        fun onEditEntry(entry: Entry)
 
         /**
          * Called when the save button is pressed.
@@ -119,9 +126,22 @@ class EntryAdapter(private val note: Note,
         private lateinit var numEntriesText: TextView
 
         fun onBindEntry(entry: Entry) {
-            val entry_type = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
-            val entry_content = view.findViewById<EditText>(R.id.edittext_editnote_content)
+            val entryType = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
+            val entryContent = view.findViewById<EditText>(R.id.edittext_editnote_content)
+
+            // add listeners
+            entryType.addTextChangedListener(AfterTextChangedWatcher {
+                val type: String? = it?.toString()
+                entry.type = if (type != null) EntryType(type=type) else EntryType.EMPTY
+                actionListener.onEditEntry(entry)
+            })
+            entryContent.addTextChangedListener(AfterTextChangedWatcher {
+                val content: String? = it?.toString()
+                entry.content = if (content != null) EntryContent(content=content) else EntryContent.EMPTY
+                actionListener.onEditEntry(entry)
+            })
         }
+
         fun onBindNoteDetails() {
 
             Timber.d("onBindNoteDetails")
@@ -166,7 +186,9 @@ class EntryAdapter(private val note: Note,
             updateNumEntriesText()
 
             // setup update listeners
-            titleInput.addTextChangedListener(TitleWatcher(actionListener))
+            titleInput.addTextChangedListener(AfterTextChangedWatcher {
+                actionListener.onSetTitle(it?.toString() ?: "")
+            } )
         }
 
 
@@ -175,12 +197,6 @@ class EntryAdapter(private val note: Note,
 
             numEntriesText.text =
                 view.context.getString(R.string.editnote_num_entries, numEntries)
-        }
-
-        class TitleWatcher(val actionListener: ActionListener) : TextWatcher {
-            override fun afterTextChanged(s: Editable?) { actionListener.onSetTitle(s?.toString() ?: "") }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
 
         fun onBindAddButton() {
@@ -195,6 +211,12 @@ class EntryAdapter(private val note: Note,
                 adapter.notifyDataSetChanged()
                 adapter.updateNumEntriesText()
             }
+        }
+
+        class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Any) : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { onAfterTextChanged(s) }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
     }
 }

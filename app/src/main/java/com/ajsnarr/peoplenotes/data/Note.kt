@@ -34,13 +34,28 @@ data class Note(
         }
     }
 
-    val nextEntryID: String get() = entries.size.toString()
+    // next entry is either 0 or one more than the most recently added entry
+    val nextEntryID: String get() = if (entries.isEmpty()) "0" else entries.last().id.toBigInteger().inc().toString()
 
     /**
      * Add a new entry to this note.
      */
     fun addNewEntry() {
         entries.add(Entry(this.nextEntryID))
+    }
+
+    /**
+     * Updates the existing entry with the matching ID.
+     *
+     * @return true if succesfully updated or false if failure
+     */
+    fun updateExistingEntry(updated: Entry): Boolean {
+        val index = entries.indexOfFirst { entry -> entry.id == updated.id }
+        if (index >= 0) {
+            entries[index] = updated
+            return true
+        }
+        return false
     }
 
     /**

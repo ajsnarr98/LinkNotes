@@ -1,8 +1,5 @@
 package com.ajsnarr.peoplenotes.data
 
-import com.ajsnarr.peoplenotes.util.isNotNull
-
-
 data class Note(
     val id: UUID?, // a null id will be assigned when stored in db
     var type: String = "",
@@ -53,6 +50,13 @@ data class Note(
      */
     fun isNewNote(): Boolean {
         return this.id == null || this.id.isBlank()
+    }
+
+    /**
+     * A note is valid when it has a non-blank name.
+     */
+    fun isValidNote(): Boolean {
+        return name.isNotBlank()
     }
 
     override fun toDBObject(): com.ajsnarr.peoplenotes.db.Note {

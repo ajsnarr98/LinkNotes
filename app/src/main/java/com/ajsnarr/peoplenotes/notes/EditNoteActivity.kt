@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.ajsnarr.peoplenotes.R
-import com.ajsnarr.peoplenotes.data.Entry
-import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.db.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
@@ -43,10 +41,18 @@ class EditNoteActivity : AppCompatActivity() {
         }
 
         override fun onSaveButtonPress() {
-            Timber.i("Saved note ${activity.viewModel.note.name}")
-            Timber.d("note: ${activity.viewModel.note}")
-            activity.mDbNotesCollection.add(activity.viewModel.note.toDBObject())
-            Toast.makeText(activity, "Saved note!", Toast.LENGTH_LONG).show()
+            val note = activity.viewModel.note
+
+            // saved a valid note, refuse to save invalid note
+            if (note.isValidNote()) {
+                activity.mDbNotesCollection.add(note.toDBObject())
+                Timber.i("Saved new note ${note.name}")
+
+                val msg = if (note.isNewNote()) "Saved new note!" else "Saved note!"
+                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(activity, "Note needs to have a title", Toast.LENGTH_LONG).show()
+            }
         }
 
         override fun onSetTitle(title: String) {

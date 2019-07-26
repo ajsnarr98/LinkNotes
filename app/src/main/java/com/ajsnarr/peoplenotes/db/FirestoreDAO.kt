@@ -59,20 +59,6 @@ class FirestoreDAO {
         return removed
     }
 
-    data class TestClass(
-        val name: String? = null,
-        val number: Int? = null,
-        val anotherField: String? = null
-    ) {
-        fun asMap(): Map<String, Any> {
-            return hashMapOf(
-                "name" to name as Any,
-                "number" to number as Any,
-                "anotherField" to anotherField as Any
-            )
-        }
-    }
-
     /**
      * Updates an existing note or inserts this one if it does not exist.
      *
@@ -82,53 +68,33 @@ class FirestoreDAO {
 
         Timber.d("upserting note...")
 
-        var path = "9bFwybqwhpZxnrqxkmlh"
-        db.collection("test")
-            .add(TestClass(
-                name = "test",
-                number = 5,
-                anotherField = "abc"
-            ).asMap())
+        // generate a new document if neccesary
+        val documentRef: DocumentReference
+                = if (note.isNewNote()) {
+                    db.collection(NOTES_COLLECTION)
+                        .document()
+                } else {
+                    // new document without id
+                    db.collection(NOTES_COLLECTION)
+                        .document(note.id!!)
+        }
+
+        val savedNote: Note
+                = if (note.isNewNote()) {
+                    // add new id to note
+                    note.withId(documentRef.id)
+                } else {
+                    note
+                }
+
+        documentRef.set(savedNote)
             .addOnSuccessListener {
-                Timber.d("Successfully upserted test obj")
+                Timber.d("Successfully upserted note")
             }
-            .addOnFailureListener {
-                    err -> Timber.e("Failed to upsert test obj: $err")
-            }
-            .addOnCanceledListener {
-                Timber.w("Upsert for test obj cancelled")
-            }
+            .addOnFailureListener { err -> Timber.e("Failed to upsert note: $err") }
 
 
-        return path
-
-//        // generate a new document if neccesary
-//        val documentRef: DocumentReference
-//                = if (note.isNewNote()) {
-//                    db.collection(NOTES_COLLECTION)
-//                        .document()
-//                } else {
-//                    // new document without id
-//                    db.collection(NOTES_COLLECTION)
-//                        .document(note.id!!)
-//        }
-//
-//        val savedNote: Note
-//                = if (note.isNewNote()) {
-//                    // add new id to note
-//                    note.withId(documentRef.id)
-//                } else {
-//                    note
-//                }
-//
-//        documentRef.set(savedNote)
-//            .addOnSuccessListener {
-//                Timber.d("Successfully upserted note")
-//            }
-//            .addOnFailureListener { err -> Timber.e("Failed to upsert note: $err") }
-//
-//
-//        return savedNote.id ?: throw IllegalStateException("Note id should not be null")
+        return savedNote.id ?: throw IllegalStateException("Note id should not be null")
     }
 
     /**

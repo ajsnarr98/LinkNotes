@@ -56,6 +56,7 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
 
     // inherit mutable set methods
     override fun add(element: Note): Boolean {
+
         Timber.d("Adding note to note collection: $element")
 
         // a new note will need a valid id

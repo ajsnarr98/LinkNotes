@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'androidx.navigation.safeargs'
 
@@ -50,9 +49,12 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
-    // firestore
-    implementation 'com.google.firebase:firebase-firestore:17.1.2'
+    // firebase
+    implementation 'com.google.firebase:firebase-core:17.0.1'
+    implementation 'com.google.firebase:firebase-firestore:20.2.0'
 
     // logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

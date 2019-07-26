@@ -37,13 +37,6 @@ class Entry(val id: UUID,
                 subEntries = other.subEntries!!.map { Entry.fromDBObj(it) }.toMutableList()
             )
         }
-
-        /**
-         * Returns a new entry with a unique UUID.
-         */
-        fun newEmpty(): Entry {
-            return Entry("12345")
-        }
     }
 
     override fun toDBObject(): com.ajsnarr.peoplenotes.db.Entry {

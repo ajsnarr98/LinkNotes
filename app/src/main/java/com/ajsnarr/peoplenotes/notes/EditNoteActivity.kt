@@ -16,6 +16,7 @@ import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.db.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
+import timber.log.Timber
 
 val NOTE_TYPES = listOf("people", "location")
 
@@ -32,7 +33,7 @@ class EditNoteActivity : AppCompatActivity() {
         : EntryAdapter.ActionListener {
 
         override fun onAddButtonPress() {
-            activity.viewModel.addEntry(Entry.newEmpty())
+            activity.viewModel.addNewEntry()
         }
 
         override fun onAddTag() {
@@ -45,7 +46,9 @@ class EditNoteActivity : AppCompatActivity() {
         }
 
         override fun onSaveButtonPress() {
-            activity.mDbNotesCollection.add(activity.viewModel.note.toDBObject())
+            Timber.i("Saved note ${activity.viewModel.note.name}")
+            Timber.d("note: ${activity.viewModel.note}")
+//            activity.mDbNotesCollection.add(activity.viewModel.note.toDBObject())
         }
 
         override fun onSetTitle(title: String) {

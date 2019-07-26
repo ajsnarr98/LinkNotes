@@ -18,16 +18,8 @@ class EditNoteViewModel(inNote: Note?) : ViewModel() {
         get() = note.name
         set(value) { note.name = value }
 
-    init {
-        val ents = mutableListOf<Entry>(
-            Entry("12345"),
-            Entry("123456")
-        )
-        for (ent in ents) addEntry(ent)
-    }
-
-    fun addEntry(entry: Entry) {
-        note.addEntry(entry)
+    fun addNewEntry() {
+        note.addNewEntry()
     }
 
     /**

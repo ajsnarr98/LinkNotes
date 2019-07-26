@@ -4,7 +4,7 @@ import com.ajsnarr.peoplenotes.util.isNotNull
 
 
 data class Note(
-    val id: UUID,
+    val id: UUID?, // a null id will be assigned when stored in db
     var type: String = "",
     var name: String = "",
     val nicknames: MutableList<String> = mutableListOf(),
@@ -33,15 +33,17 @@ data class Note(
         }
 
         fun newEmpty(): Note {
-            return Note("54321")
+            return Note(null)
         }
     }
 
+    val nextEntryID: String get() = entries.size.toString()
+
     /**
-     * Add an entry to this note.
+     * Add a new entry to this note.
      */
-    fun addEntry(entry: Entry) {
-        entries.add(entry)
+    fun addNewEntry() {
+        entries.add(Entry(this.nextEntryID))
     }
 
     /**

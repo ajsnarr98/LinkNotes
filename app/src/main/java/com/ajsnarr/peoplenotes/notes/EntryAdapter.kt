@@ -2,6 +2,7 @@ package com.ajsnarr.peoplenotes.notes
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +15,14 @@ import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.util.MultiEditText
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 
 class EntryAdapter(private val note: Note,
                    private val actionListener: ActionListener) : RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
 
-    private lateinit var mNoteDetails: View
+    private lateinit var mNoteDetailsViewHolder: EntryViewHolder
 
     init {
 
@@ -72,9 +74,11 @@ class EntryAdapter(private val note: Note,
                 this, actionListener
             )
             NOTE_DETAILS_TYPE     -> {
-                mNoteDetails = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_editnote_details, parent, false)
-                EntryViewHolder(mNoteDetails, this, actionListener)
+                mNoteDetailsViewHolder = EntryViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_editnote_details, parent, false),
+                this, actionListener)
+                mNoteDetailsViewHolder
             }
             ADD_ENTRY_BUTTON_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
@@ -105,6 +109,10 @@ class EntryAdapter(private val note: Note,
         }
     }
 
+    private fun updateNumEntriesText() {
+        mNoteDetailsViewHolder.updateNumEntriesText()
+    }
+
     class EntryViewHolder(val view: View, val adapter: EntryAdapter, val actionListener: ActionListener)
         : RecyclerView.ViewHolder(view) {
 
@@ -117,6 +125,8 @@ class EntryAdapter(private val note: Note,
             entry_content.text.append(entry.content.toString())
         }
         fun onBindNoteDetails() {
+
+            Timber.d("onBindNoteDetails")
 
             numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
             val titleInput = view.findViewById<EditText>(R.id.title_input)
@@ -161,6 +171,7 @@ class EntryAdapter(private val note: Note,
             titleInput.addTextChangedListener(TitleWatcher(actionListener))
         }
 
+
         fun updateNumEntriesText() {
             val numEntries: Int = adapter.note.entries.size
 
@@ -175,6 +186,8 @@ class EntryAdapter(private val note: Note,
         }
 
         fun onBindAddButton() {
+
+            Timber.d("OnBindAddButton")
 
             val addEntryButton = view.findViewById<View>(R.id.add_entry_button)
 

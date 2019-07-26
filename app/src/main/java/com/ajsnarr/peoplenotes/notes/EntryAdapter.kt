@@ -121,8 +121,6 @@ class EntryAdapter(private val note: Note,
         fun onBindEntry(entry: Entry) {
             val entry_type = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
             val entry_content = view.findViewById<EditText>(R.id.edittext_editnote_content)
-
-            entry_content.text.append(entry.content.toString())
         }
         fun onBindNoteDetails() {
 
@@ -195,7 +193,7 @@ class EntryAdapter(private val note: Note,
             addEntryButton.setOnClickListener {
                 actionListener.onAddButtonPress()
                 adapter.notifyDataSetChanged()
-                updateNumEntriesText()
+                adapter.updateNumEntriesText()
             }
         }
     }

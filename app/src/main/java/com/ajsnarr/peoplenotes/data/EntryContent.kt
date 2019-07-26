@@ -2,7 +2,7 @@ package com.ajsnarr.peoplenotes.data
 
 data class EntryContent(var content: String): DataObject<com.ajsnarr.peoplenotes.db.EntryContent> {
     companion object {
-        val EMPTY = EntryContent("")
+        val EMPTY get() = EntryContent("")
 
         fun fromDBObj(other: com.ajsnarr.peoplenotes.db.EntryContent): EntryContent {
             return EntryContent(content=other.content!!)

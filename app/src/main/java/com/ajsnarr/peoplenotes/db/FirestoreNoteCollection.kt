@@ -15,7 +15,7 @@ class FirestoreNoteCollection : NoteCollection() {
     init {
         // get notes from db
         dao.getAllNotes(
-            onSuccess = {note -> this.add(note); Timber.v("Received note ${note.id} from database")},
+            onSuccess = {note -> this.safeAdd(note); Timber.v("Received note ${note.id} from database")},
             onFailure = {err  -> Timber.e("Error getting note from db: $err")}
         )
     }
@@ -27,7 +27,7 @@ class FirestoreNoteCollection : NoteCollection() {
         dao.addNotesChangeListener { snapshots, firebaseFirestoreException ->
             if (snapshots?.documentChanges == null) return@addNotesChangeListener
 
-            Timber.d("Remote changes received in note collection")
+            Timber.i("Remote changes received in note collection")
 
             for (dc in snapshots.documentChanges) {
                 val note = dc.document.toObject(Note::class.java)
@@ -60,6 +60,13 @@ class FirestoreNoteCollection : NoteCollection() {
         // this method runs right before add is called on this Note, so
         // upsert note here
         return dao.upsertNote(newNote)
+    }
+
+    /**
+     * Adds a note to set without updating the database.
+     */
+    private fun safeAdd(element: Note) {
+        super.add(element)
     }
 
     // inherit mutable set methods (and configure to update db)

@@ -2,10 +2,7 @@ package com.ajsnarr.peoplenotes.notes
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.MultiAutoCompleteTextView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,7 +45,8 @@ class EditNoteActivity : AppCompatActivity() {
         override fun onSaveButtonPress() {
             Timber.i("Saved note ${activity.viewModel.note.name}")
             Timber.d("note: ${activity.viewModel.note}")
-//            activity.mDbNotesCollection.add(activity.viewModel.note.toDBObject())
+            activity.mDbNotesCollection.add(activity.viewModel.note.toDBObject())
+            Toast.makeText(activity, "Saved note!", Toast.LENGTH_LONG).show()
         }
 
         override fun onSetTitle(title: String) {

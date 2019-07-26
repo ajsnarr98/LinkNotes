@@ -6,6 +6,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ajsnarr.peoplenotes.BaseActivity
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
@@ -16,14 +17,12 @@ import timber.log.Timber
 
 val NOTE_TYPES = listOf("people", "location")
 
-class EditNoteActivity : AppCompatActivity() {
+class EditNoteActivity : BaseActivity() {
 
     lateinit var viewModel: EditNoteViewModel
 
     private lateinit var mRecyclerAdapter: EntryAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
-
-    private val mNotesCollection = NoteCollection.instance
 
     private class RecyclerActionListener(val activity: EditNoteActivity)
         : EntryAdapter.ActionListener {
@@ -99,15 +98,5 @@ class EditNoteActivity : AppCompatActivity() {
             R.id.action_settings -> return true // TODO
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mNotesCollection.onActivityStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mNotesCollection.onActivityStop()
     }
 }

@@ -70,17 +70,17 @@ class FirestoreDAO {
 
         // generate a new document if neccesary
         val documentRef: DocumentReference
-                = if (note.isNewNote()) {
+                = if (note.hasID()) {
+                    // new document without id; generate this doc an id
                     db.collection(NOTES_COLLECTION)
                         .document()
                 } else {
-                    // new document without id
                     db.collection(NOTES_COLLECTION)
                         .document(note.id!!)
         }
 
         val savedNote: Note
-                = if (note.isNewNote()) {
+                = if (note.hasID()) {
                     // add new id to note
                     note.withId(documentRef.id)
                 } else {
@@ -104,7 +104,7 @@ class FirestoreDAO {
 
         Timber.d("deleting note...")
 
-        if (note.isNewNote() == false) {
+        if (note.hasID() == false) {
             db.collection(NOTES_COLLECTION)
                 .document(note.id!!)
                 .delete()

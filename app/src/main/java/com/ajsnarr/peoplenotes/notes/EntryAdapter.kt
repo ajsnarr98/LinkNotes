@@ -2,13 +2,11 @@ package com.ajsnarr.peoplenotes.notes
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
-import android.widget.MultiAutoCompleteTextView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
@@ -22,18 +20,14 @@ import java.lang.IllegalArgumentException
 
 
 class EntryAdapter(private val note: Note,
-                   private val actionListener: ActionListener) : RecyclerView.Adapter<EntryAdapter.EntryViewHolder>() {
+                   private val actionListener: ActionListener) : RecyclerView.Adapter<EntryAdapter.ViewHolder>() {
 
-    private lateinit var mNoteDetailsViewHolder: EntryViewHolder
-
-    init {
-
-    }
+    private lateinit var mNoteDetailsViewHolder: NoteDetailViewHolder
 
     companion object {
-            val ENTRY_TYPE            = 0
-            val NOTE_DETAILS_TYPE     = 1
-            val ADD_ENTRY_BUTTON_TYPE = 2
+        val ENTRY_TYPE = 0
+        val NOTE_DETAILS_TYPE = 1
+        val ADD_ENTRY_BUTTON_TYPE = 2
     }
 
     /**
@@ -72,47 +66,47 @@ class EntryAdapter(private val note: Note,
         fun onSetupNoteTypes(noteTypeField: AutoCompleteTextView)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return when (viewType) {
-            ENTRY_TYPE            -> EntryViewHolder(
+            ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_entry, parent, false),
                 this, actionListener
             )
-            NOTE_DETAILS_TYPE     -> {
-                mNoteDetailsViewHolder = EntryViewHolder(
+            NOTE_DETAILS_TYPE -> {
+                mNoteDetailsViewHolder = NoteDetailViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_editnote_details, parent, false),
-                this, actionListener)
+                    this, actionListener
+                )
                 mNoteDetailsViewHolder
             }
-            ADD_ENTRY_BUTTON_TYPE -> EntryViewHolder(
+            ADD_ENTRY_BUTTON_TYPE -> AddButtonViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_add_btn, parent, false),
                 this, actionListener
             )
-            else                  -> throw IllegalArgumentException("Unhandled viewType: $viewType")
+            else -> throw IllegalArgumentException("Unhandled viewType: $viewType")
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
-            0           -> NOTE_DETAILS_TYPE
-            itemCount-1 -> ADD_ENTRY_BUTTON_TYPE
-            else        -> ENTRY_TYPE
+            0 -> NOTE_DETAILS_TYPE
+            itemCount - 1 -> ADD_ENTRY_BUTTON_TYPE
+            else -> ENTRY_TYPE
         }
     }
 
     override fun getItemCount(): Int = note.entries.size + 2
 
-    override fun onBindViewHolder(holder: EntryViewHolder, position: Int) {
-        val viewType: Int = getItemViewType(position)
-        return when (viewType) {
-            ENTRY_TYPE            -> holder.onBindEntry(note.entries[position - 1])
-            NOTE_DETAILS_TYPE     -> holder.onBindNoteDetails()
-            ADD_ENTRY_BUTTON_TYPE -> holder.onBindAddButton()
-            else                  -> throw IllegalArgumentException("Unhandled viewType: $viewType")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        return when (holder) {
+            is EntryViewHolder      -> holder.onBind(note.entries[position - 1])
+            is NoteDetailViewHolder -> holder.onBind()
+            is AddButtonViewHolder  -> holder.onBind()
+            else -> throw IllegalArgumentException("Unhandled viewType: ${holder::class.qualifiedName}")
         }
     }
 
@@ -120,30 +114,50 @@ class EntryAdapter(private val note: Note,
         mNoteDetailsViewHolder.updateNumEntriesText()
     }
 
-    class EntryViewHolder(val view: View, val adapter: EntryAdapter, val actionListener: ActionListener)
-        : RecyclerView.ViewHolder(view) {
+    abstract class ViewHolder(
+        protected val view: View,
+        protected val adapter: EntryAdapter,
+        protected val actionListener: ActionListener
+    ) : RecyclerView.ViewHolder(view) {
 
-        private lateinit var numEntriesText: TextView
+        /**
+         * Used for watching for after text changes, and no other time.
+         */
+        protected class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Any) : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { onAfterTextChanged(s) }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+    }
 
-        fun onBindEntry(entry: Entry) {
+
+    class EntryViewHolder(view: View, adapter: EntryAdapter, actionListener: ActionListener) :
+        ViewHolder(view, adapter, actionListener) {
+
+        fun onBind(entry: Entry) {
             val entryType = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
             val entryContent = view.findViewById<EditText>(R.id.edittext_editnote_content)
 
             // add listeners
             entryType.addTextChangedListener(AfterTextChangedWatcher {
                 val type: String? = it?.toString()
-                entry.type = if (type != null) EntryType(type=type) else EntryType.EMPTY
+                entry.type = if (type != null) EntryType(type = type) else EntryType.EMPTY
                 actionListener.onEditEntry(entry)
             })
             entryContent.addTextChangedListener(AfterTextChangedWatcher {
                 val content: String? = it?.toString()
-                entry.content = if (content != null) EntryContent(content=content) else EntryContent.EMPTY
+                entry.content = if (content != null) EntryContent(content = content) else EntryContent.EMPTY
                 actionListener.onEditEntry(entry)
             })
         }
+    }
 
-        fun onBindNoteDetails() {
+    class NoteDetailViewHolder(view: View, adapter: EntryAdapter, actionListener: ActionListener) :
+        ViewHolder(view, adapter, actionListener) {
 
+        private lateinit var numEntriesText: TextView
+
+        fun onBind() {
             Timber.d("onBindNoteDetails")
 
             numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
@@ -188,7 +202,7 @@ class EntryAdapter(private val note: Note,
             // setup update listeners
             titleInput.addTextChangedListener(AfterTextChangedWatcher {
                 actionListener.onSetTitle(it?.toString() ?: "")
-            } )
+            })
         }
 
 
@@ -199,7 +213,12 @@ class EntryAdapter(private val note: Note,
                 view.context.getString(R.string.editnote_num_entries, numEntries)
         }
 
-        fun onBindAddButton() {
+    }
+
+    class AddButtonViewHolder(view: View, adapter: EntryAdapter, actionListener: ActionListener) :
+            ViewHolder(view, adapter, actionListener) {
+
+        fun onBind() {
 
             Timber.d("OnBindAddButton")
 
@@ -211,12 +230,6 @@ class EntryAdapter(private val note: Note,
                 adapter.notifyDataSetChanged()
                 adapter.updateNumEntriesText()
             }
-        }
-
-        class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Any) : TextWatcher {
-            override fun afterTextChanged(s: Editable?) { onAfterTextChanged(s) }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
     }
 }

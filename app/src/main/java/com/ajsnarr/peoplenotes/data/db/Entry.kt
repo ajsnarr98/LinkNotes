@@ -30,7 +30,7 @@ class Entry(val id: String? = null,
         return com.ajsnarr.peoplenotes.data.Entry(
             id = this.id!!,
             type = this.type!!.toAppObject(),
-            content = this.content!!.toAppObject(),
+            mContent = this.content!!.toAppObject(),
             dateCreated = this.dateCreated!!,
             lastDateEdited = this.lastDateEdited!!,
             subEntries = this.subEntries!!.map { it.toAppObject() }.toMutableList()

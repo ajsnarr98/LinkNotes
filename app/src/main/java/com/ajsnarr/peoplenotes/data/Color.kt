@@ -1,10 +1,13 @@
 package com.ajsnarr.peoplenotes.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.lang.IllegalArgumentException
 import kotlin.random.Random
 
+@Parcelize
 data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null)
-    : AppDataObject {
+    : AppDataObject, Parcelable {
 
     companion object {
 

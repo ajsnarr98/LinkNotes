@@ -1,5 +1,9 @@
 package com.ajsnarr.peoplenotes.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Note(
     val id: UUID?, // a null id will be assigned when stored in db
     var type: String = "",
@@ -10,7 +14,7 @@ data class Note(
     val tags: MutableList<Tag> = mutableListOf(),
     val entries: MutableList<Entry> = mutableListOf(),
     val notes: MutableList<Note>? = null // for noteGroup types
-) : AppDataObject {
+) : AppDataObject, Parcelable {
     companion object {
 
         const val DEFAULT_NOTE_TYPE = "default"

@@ -1,5 +1,7 @@
 package com.ajsnarr.peoplenotes.search
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +25,12 @@ private const val TAG = "SearchActivity"
 val SEARCH_FILTERS = listOf<String>("Limit results", "TAG", "NAME")
 
 class SearchActivity : BaseActivity() {
+
+    companion object {
+        fun getSearchIntent(context: Context): Intent {
+            return Intent(context, SearchActivity.javaClass)
+        }
+    }
 
     private val SEARCH_ICON = android.R.drawable.ic_menu_search
     private val X_ICON = android.R.drawable.ic_menu_close_clear_cancel

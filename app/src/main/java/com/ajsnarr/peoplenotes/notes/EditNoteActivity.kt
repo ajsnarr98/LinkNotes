@@ -1,5 +1,7 @@
 package com.ajsnarr.peoplenotes.notes
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.*
@@ -10,6 +12,7 @@ import com.ajsnarr.peoplenotes.BaseActivity
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
+import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import kotlinx.android.synthetic.main.activity_editnote.*
@@ -18,6 +21,21 @@ import timber.log.Timber
 val NOTE_TYPES = listOf("people", "location")
 
 class EditNoteActivity : BaseActivity() {
+
+    companion object {
+
+        const val NOTE_INTENT_KEY = "note"
+
+        fun getCreateNoteIntent(context: Context): Intent {
+            return Intent(context, EditNoteActivity.javaClass)
+        }
+
+        fun getEditNoteIntent(context: Context, note: Note): Intent {
+            val intent = Intent(context, EditNoteActivity.javaClass)
+            intent.putExtra(NOTE_INTENT_KEY, note)
+            return intent
+        }
+    }
 
     lateinit var viewModel: EditNoteViewModel
 
@@ -76,7 +94,9 @@ class EditNoteActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editnote)
 
-        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(null)).get(EditNoteViewModel::class.java)
+        val inNote: Note? = intent.getParcelableExtra(NOTE_INTENT_KEY)
+
+        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNote)).get(EditNoteViewModel::class.java)
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)

@@ -31,15 +31,14 @@ class FirestoreNoteCollection : NoteCollection() {
             Timber.i("Remote changes received in note collection")
 
             for (dc in snapshots.documentChanges) {
-                val dbNote = dc.document.toObject(Note::class.java)
-                val note = com.ajsnarr.peoplenotes.data.Note.fromDBNote(dbNote)
+                val note = dc.document.toObject(Note::class.java)
                 when (dc.type) {
-                    DocumentChange.Type.ADDED    -> this.value?.add(note)
-                    DocumentChange.Type.REMOVED  -> this.value?.remove(note)
+                    DocumentChange.Type.ADDED    -> this.safeAdd(note)
+                    DocumentChange.Type.REMOVED  -> this.safeRemove(note)
                     DocumentChange.Type.MODIFIED -> {
-                        if (this.value?.contains(note) == true) {
-                            this.value?.remove(note)
-                            this.value?.add(note)
+                        if (this.contains(note.toAppObject())) {
+                            this.safeRemove(note)
+                            this.safeAdd(note)
                         }
                     }
                     else                         -> return@addNotesChangeListener
@@ -61,14 +60,21 @@ class FirestoreNoteCollection : NoteCollection() {
     override fun generateNewUUID(newNote: com.ajsnarr.peoplenotes.data.Note): String {
         // this method runs right before add is called on this Note, so
         // upsert note here
-        return dao.upsertNote(newNote.toDBObject())
+        return dao.upsertNote(Note.fromAppObject(newNote))
     }
 
     /**
      * Adds a note to set without updating the database.
      */
     private fun safeAdd(element: Note) {
-        super.add(com.ajsnarr.peoplenotes.data.Note.fromDBNote(element))
+        super.add(element.toAppObject())
+    }
+
+    /**
+     * Removes a note from set without updating the database.
+     */
+    private fun safeRemove(element: Note) {
+        super.remove(element.toAppObject())
     }
 
     // inherit mutable set methods (and configure to update db)
@@ -77,32 +83,28 @@ class FirestoreNoteCollection : NoteCollection() {
         return super.add(element).also {
             // knowing generating a newUUID will upsert, only upsert if element
             // is not a new note
-            if (element.isNewNote() == false) dao.upsertNote(element.toDBObject())
+            if (element.isNewNote() == false) dao.upsertNote(Note.fromAppObject(element))
         }
     }
     override fun clear() {
         super.clear()
-        dao.deleteNotes(this.map { note -> note.toDBObject() })
+        dao.deleteNotes(this.map { note -> Note.fromAppObject(note) })
     }
     override fun remove(element: com.ajsnarr.peoplenotes.data.Note): Boolean {
         return super.remove(element).also {
-            dao.deleteNote(element.toDBObject())
+            dao.deleteNote(Note.fromAppObject(element))
         }
     }
     override fun removeAll(elements: Collection<com.ajsnarr.peoplenotes.data.Note>): Boolean {
         return super.removeAll(elements).also {
-            dao.deleteNotes(elements.map { note -> note.toDBObject() })
+            dao.deleteNotes(elements.map { note -> Note.fromAppObject(note) })
         }
     }
     override fun retainAll(elements: Collection<com.ajsnarr.peoplenotes.data.Note>): Boolean {
         // give dao the inverse of elements being kept in the set, to remove
-        dao.deleteNotes(
-            mutableSetOf<Note>(
-                *this.apply { removeAll(elements) }
-                    .map { note -> note.toDBObject() }
-                    .toTypedArray()
-            )
-        )
-        return super.retainAll(elements)
+        val removeSet = this.filter { note -> !elements.contains(note) }
+        return super.retainAll(elements).also {
+            dao.deleteNotes(removeSet.map { note -> Note.fromAppObject(note) })
+        }
     }
 }

@@ -1,10 +1,11 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data.db
 
-data class EntryType(var type: String? = null): DBObject<com.ajsnarr.peoplenotes.data.EntryType> {
+data class EntryType(var type: String? = null):
+    DBObject<com.ajsnarr.peoplenotes.data.EntryType> {
 
     companion object {
         fun fromAppObject(other: com.ajsnarr.peoplenotes.data.EntryType) : EntryType {
-            return EntryType(type=other.type)
+            return EntryType(type = other.type)
         }
     }
 

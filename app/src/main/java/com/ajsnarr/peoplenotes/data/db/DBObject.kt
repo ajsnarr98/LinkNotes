@@ -1,6 +1,4 @@
-package com.ajsnarr.peoplenotes.db
-
-import com.ajsnarr.peoplenotes.data.AppDataObject
+package com.ajsnarr.peoplenotes.data.db
 
 /**
  * A db object only used for storage, paired with a data object used in the app.

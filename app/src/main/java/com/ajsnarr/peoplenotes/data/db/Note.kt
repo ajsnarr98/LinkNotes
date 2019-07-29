@@ -1,4 +1,4 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data.db
 
 
 data class Note(
@@ -20,11 +20,21 @@ data class Note(
                 type = other.type,
                 name = other.name,
                 nicknames = other.nicknames,
-                mainPicture = if (other.mainPicture != null) Picture.fromAppObject(other.mainPicture!!) else null,
-                pictures = other.pictures.map { url -> Picture.fromAppObject(url) }.toMutableList(),
+                mainPicture = if (other.mainPicture != null) Picture.fromAppObject(
+                    other.mainPicture!!
+                ) else null,
+                pictures = other.pictures.map { url ->
+                    Picture.fromAppObject(
+                        url
+                    )
+                }.toMutableList(),
                 tags = other.tags.map { tag -> Tag.fromAppObject(tag) }.toMutableList(),
-                entries = other.entries.map { entry -> Entry.fromAppObject(entry) }.toMutableList(),
-                notes = other.notes?.map { note -> Note.fromAppObject(note) }?.toMutableList()
+                entries = other.entries.map { entry ->
+                    Entry.fromAppObject(
+                        entry
+                    )
+                }.toMutableList(),
+                notes = other.notes?.map { note -> fromAppObject(note) }?.toMutableList()
             )
         }
     }

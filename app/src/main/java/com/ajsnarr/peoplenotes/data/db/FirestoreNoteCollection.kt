@@ -1,4 +1,4 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data.db
 
 import com.ajsnarr.peoplenotes.data.NoteCollection
 import com.google.firebase.firestore.DocumentChange
@@ -83,7 +83,11 @@ class FirestoreNoteCollection : NoteCollection() {
         return super.add(element).also {
             // knowing generating a newUUID will upsert, only upsert if element
             // is not a new note
-            if (element.isNewNote() == false) dao.upsertNote(Note.fromAppObject(element))
+            if (element.isNewNote() == false) dao.upsertNote(
+                Note.fromAppObject(
+                    element
+                )
+            )
         }
     }
     override fun clear() {

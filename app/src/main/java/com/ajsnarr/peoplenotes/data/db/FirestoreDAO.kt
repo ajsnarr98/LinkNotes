@@ -1,4 +1,4 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data.db
 
 import com.google.firebase.firestore.*
 import timber.log.Timber

@@ -1,4 +1,4 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data.db
 
 import java.util.*
 
@@ -21,7 +21,7 @@ class Entry(val id: String? = null,
                 content = EntryContent.fromAppObject(other.content),
                 dateCreated = other.dateCreated,
                 lastDateEdited = other.lastDateEdited,
-                subEntries = other.subEntries.map { Entry.fromAppObject(it) }.toMutableList()
+                subEntries = other.subEntries.map { fromAppObject(it) }.toMutableList()
             )
         }
     }

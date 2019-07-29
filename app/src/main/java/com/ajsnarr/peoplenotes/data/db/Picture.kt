@@ -1,4 +1,4 @@
-package com.ajsnarr.peoplenotes.db
+package com.ajsnarr.peoplenotes.data.db
 
 data class Picture(val url: String? = null): DBObject<String> {
 

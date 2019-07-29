@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
@@ -18,9 +16,8 @@ import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.Tag
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import kotlinx.android.synthetic.main.activity_search.*
+import timber.log.Timber
 
-
-private const val TAG = "SearchActivity"
 
 val SEARCH_FILTERS = listOf<String>("Limit results", "TAG", "NAME")
 
@@ -91,7 +88,7 @@ class SearchActivity : BaseActivity() {
 
     override fun onBackPressed() {
         // try to set search bar inactive
-        Log.d(TAG, "onBackPressed")
+        Timber.d("onBackPressed")
         setSearchBarActive(false)
     }
 
@@ -123,7 +120,7 @@ class SearchActivity : BaseActivity() {
         override fun onNothingSelected(parent: AdapterView<*>?) {}
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            Log.d(TAG, "onItemSelected | position: $view")
+            Timber.d("onItemSelected | position: $view")
         }
 
     }

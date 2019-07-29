@@ -16,7 +16,7 @@ fun getScreenSize(activity: FragmentActivity) : Point {
 }
 
 /**
- * Hides the keyboard. Why does this have to be a thing!
+ * Hides the keyboard
  */
 fun hideKeyboard(activity: Activity) {
     var view = activity.currentFocus
@@ -27,7 +27,7 @@ fun hideKeyboard(activity: Activity) {
 }
 
 /**
- * Hides the keyboard. Why does this have to be a thing!
+ * Hides the keyboard
  */
 fun hideKeyboardFrom(context: Context, view: View) {
     val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

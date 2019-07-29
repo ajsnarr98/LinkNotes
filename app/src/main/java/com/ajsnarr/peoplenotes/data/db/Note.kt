@@ -44,7 +44,7 @@ data class Note(
      *
      * An invalid ID will either be null or blank (at most whitespace chars).
      */
-    fun isNewNote(): Boolean {
+    fun hasID(): Boolean {
         return this.id == null || this.id.isBlank()
     }
 

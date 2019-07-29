@@ -17,7 +17,7 @@ class Router {
             return EditNoteActivity.getEditNoteIntent(context, note)
         }
 
-        åfun searchIntent(context: Context): Intent {
+        fun searchIntent(context: Context): Intent {
             return SearchActivity.getSearchIntent(context)
         }
     }

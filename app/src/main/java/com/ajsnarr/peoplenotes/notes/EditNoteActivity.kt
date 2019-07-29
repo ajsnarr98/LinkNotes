@@ -15,6 +15,7 @@ import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
+import com.ajsnarr.peoplenotes.util.hideKeyboard
 import kotlinx.android.synthetic.main.activity_editnote.*
 import timber.log.Timber
 
@@ -47,6 +48,9 @@ class EditNoteActivity : BaseActivity() {
 
         override fun onAddButtonPress() {
             activity.viewModel.addNewEntry()
+
+            // clear keyboard on add button press
+            hideKeyboard(activity)
         }
 
         override fun onAddTag() {
@@ -63,6 +67,10 @@ class EditNoteActivity : BaseActivity() {
         }
 
         override fun onSaveButtonPress() {
+
+            // hide keyboard first
+            hideKeyboard(activity)
+
             val note = activity.viewModel.note
 
             // saved a valid note, refuse to save invalid note

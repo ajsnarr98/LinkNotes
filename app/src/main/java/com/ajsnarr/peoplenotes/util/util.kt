@@ -70,4 +70,3 @@ fun min(vararg nums: Int): Int {
     }
     return min
 }
-

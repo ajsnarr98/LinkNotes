@@ -28,7 +28,7 @@ class SearchActivity : BaseActivity() {
 
     companion object {
         fun getSearchIntent(context: Context): Intent {
-            return Intent(context, SearchActivity.javaClass)
+            return Intent(context, SearchActivity::class.java)
         }
     }
 

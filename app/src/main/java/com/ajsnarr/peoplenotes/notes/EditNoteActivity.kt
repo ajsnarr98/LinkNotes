@@ -27,11 +27,11 @@ class EditNoteActivity : BaseActivity() {
         const val NOTE_INTENT_KEY = "note"
 
         fun getCreateNoteIntent(context: Context): Intent {
-            return Intent(context, EditNoteActivity.javaClass)
+            return Intent(context, EditNoteActivity::class.java)
         }
 
         fun getEditNoteIntent(context: Context, note: Note): Intent {
-            val intent = Intent(context, EditNoteActivity.javaClass)
+            val intent = Intent(context, EditNoteActivity::class.java)
             intent.putExtra(NOTE_INTENT_KEY, note)
             return intent
         }

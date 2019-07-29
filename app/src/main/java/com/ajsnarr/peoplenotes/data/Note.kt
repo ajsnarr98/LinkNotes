@@ -10,24 +10,10 @@ data class Note(
     val tags: MutableList<Tag> = mutableListOf(),
     val entries: MutableList<Entry> = mutableListOf(),
     val notes: MutableList<Note>? = null // for noteGroup types
-) : DataObject<com.ajsnarr.peoplenotes.db.Note> {
+) : AppDataObject {
     companion object {
 
         const val DEFAULT_NOTE_TYPE = "default"
-
-        fun fromDBNote(other: com.ajsnarr.peoplenotes.db.Note): Note {
-            return Note(
-                id = other.id!!,
-                type = other.type!!,
-                name = other.name!!,
-                nicknames = other.nicknames!!,
-                mainPicture = other.mainPicture?.url,
-                pictures = other.pictures!!.map { it.url!! }.toMutableList(),
-                tags = other.tags!!.map { Tag.fromDBTag(it) }.toMutableList(),
-                entries = other.entries!!.map { Entry.fromDBObj(it) }.toMutableList(),
-                notes = other.notes?.map { Note.fromDBNote(it) }?.toMutableList()
-            )
-        }
 
         fun newEmpty(): Note {
             return Note(null)
@@ -72,20 +58,6 @@ data class Note(
      */
     fun isValidNote(): Boolean {
         return name.isNotBlank()
-    }
-
-    override fun toDBObject(): com.ajsnarr.peoplenotes.db.Note {
-        return com.ajsnarr.peoplenotes.db.Note(
-            id = this.id,
-            type = this.type,
-            name = this.name,
-            nicknames = this.nicknames,
-            mainPicture = if (this.mainPicture != null) com.ajsnarr.peoplenotes.db.Picture(url=this.mainPicture) else null,
-            pictures = this.pictures.map { url -> com.ajsnarr.peoplenotes.db.Picture(url=url) }.toMutableList(),
-            tags = this.tags.map { it.toDBObject() }.toMutableList(),
-            entries = this.entries.map { it.toDBObject() }.toMutableList(),
-            notes = this.notes?.map { it.toDBObject() }?.toMutableList()
-        )
     }
 
     /**

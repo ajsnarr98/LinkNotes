@@ -1,17 +1,12 @@
 package com.ajsnarr.peoplenotes.data
 
-import com.ajsnarr.peoplenotes.util.getMaxDifference
 import java.lang.IllegalArgumentException
 import kotlin.random.Random
 
 data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null)
-    : DataObject<com.ajsnarr.peoplenotes.db.Color> {
+    : AppDataObject {
 
     companion object {
-
-        fun fromDBColor(other: com.ajsnarr.peoplenotes.db.Color): Color {
-            return Color(other.r!!, other.g!!, other.b!!, other.a)
-        }
 
         /**
          * @param rgbHex Must be in the format "#rrggbb"
@@ -70,14 +65,5 @@ data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null)
 
             return Color(rgb[0], rgb[1], rgb[2])
         }
-    }
-
-    override fun toDBObject(): com.ajsnarr.peoplenotes.db.Color {
-        return com.ajsnarr.peoplenotes.db.Color(
-            r = this.r,
-            g = this.g,
-            b = this.b,
-            a = this.a
-        )
     }
 }

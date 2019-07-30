@@ -7,6 +7,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentActivity
 import java.lang.IllegalArgumentException
+import java.math.BigInteger
 
 
 fun getScreenSize(activity: FragmentActivity) : Point {
@@ -35,10 +36,16 @@ fun hideKeyboardFrom(context: Context, view: View) {
 }
 
 /**
- * Returns the difference of the highest and lowest value given.
+ * Returns max value given.
  */
-fun getMaxDifference(vararg nums: Int): Int {
-    return max(*nums) - min(*nums)
+fun max(vararg nums: BigInteger): BigInteger {
+    if (nums.size == 0) { throw IllegalArgumentException("Cannot get max value of empty list") }
+
+    var max = nums[0]
+    for (i in 1..nums.size-1) {
+        max = max.max(nums[i])
+    }
+    return max
 }
 
 /**
@@ -54,6 +61,19 @@ fun max(vararg nums: Int): Int {
         }
     }
     return max
+}
+
+/**
+ * Returns min value given.
+ */
+fun min(vararg nums: BigInteger): BigInteger {
+    if (nums.size == 0) { throw IllegalArgumentException("Cannot get max value of empty list") }
+
+    var min = nums[0]
+    for (i in 1..nums.size-1) {
+        min = min.min(nums[i])
+    }
+    return min
 }
 
 /**

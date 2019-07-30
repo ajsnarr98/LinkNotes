@@ -64,8 +64,14 @@ data class Note(
             mainPicture = this.mainPicture?.url,
             pictures = this.pictures!!.map { it.url!! }.toMutableList(),
             tags = this.tags!!.map { it.toAppObject() }.toMutableList(),
-            entries = this.entries!!.map { it.toAppObject() }.toMutableList(),
+            entries = toAppEntryList(),
             notes = this.notes?.map { it.toAppObject() }?.toMutableList()
+        )
+    }
+
+    private fun toAppEntryList(): com.ajsnarr.peoplenotes.data.EntryList {
+        return com.ajsnarr.peoplenotes.data.EntryList.fromCollection(
+            entries?.map { it.toAppObject() } ?: listOf()
         )
     }
 

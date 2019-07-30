@@ -5,7 +5,7 @@ import com.ajsnarr.peoplenotes.data.NoteCollection
 
 open class BaseActivity : AppCompatActivity() {
 
-    protected val mNotesCollection = NoteCollection.instance
+    protected val mNotesCollection: NoteCollection = NoteCollection.instance
 
     override fun onStart() {
         super.onStart()

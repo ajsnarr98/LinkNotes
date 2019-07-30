@@ -2,12 +2,14 @@ package com.ajsnarr.peoplenotes.data.db
 
 import java.util.*
 
-class Entry(val id: String? = null,
-            val type: EntryType? = null,
-            val content: EntryContent? = null,
-            var dateCreated: Date? = null,
-            val lastDateEdited: Date? = null,
-            val subEntries: MutableList<Entry>? = null
+data class Entry(
+    val id: String? = null,
+    val type: EntryType? = null,
+    val content: EntryContent? = null,
+    val dateCreated: Date? = null,
+    val lastDateEdited: Date? = null,
+    val isDeletable:Boolean = true,
+    val subEntries: MutableList<Entry>? = null
 ): DBObject<com.ajsnarr.peoplenotes.data.Entry> {
 
     companion object {
@@ -21,6 +23,7 @@ class Entry(val id: String? = null,
                 content = EntryContent.fromAppObject(other.content),
                 dateCreated = other.dateCreated,
                 lastDateEdited = other.lastDateEdited,
+                isDeletable = other.isDeletable,
                 subEntries = other.subEntries.map { fromAppObject(it) }.toMutableList()
             )
         }
@@ -33,6 +36,7 @@ class Entry(val id: String? = null,
             mContent = this.content!!.toAppObject(),
             dateCreated = this.dateCreated!!,
             lastDateEdited = this.lastDateEdited!!,
+            isDeletable = this.isDeletable,
             subEntries = this.subEntries!!.map { it.toAppObject() }.toMutableList()
         )
     }

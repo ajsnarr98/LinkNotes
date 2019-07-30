@@ -5,15 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.BaseActivity
+import com.ajsnarr.peoplenotes.ConfirmationDialogFragment
 
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
-import com.ajsnarr.peoplenotes.data.NoteCollection
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import com.ajsnarr.peoplenotes.util.hideKeyboard
 import kotlinx.android.synthetic.main.activity_editnote.*
@@ -40,14 +39,15 @@ class EditNoteActivity : BaseActivity() {
 
     lateinit var viewModel: EditNoteViewModel
 
-    private lateinit var mRecyclerAdapter: EntryAdapter
+    protected lateinit var recyclerAdapter: NoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
 
     private class RecyclerActionListener(val activity: EditNoteActivity)
-        : EntryAdapter.ActionListener {
+        : NoteAdapter.ActionListener {
 
         override fun onAddButtonPress() {
             activity.viewModel.addNewEntry()
+            activity.recyclerAdapter.notifyDataSetChanged()
 
             // clear keyboard on add button press
             hideKeyboard(activity)
@@ -62,6 +62,21 @@ class EditNoteActivity : BaseActivity() {
             )
         }
 
+        override fun onDeleteEntryPress(entry: Entry) {
+
+            val onConfirmDelete: () -> Unit = {
+                activity.viewModel.deleteEntry(entry)
+                activity.recyclerAdapter.notifyDataSetChanged()
+            }
+
+            val dialog = ConfirmationDialogFragment.newInstance(
+                message = "Are you sure you want to delete this entry?",
+                onConfirm = onConfirmDelete,
+                onCancel = {}
+            )
+            dialog.show(activity.supportFragmentManager, "fragment_alert_entry_delete")
+        }
+
         override fun onEditEntry(entry: Entry) {
             activity.viewModel.updateExistingEntry(entry)
         }
@@ -73,12 +88,11 @@ class EditNoteActivity : BaseActivity() {
 
             val note = activity.viewModel.note
 
-            // saved a valid note, refuse to save invalid note
+            // save a valid note, refuse to save invalid note
             if (note.isValidNote()) {
-                activity.mNotesCollection.add(note)
-                Timber.i("Saved new note ${note.name}")
-
                 val msg = if (note.isNewNote()) "Saved new note!" else "Saved note!"
+                activity.mNotesCollection.add(note)
+                Timber.i("${msg} ${note.name}")
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(activity, "Note needs to have a title", Toast.LENGTH_LONG).show()
@@ -108,11 +122,11 @@ class EditNoteActivity : BaseActivity() {
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        mRecyclerAdapter = EntryAdapter(viewModel.note, mRecyclerActionListener)
+        recyclerAdapter = NoteAdapter(viewModel.note, mRecyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager
-            adapter = mRecyclerAdapter
+            adapter = recyclerAdapter
         }
     }
 

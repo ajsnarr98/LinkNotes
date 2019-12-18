@@ -9,6 +9,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
@@ -20,6 +22,14 @@ import timber.log.Timber
 
 
 val SEARCH_FILTERS = listOf<String>("Limit results", "TAG", "NAME")
+
+private enum class SearchType(val text: String) {
+    ALL("Limit results"),
+    TAG("TAG"),
+    NAME("NAME");
+
+    override fun toString() = text
+}
 
 class SearchActivity : BaseActivity() {
 
@@ -79,17 +89,38 @@ class SearchActivity : BaseActivity() {
 
         // setup filter dropdown
         val searchFiltersDropdown = search_filters_dropdown
-        searchFiltersDropdown.adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, SEARCH_FILTERS)
+        searchFiltersDropdown.adapter = ArrayAdapter<SearchType>(this,
+            android.R.layout.simple_spinner_item, SearchType.values())
         searchFiltersDropdown.onItemSelectedListener = OnItemSelectedListener()
 
         // load notes
-        loadDefaultNotes()
+//        loadDefaultNotes()
+        mNotesCollection.observe(this, Observer { updatedNotes ->
+            // update notes based on live data changes
+            loadNotes()
+        })
     }
 
     override fun onBackPressed() {
         // try to set search bar inactive
         Timber.d("onBackPressed")
         setSearchBarActive(false)
+    }
+
+    /**
+     * Filter notes based on search
+     */
+    private fun filterForSearch(notes: List<Note>): List<Note> {
+        return notes.filter {
+            true
+        }
+    }
+
+    /**
+     * Load notes from DB and filter for search.
+     */
+    private fun loadNotes() {
+        recyclerAdapter.updateResults(filterForSearch(mNotesCollection.toList()))
     }
 
     private fun loadDefaultNotes() {
@@ -120,7 +151,9 @@ class SearchActivity : BaseActivity() {
         override fun onNothingSelected(parent: AdapterView<*>?) {}
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            Timber.d("onItemSelected | position: $view")
+            if (view is AppCompatTextView) {
+                Timber.d("onItemSelected | position: ${view?.text}")
+            }
         }
 
     }

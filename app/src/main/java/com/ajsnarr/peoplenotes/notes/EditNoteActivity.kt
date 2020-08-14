@@ -20,7 +20,7 @@ import timber.log.Timber
 
 val NOTE_TYPES = listOf("people", "location")
 
-class EditNoteActivity : BaseActivity() {
+open class EditNoteActivity : BaseActivity() {
 
     companion object {
 

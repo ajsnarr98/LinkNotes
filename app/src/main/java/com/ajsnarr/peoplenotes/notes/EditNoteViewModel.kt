@@ -26,6 +26,10 @@ class EditNoteViewModel(inNote: Note?) : ViewModel() {
         return note.updateExistingEntry(updated)
     }
 
+    fun deleteEntry(entry: Entry) {
+        note.deleteEntry(entry)
+    }
+
     /**
      * If passed in inNote is null, creates a new note.
      */

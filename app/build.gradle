@@ -71,6 +71,9 @@ dependencies {
 
     // logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // fuzzy string matching
+    implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

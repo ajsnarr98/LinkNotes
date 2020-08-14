@@ -19,8 +19,8 @@ import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 
-class EntryAdapter(private val note: Note,
-                   private val actionListener: ActionListener) : RecyclerView.Adapter<EntryAdapter.ViewHolder>() {
+class NoteAdapter(private val note: Note,
+                  private val actionListener: ActionListener) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
     private lateinit var mNoteDetailsViewHolder: NoteDetailViewHolder
 
@@ -31,7 +31,7 @@ class EntryAdapter(private val note: Note,
     }
 
     /**
-     * Pass this into an instance of EntryAdapter to subscribe to events.
+     * Pass this into an instance of NoteAdapter to subscribe to events.
      */
     interface ActionListener {
 
@@ -49,6 +49,11 @@ class EntryAdapter(private val note: Note,
          * Called when an entry is edited.
          */
         fun onEditEntry(entry: Entry)
+
+        /**
+         * Called when the user clicks the delete entry button.
+         */
+        fun onDeleteEntryPress(entry: Entry)
 
         /**
          * Called when the save button is pressed.
@@ -116,7 +121,7 @@ class EntryAdapter(private val note: Note,
 
     abstract class ViewHolder(
         protected val view: View,
-        protected val adapter: EntryAdapter,
+        protected val adapter: NoteAdapter,
         protected val actionListener: ActionListener
     ) : RecyclerView.ViewHolder(view) {
 
@@ -131,10 +136,11 @@ class EntryAdapter(private val note: Note,
     }
 
 
-    class EntryViewHolder(view: View, adapter: EntryAdapter, actionListener: ActionListener) :
+    class EntryViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
         fun onBind(entry: Entry) {
+            val deleteBtn = view.findViewById<View>(R.id.button_delete_entry)
             val entryType = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
             val entryContent = view.findViewById<EditText>(R.id.edittext_editnote_content)
 
@@ -149,10 +155,11 @@ class EntryAdapter(private val note: Note,
                 entry.content = if (content != null) EntryContent(content = content) else EntryContent.EMPTY
                 actionListener.onEditEntry(entry)
             })
+            deleteBtn.setOnClickListener { actionListener.onDeleteEntryPress(entry) }
         }
     }
 
-    class NoteDetailViewHolder(view: View, adapter: EntryAdapter, actionListener: ActionListener) :
+    class NoteDetailViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
         private lateinit var numEntriesText: TextView
@@ -215,7 +222,7 @@ class EntryAdapter(private val note: Note,
 
     }
 
-    class AddButtonViewHolder(view: View, adapter: EntryAdapter, actionListener: ActionListener) :
+    class AddButtonViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
             ViewHolder(view, adapter, actionListener) {
 
         fun onBind() {
@@ -227,7 +234,6 @@ class EntryAdapter(private val note: Note,
             // set up add entry button
             addEntryButton.setOnClickListener {
                 actionListener.onAddButtonPress()
-                adapter.notifyDataSetChanged()
                 adapter.updateNumEntriesText()
             }
         }

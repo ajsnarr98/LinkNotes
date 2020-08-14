@@ -10,6 +10,7 @@ class Entry(val id: UUID,
             private var mContent: EntryContent = EntryContent.EMPTY,
             var dateCreated: Date = Date(),
             var lastDateEdited: Date = Date(),
+            var isDeletable: Boolean = true,
             val subEntries: MutableList<Entry> = mutableListOf()
 ): AppDataObject, Parcelable {
 

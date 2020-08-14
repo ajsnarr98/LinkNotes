@@ -12,9 +12,10 @@ data class Note(
     var mainPicture: UUID? = null,
     val pictures: MutableList<UUID> = mutableListOf(),
     val tags: MutableList<Tag> = mutableListOf(),
-    val entries: MutableList<Entry> = mutableListOf(),
+    val entries: EntryList = EntryList.getEmpty(),
     val notes: MutableList<Note>? = null // for noteGroup types
 ) : AppDataObject, Parcelable {
+
     companion object {
 
         const val DEFAULT_NOTE_TYPE = "default"
@@ -24,29 +25,29 @@ data class Note(
         }
     }
 
-    // next entry is either 0 or one more than the most recently added entry
-    val nextEntryID: String get() = if (entries.isEmpty()) "0" else entries.last().id.toBigInteger().inc().toString()
-
     /**
      * Add a new entry to this note.
      */
     fun addNewEntry() {
-        entries.add(Entry(this.nextEntryID))
+        entries.add(Entry(id = entries.nextEntryID))
     }
 
     /**
-     * Updates the existing entry with the matching ID.
-     *
-     * @return true if succesfully updated or false if failure
+     * Deletes an entry matching the given entry's id.
      */
-    fun updateExistingEntry(updated: Entry): Boolean {
-        val index = entries.indexOfFirst { entry -> entry.id == updated.id }
-        if (index >= 0) {
-            entries[index] = updated
-            return true
-        }
-        return false
+    fun deleteEntry(entry: Entry) {
+        deleteEntry(entry.id)
     }
+
+    /**
+     * Deletes the entry with the given id.
+     *
+     * Can be restored with restoreRecentlyDeletedEntries().
+     */
+    fun deleteEntry(entryID: String) {
+        entries.removeWithEntryID(entryID)
+    }
+
 
     /**
      * A note is marked as a new note, when it has no valid ID.
@@ -62,6 +63,29 @@ data class Note(
      */
     fun isValidNote(): Boolean {
         return name.isNotBlank()
+    }
+
+    /**
+     * This method should be called when this note is saved to the db.
+     */
+    fun onSaveNote() {
+        entries.clearDeletedEntries()
+    }
+
+    /**
+     * Restores the entries recently deleted since the last save.
+     */
+    fun restoreRecentlyDeletedEntries() {
+        entries.restoreRecentlyDeleted()
+    }
+
+    /**
+     * Updates the existing entry with the matching ID.
+     *
+     * @return true if succesfully updated or false if failure
+     */
+    fun updateExistingEntry(updated: Entry): Boolean {
+        return entries.updateExisting(updated)
     }
 
     /**

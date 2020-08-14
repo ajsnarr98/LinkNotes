@@ -63,10 +63,12 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
         // a new note will need a valid id
         val note = if (element.isNewNote()) element.copy(id=generateNewUUID(element)) else element
 
+        note.onSaveNote()
+
         this.value?.remove(note) // remove old if exists
         return this.value?.add(note).also { update() } ?: false
     }
-    override fun addAll(elements: Collection<Note>): Boolean = this.value?.addAll(elements).also { update() } ?: false
+    override fun addAll(elements: Collection<Note>): Boolean = elements.map { note -> this.add(note) }.any { it } // add all and return true if any were added
     override fun clear() { this.value?.clear().also { update() } }
     override fun remove(element: Note): Boolean = this.value?.remove(element).also { update() } ?: false
     override fun removeAll(elements: Collection<Note>): Boolean = this.value?.removeAll(elements).also { update() } ?: false

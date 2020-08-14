@@ -1,7 +1,6 @@
 package com.ajsnarr.peoplenotes.data
 
 import android.os.Parcelable
-import android.text.BoringLayout
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 

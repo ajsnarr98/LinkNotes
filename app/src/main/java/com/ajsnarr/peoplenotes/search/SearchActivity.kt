@@ -152,7 +152,7 @@ class SearchActivity : BaseActivity() {
         }
 
         // order by fuzzy match
-        return filtered.sortedBy { note ->
+        return filtered.sortedByDescending { note ->
             when (searchFiltersDropdown.selectedItem) {
                 SearchType.ALL -> max(
                     FuzzySearch.ratio(searchStr, note.name),

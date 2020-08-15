@@ -22,6 +22,7 @@ import com.ajsnarr.peoplenotes.data.Tag
 import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import com.ajsnarr.peoplenotes.util.max
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.activity_search.*
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import timber.log.Timber
@@ -56,7 +57,7 @@ class SearchActivity : BaseActivity() {
 
     private lateinit var viewModel: SearchViewModel
 
-    private lateinit var searchBar: EditText
+    private lateinit var searchBar: TextInputEditText
     private lateinit var searchFiltersDropdown: Spinner
     private lateinit var recyclerAdapter: ResultAdapter
     private lateinit var addNoteButton: View
@@ -154,6 +155,9 @@ class SearchActivity : BaseActivity() {
      * Filter notes based on search
      */
     private fun filterForSearch(notes: List<Note>): List<Note> {
+
+        // TODO - improve search results shown (search "my " and "my random note" will show but not "my 1")
+
         val searchStr = searchBar.text.toString()
         val filtered = notes.filter {note ->
             // search must be at least MIN_SEARCH_LENGTH chars (otherwise all are shown)

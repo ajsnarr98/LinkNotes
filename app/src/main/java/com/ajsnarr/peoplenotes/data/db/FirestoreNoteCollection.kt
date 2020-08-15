@@ -24,7 +24,7 @@ class FirestoreNoteCollection : NoteCollection() {
     /**
      * Add a listener for updating notes based on remote changes.
      */
-    override fun onActivityStart() {
+    override fun onActivityCreate() {
         dao.addNotesChangeListener { snapshots, firebaseFirestoreException ->
             if (snapshots?.documentChanges == null) return@addNotesChangeListener
 
@@ -52,7 +52,7 @@ class FirestoreNoteCollection : NoteCollection() {
     /**
      * Remove listener at end of activity.
      */
-    override fun onActivityStop() {
+    override fun onActivityDestroy() {
         dao.removeNotesChangeListener()
     }
 

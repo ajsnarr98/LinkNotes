@@ -31,14 +31,24 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
     protected abstract fun generateNewUUID(newNote: Note): String
 
     /**
+     * Called when the activity is created.
+     */
+    open fun onActivityCreate() {}
+
+    /**
+     * Called when the activity is destroyed.
+     */
+    open fun onActivityDestroy() {}
+
+    /**
      * Called when the activity starts.
      */
-    abstract fun onActivityStart()
+    open fun onActivityStart() {}
 
     /**
      * Called when the activity stops.
      */
-    abstract fun onActivityStop()
+    open fun onActivityStop() {}
 
     /**
      * Sets LiveData value to cause an event.

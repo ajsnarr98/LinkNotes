@@ -19,6 +19,7 @@ import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.Tag
+import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import com.ajsnarr.peoplenotes.util.max
 import kotlinx.android.synthetic.main.activity_search.*
@@ -58,6 +59,7 @@ class SearchActivity : BaseActivity() {
     private lateinit var searchBar: EditText
     private lateinit var searchFiltersDropdown: Spinner
     private lateinit var recyclerAdapter: ResultAdapter
+    private lateinit var addNoteButton: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +115,12 @@ class SearchActivity : BaseActivity() {
         searchFiltersDropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (view is AppCompatTextView) {
                     loadNotes() // search again
                 }
@@ -126,6 +133,15 @@ class SearchActivity : BaseActivity() {
             // update notes based on live data changes
             loadNotes()
         })
+
+        // setup add note button
+        addNoteButton = add_note_button
+        addNoteButton.setOnClickListener {
+            // start the edit note activity without passing in an existing note
+            startActivity(
+                Intent(this, EditNoteActivity::class.java)
+            )
+        }
     }
 
     override fun onBackPressed() {

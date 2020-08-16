@@ -19,8 +19,8 @@ import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 
-class NoteAdapter(private val note: Note,
-                  private val actionListener: ActionListener) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class EditNoteAdapter(private val note: Note,
+                      private val actionListener: ActionListener) : RecyclerView.Adapter<EditNoteAdapter.ViewHolder>() {
 
     private lateinit var mNoteDetailsViewHolder: NoteDetailViewHolder
 
@@ -121,7 +121,7 @@ class NoteAdapter(private val note: Note,
 
     abstract class ViewHolder(
         protected val view: View,
-        protected val adapter: NoteAdapter,
+        protected val adapter: EditNoteAdapter,
         protected val actionListener: ActionListener
     ) : RecyclerView.ViewHolder(view) {
 
@@ -136,7 +136,7 @@ class NoteAdapter(private val note: Note,
     }
 
 
-    class EntryViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
+    class EntryViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
         fun onBind(entry: Entry) {
@@ -159,7 +159,7 @@ class NoteAdapter(private val note: Note,
         }
     }
 
-    class NoteDetailViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
+    class NoteDetailViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
         private lateinit var numEntriesText: TextView
@@ -222,7 +222,7 @@ class NoteAdapter(private val note: Note,
 
     }
 
-    class AddButtonViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
+    class AddButtonViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
             ViewHolder(view, adapter, actionListener) {
 
         fun onBind() {

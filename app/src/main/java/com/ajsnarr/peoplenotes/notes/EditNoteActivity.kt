@@ -18,8 +18,6 @@ import com.ajsnarr.peoplenotes.util.hideKeyboard
 import kotlinx.android.synthetic.main.activity_editnote.*
 import timber.log.Timber
 
-val NOTE_TYPES = listOf("people", "location")
-
 open class EditNoteActivity : BaseActivity() {
 
     companion object {
@@ -39,11 +37,11 @@ open class EditNoteActivity : BaseActivity() {
 
     lateinit var viewModel: EditNoteViewModel
 
-    protected lateinit var recyclerAdapter: NoteAdapter
+    protected lateinit var recyclerAdapter: EditNoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
 
     private class RecyclerActionListener(val activity: EditNoteActivity)
-        : NoteAdapter.ActionListener {
+        : EditNoteAdapter.ActionListener {
 
         override fun onAddButtonPress() {
             activity.viewModel.addNewEntry()
@@ -125,7 +123,7 @@ open class EditNoteActivity : BaseActivity() {
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = NoteAdapter(viewModel.note, mRecyclerActionListener)
+        recyclerAdapter = EditNoteAdapter(viewModel.note, mRecyclerActionListener)
 
         recycler_view.apply {
             layoutManager = recyclerManager

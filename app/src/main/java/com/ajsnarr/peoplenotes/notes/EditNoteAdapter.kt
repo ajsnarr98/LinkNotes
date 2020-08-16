@@ -31,7 +31,7 @@ class EditNoteAdapter(private val note: Note,
     }
 
     /**
-     * Pass this into an instance of NoteAdapter to subscribe to events.
+     * Pass this into an instance of EditNoteAdapter to subscribe to events.
      */
     interface ActionListener {
 
@@ -169,15 +169,15 @@ class EditNoteAdapter(private val note: Note,
 
             numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
             val titleInput = view.findViewById<EditText>(R.id.title_input)
-            val tagsPopupButton = view.findViewById<View>(R.id.save_button)
+//            val tagsPopupButton = view.findViewById<View>(R.id.save_button)
             val saveButton = view.findViewById<View>(R.id.save_button)
             val noteTypeInput = view.findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
             val nickNameInput = view.findViewById<MultiEditText>(R.id.nicknames_auto_multi_input)
 
-            // setup popup button
-            tagsPopupButton.setOnClickListener {
-                actionListener.onAddTag()
-            }
+//            // setup popup button
+//            tagsPopupButton.setOnClickListener {
+//                actionListener.onAddTag()
+//            }
 
             // setup save button
             saveButton.setOnClickListener {

@@ -17,7 +17,7 @@ class Entry(val id: UUID,
     // Setup content add to datesEdited every time it is updated
     var content: EntryContent = mContent
         set(value) {
-            this.lastDateEdited = Date()
+            this.lastDateEdited = Date() // TODO - update parent note or entry as well
             mContent = value
             field = value
         }

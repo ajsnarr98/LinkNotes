@@ -94,6 +94,9 @@ open class EditNoteActivity : BaseActivity() {
                 activity.mNotesCollection.add(note)
                 Timber.i("${msg} ${note.name}")
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
+
+                // navigate back
+                activity.onBackPressed()
             } else {
                 Toast.makeText(activity, "Note needs to have a title", Toast.LENGTH_LONG).show()
             }

@@ -29,9 +29,9 @@ open class EditNoteActivity : BaseActivity() {
         }
 
         fun getEditNoteIntent(context: Context, note: Note): Intent {
-            val intent = Intent(context, EditNoteActivity::class.java)
-            intent.putExtra(NOTE_INTENT_KEY, note)
-            return intent
+            return Intent(context, EditNoteActivity::class.java).apply {
+                putExtra(NOTE_INTENT_KEY, note)
+            }
         }
     }
 

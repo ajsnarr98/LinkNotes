@@ -139,9 +139,7 @@ class SearchActivity : BaseActivity() {
         addNoteButton = add_note_button
         addNoteButton.setOnClickListener {
             // start the edit note activity without passing in an existing note
-            startActivity(
-                Intent(this, EditNoteActivity::class.java)
-            )
+            startActivity(EditNoteActivity.getCreateNoteIntent(this))
         }
     }
 

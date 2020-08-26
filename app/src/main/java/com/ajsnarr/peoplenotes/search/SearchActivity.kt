@@ -20,6 +20,7 @@ import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.Tag
 import com.ajsnarr.peoplenotes.notes.EditNoteActivity
+import com.ajsnarr.peoplenotes.notes.ViewNoteActivity
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import com.ajsnarr.peoplenotes.util.max
 import com.google.android.material.textfield.TextInputEditText
@@ -76,7 +77,7 @@ class SearchActivity : BaseActivity() {
         // setup recycler view
         val recycler = recycler_view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = ResultAdapter(this, RecyclerActionLister())
+        recyclerAdapter = ResultAdapter(this, RecyclerActionLister(this))
         recycler.apply {
             layoutManager = recyclerManager
             adapter = recyclerAdapter
@@ -226,8 +227,12 @@ class SearchActivity : BaseActivity() {
     }
 
     // for recycler view items
-    private class RecyclerActionLister() : ResultAdapter.ActionListener {
+    private class RecyclerActionLister(val context: Context) : ResultAdapter.ActionListener {
 
+        override fun onResultClick(note: Note) {
+            Timber.d("onResultClick")
+            context.startActivity(ViewNoteActivity.getIntent(context, note))
+        }
     }
 }
 

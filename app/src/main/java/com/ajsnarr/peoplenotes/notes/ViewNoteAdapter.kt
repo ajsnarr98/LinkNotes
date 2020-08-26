@@ -55,7 +55,7 @@ class ViewNoteAdapter(private val note: Note,
         }
     }
 
-    override fun getItemCount(): Int = note.entries.size + 2
+    override fun getItemCount(): Int = note.entries.size + 1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return when (holder) {

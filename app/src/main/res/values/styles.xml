@@ -18,6 +18,9 @@
     <style name="RoundedButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/blue_rounded_button</item>
     </style>
+    <style name="SquareRoundedButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/square_blue_rounded_button</item>
+    </style>
     <style name="AddEntryButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_editnote_addtag</item>
     </style>

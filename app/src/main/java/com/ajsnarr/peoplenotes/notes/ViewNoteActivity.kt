@@ -21,13 +21,13 @@ open class ViewNoteActivity : BaseActivity() {
         const val NOTE_INTENT_KEY = "note"
 
         fun getIntent(context: Context, note: Note): Intent {
-            return Intent(context, EditNoteActivity::class.java).apply {
+            return Intent(context, ViewNoteActivity::class.java).apply {
                 putExtra(NOTE_INTENT_KEY, note)
             }
         }
     }
 
-    lateinit var viewModel: EditNoteViewModel
+    lateinit var viewModel: ViewNoteViewModel
 
     protected lateinit var recyclerAdapter: ViewNoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
@@ -50,7 +50,7 @@ open class ViewNoteActivity : BaseActivity() {
 
         if (inNote != null) {
             viewModel = ViewModelProviders.of(this, ViewNoteViewModel.Factory(inNote))
-                .get(EditNoteViewModel::class.java)
+                .get(ViewNoteViewModel::class.java)
         } else {
             throw IllegalStateException("No note provided to ViewNoteActivity.")
         }

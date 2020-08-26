@@ -14,5 +14,11 @@
     <string name="editnote_savebtn">SAVE</string>
     <string name="editnote_addentrybtn">ADD NEW ENTRY</string>
     <string name="editnote_num_entries">Showing %1$d entries</string>
+    
+    <!-- Viewnote Activity -->
+    <string name="viewnote_notetype_text"><b>Note Type:</b>%1$s</string>
+    <string name="viewnote_nicknames_text"><b>Nicknames:\n</b>%1$s</string>
+    <string name="viewnote_num_entries">Showing %1$d entries</string>
+    <string name="viewnote_editbtn">EDIT</string>
 
 </resources>

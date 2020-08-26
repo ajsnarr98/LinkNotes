@@ -19,8 +19,8 @@ import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 
-class NoteAdapter(private val note: Note,
-                  private val actionListener: ActionListener) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class EditNoteAdapter(private val note: Note,
+                      private val actionListener: ActionListener) : RecyclerView.Adapter<EditNoteAdapter.ViewHolder>() {
 
     private lateinit var mNoteDetailsViewHolder: NoteDetailViewHolder
 
@@ -31,7 +31,7 @@ class NoteAdapter(private val note: Note,
     }
 
     /**
-     * Pass this into an instance of NoteAdapter to subscribe to events.
+     * Pass this into an instance of EditNoteAdapter to subscribe to events.
      */
     interface ActionListener {
 
@@ -121,7 +121,7 @@ class NoteAdapter(private val note: Note,
 
     abstract class ViewHolder(
         protected val view: View,
-        protected val adapter: NoteAdapter,
+        protected val adapter: EditNoteAdapter,
         protected val actionListener: ActionListener
     ) : RecyclerView.ViewHolder(view) {
 
@@ -136,7 +136,7 @@ class NoteAdapter(private val note: Note,
     }
 
 
-    class EntryViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
+    class EntryViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
         fun onBind(entry: Entry) {
@@ -159,7 +159,7 @@ class NoteAdapter(private val note: Note,
         }
     }
 
-    class NoteDetailViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
+    class NoteDetailViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
         private lateinit var numEntriesText: TextView
@@ -169,15 +169,15 @@ class NoteAdapter(private val note: Note,
 
             numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
             val titleInput = view.findViewById<EditText>(R.id.title_input)
-            val tagsPopupButton = view.findViewById<View>(R.id.save_button)
+//            val tagsPopupButton = view.findViewById<View>(R.id.save_button)
             val saveButton = view.findViewById<View>(R.id.save_button)
             val noteTypeInput = view.findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
             val nickNameInput = view.findViewById<MultiEditText>(R.id.nicknames_auto_multi_input)
 
-            // setup popup button
-            tagsPopupButton.setOnClickListener {
-                actionListener.onAddTag()
-            }
+//            // setup popup button
+//            tagsPopupButton.setOnClickListener {
+//                actionListener.onAddTag()
+//            }
 
             // setup save button
             saveButton.setOnClickListener {
@@ -222,7 +222,7 @@ class NoteAdapter(private val note: Note,
 
     }
 
-    class AddButtonViewHolder(view: View, adapter: NoteAdapter, actionListener: ActionListener) :
+    class AddButtonViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
             ViewHolder(view, adapter, actionListener) {
 
         fun onBind() {

@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import org.w3c.dom.Text
@@ -23,6 +24,7 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
     var results: List<Note> = mutableListOf()
 
     interface ActionListener {
+        fun onResultClick(note: Note)
     }
 
     fun updateResults(results: List<Note>) {
@@ -31,20 +33,27 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.item_search_result, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_search_result, parent, false)
         return ResultViewHolder(view)
     }
 
     override fun getItemCount() = results.size
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
+        val full_card = holder.view.findViewById<View>(R.id.result_card)
         val icon = holder.view.findViewById<ImageView>(R.id.note_icon)
         val title = holder.view.findViewById<TextView>(R.id.title)
         val chipGroup = holder.view.findViewById<ChipGroup>(R.id.chip_group)
 
-        title.text = results[position].name
+        val note = results[position]
 
-        for (tag in results[position].tags) {
+        title.text = note.name
+
+        full_card.setOnClickListener {
+            actionListener.onResultClick(note)
+        }
+
+        for (tag in note.tags) {
             // add a new chip with text matching the tag
 
             chipGroup.addView(Chip(context).apply {
@@ -61,7 +70,7 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
             })
         }
 
-        icon.setImageResource(R.drawable.default_profile)
+        icon.setImageResource(R.drawable.default_profile) // TODO - load image
     }
 
     class ResultViewHolder(val view: View) : RecyclerView.ViewHolder(view)

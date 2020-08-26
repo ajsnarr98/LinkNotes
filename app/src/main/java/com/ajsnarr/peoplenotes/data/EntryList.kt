@@ -1,9 +1,12 @@
 package com.ajsnarr.peoplenotes.data
 
+import android.os.Parcelable
 import com.ajsnarr.peoplenotes.util.max
+import kotlinx.android.parcel.Parcelize
 import java.math.BigInteger
 
-class EntryList: ArrayList<Entry>() {
+@Parcelize
+class EntryList: ArrayList<Entry>(), Parcelable {
     companion object {
         fun getEmpty(): EntryList {
             return EntryList()

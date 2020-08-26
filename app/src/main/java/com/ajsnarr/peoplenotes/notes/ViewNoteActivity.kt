@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.data.UUID
 import kotlinx.android.synthetic.main.activity_viewnote.*
+import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
 open class ViewNoteActivity : BaseActivity() {
@@ -20,10 +22,17 @@ open class ViewNoteActivity : BaseActivity() {
 
         const val NOTE_INTENT_KEY = "note"
 
-        fun getIntent(context: Context, note: Note): Intent {
+        fun getIntent(context: Context, noteId: UUID): Intent {
             return Intent(context, ViewNoteActivity::class.java).apply {
-                putExtra(NOTE_INTENT_KEY, note)
+                putExtra(NOTE_INTENT_KEY, noteId)
             }
+        }
+
+        fun getIntent(context: Context, note: Note): Intent {
+            return if (note.id != null && note.id.isNotEmpty())
+                getIntent(context, note.id)
+            else
+                throw IllegalArgumentException("Given note cannot have a null id")
         }
     }
 
@@ -46,7 +55,8 @@ open class ViewNoteActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_viewnote)
 
-        val inNote: Note? = intent.getParcelableExtra(NOTE_INTENT_KEY)
+        val inNoteId: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
+        val inNote: Note? = mNotesCollection.findByID(inNoteId)
 
         if (inNote != null) {
             viewModel = ViewModelProviders.of(this, ViewNoteViewModel.Factory(inNote))

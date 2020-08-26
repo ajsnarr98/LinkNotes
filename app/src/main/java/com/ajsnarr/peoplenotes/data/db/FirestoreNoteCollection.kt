@@ -1,6 +1,7 @@
 package com.ajsnarr.peoplenotes.data.db
 
 import com.ajsnarr.peoplenotes.data.NoteCollection
+import com.ajsnarr.peoplenotes.data.UUID
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 
@@ -57,7 +58,7 @@ class FirestoreNoteCollection : NoteCollection() {
     }
 
 
-    override fun generateNewUUID(newNote: com.ajsnarr.peoplenotes.data.Note): String {
+    override fun generateNewUUID(newNote: com.ajsnarr.peoplenotes.data.Note): UUID {
         // this method runs right before add is called on this Note, so
         // upsert note here
         return dao.upsertNote(Note.fromAppObject(newNote))

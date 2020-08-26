@@ -28,7 +28,7 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
      *
      * Guaranteed to run iff add() is called and note is a newNote.
      */
-    protected abstract fun generateNewUUID(newNote: Note): String
+    protected abstract fun generateNewUUID(newNote: Note): UUID
 
     /**
      * Called when the activity is created.
@@ -56,6 +56,9 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
     protected fun update() {
         this.value = this.value
     }
+
+    fun findByID(id: UUID?): Note? =
+        if (id != null) this.find { note -> note.id == id } else null
 
 
     // inherit set methods

@@ -51,6 +51,11 @@ class EditNoteAdapter(private val note: Note,
         fun onEditEntry(entry: Entry)
 
         /**
+         * Called when someone presses the delete button for the note.
+         */
+        fun onDeletePress()
+
+        /**
          * Called when the user clicks the delete entry button.
          */
         fun onDeleteEntryPress(entry: Entry)
@@ -173,6 +178,7 @@ class EditNoteAdapter(private val note: Note,
             val saveButton = view.findViewById<View>(R.id.save_button)
             val noteTypeInput = view.findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
             val nickNameInput = view.findViewById<MultiEditText>(R.id.nicknames_auto_multi_input)
+            val deleteButton = view.findViewById<View>(R.id.delete_button)
 
 //            // setup popup button
 //            tagsPopupButton.setOnClickListener {
@@ -188,7 +194,10 @@ class EditNoteAdapter(private val note: Note,
             actionListener.onSetupNoteTypes(noteTypeInput)
 
             // update fields
-            if (false == adapter.note.isNewNote()) {
+            if (adapter.note.isNewNote()) {
+                // hide delete button if note is new
+                deleteButton.visibility = View.INVISIBLE
+            } else {
                 // if not a new note
                 titleInput.text.clear()
                 titleInput.text.append(adapter.note.name)
@@ -197,6 +206,10 @@ class EditNoteAdapter(private val note: Note,
                 val noteType = if (isDefaultNoteType) Note.DEFAULT_NOTE_TYPE else adapter.note.type
                 noteTypeInput.text.clear()
                 noteTypeInput.text.append(noteType)
+
+                // setup the delete button
+                deleteButton.visibility = View.VISIBLE
+                deleteButton.setOnClickListener { actionListener.onDeletePress() }
 
                 // TODO nicknames
 

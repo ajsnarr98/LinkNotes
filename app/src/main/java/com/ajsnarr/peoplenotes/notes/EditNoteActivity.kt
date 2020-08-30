@@ -3,16 +3,19 @@ package com.ajsnarr.peoplenotes.notes
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
-import android.widget.*
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.ConfirmationDialogFragment
-
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.search.SearchActivity
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import com.ajsnarr.peoplenotes.util.hideKeyboard
 import kotlinx.android.synthetic.main.activity_editnote.*
@@ -60,6 +63,24 @@ open class EditNoteActivity : BaseActivity() {
             )
         }
 
+        override fun onDeletePress() {
+            val note = activity.viewModel.note
+            val onConfirmDelete: () -> Unit = {
+                activity.mNotesCollection.remove(note)
+
+                // clear backstack and go to search activity
+                activity.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                activity.startActivity(SearchActivity.getSearchIntent(activity))
+            }
+
+            val dialog = ConfirmationDialogFragment.newInstance(
+                message = activity.getString(R.string.editnote_delete_note_confirmation, note.name),
+                onConfirm = onConfirmDelete,
+                onCancel = {}
+            )
+            dialog.show(activity.supportFragmentManager, "fragment_alert_note_delete")
+        }
+
         override fun onDeleteEntryPress(entry: Entry) {
 
             val onConfirmDelete: () -> Unit = {
@@ -68,7 +89,7 @@ open class EditNoteActivity : BaseActivity() {
             }
 
             val dialog = ConfirmationDialogFragment.newInstance(
-                message = "Are you sure you want to delete this entry?",
+                message = activity.getString(R.string.editnote_delete_entry_confirmation),
                 onConfirm = onConfirmDelete,
                 onCancel = {}
             )

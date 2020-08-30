@@ -35,10 +35,10 @@
 
     <ImageView
         android:id="@+id/profile_image"
+        android:contentDescription="@string/editnote_profile_image_desc"
         android:layout_width="178dp"
         android:layout_height="165dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_inputL"
@@ -101,6 +101,17 @@
         android:text="@string/editnote_savebtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/editnote_delete_button_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
 
     <TextView
         android:id="@+id/num_entries_text"

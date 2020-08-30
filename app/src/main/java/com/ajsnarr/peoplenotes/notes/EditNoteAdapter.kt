@@ -175,7 +175,6 @@ class EditNoteAdapter(private val note: Note,
             numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
             val titleInput = view.findViewById<EditText>(R.id.title_input)
 //            val tagsPopupButton = view.findViewById<View>(R.id.save_button)
-            val saveButton = view.findViewById<View>(R.id.save_button)
             val noteTypeInput = view.findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
             val nickNameInput = view.findViewById<MultiEditText>(R.id.nicknames_auto_multi_input)
             val deleteButton = view.findViewById<View>(R.id.delete_button)
@@ -184,11 +183,6 @@ class EditNoteAdapter(private val note: Note,
 //            tagsPopupButton.setOnClickListener {
 //                actionListener.onAddTag()
 //            }
-
-            // setup save button
-            saveButton.setOnClickListener {
-                actionListener.onSaveButtonPress()
-            }
 
             // add to note type autocomplete text view
             actionListener.onSetupNoteTypes(noteTypeInput)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -142,6 +143,12 @@ open class EditNoteActivity : BaseActivity() {
 
         viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNote)).get(EditNoteViewModel::class.java)
 
+        // set up close button
+        close_button.setOnClickListener { onBackPressed() }
+
+        // set up save button
+        save_button.setOnClickListener { mRecyclerActionListener.onSaveButtonPress() }
+
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
         recyclerAdapter = EditNoteAdapter(viewModel.note, mRecyclerActionListener)
@@ -150,17 +157,5 @@ open class EditNoteActivity : BaseActivity() {
             layoutManager = recyclerManager
             adapter = recyclerAdapter
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main_options, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.action_settings -> return true // TODO
-        }
-        return super.onOptionsItemSelected(item)
     }
 }

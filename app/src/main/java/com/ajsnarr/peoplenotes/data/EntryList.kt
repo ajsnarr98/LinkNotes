@@ -16,6 +16,7 @@ class EntryList: ArrayList<Entry>(), Parcelable {
             return EntryList().apply { addAll(entries) }
         }
     }
+
     private val lastDeletedEntries = mutableSetOf<Entry>()
 
     // next entry is either 0 or one more than the most recently added entry

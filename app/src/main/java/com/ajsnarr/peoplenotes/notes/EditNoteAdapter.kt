@@ -152,7 +152,7 @@ class EditNoteAdapter(private val note: Note,
             // add listeners
             entryType.addTextChangedListener(AfterTextChangedWatcher {
                 val type: String? = it?.toString()
-                entry.type = if (type != null) EntryType(type = type) else EntryType.EMPTY
+                entry.type = if (type != null) EntryType(type = type) else EntryType.DEFAULT
                 actionListener.onEditEntry(entry)
             })
             entryContent.addTextChangedListener(AfterTextChangedWatcher {
@@ -196,10 +196,8 @@ class EditNoteAdapter(private val note: Note,
                 titleInput.text.clear()
                 titleInput.text.append(adapter.note.name)
 
-                val isDefaultNoteType = adapter.note.type.isBlank() && !adapter.note.isNewNote()
-                val noteType = if (isDefaultNoteType) Note.DEFAULT_NOTE_TYPE else adapter.note.type
                 noteTypeInput.text.clear()
-                noteTypeInput.text.append(noteType)
+                noteTypeInput.text.append(adapter.note.type)
 
                 // setup the delete button
                 deleteButton.visibility = View.VISIBLE

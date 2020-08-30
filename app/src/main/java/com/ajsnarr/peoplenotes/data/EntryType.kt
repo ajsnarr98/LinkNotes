@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class EntryType(var type: String): AppDataObject, Parcelable {
     companion object {
-        val EMPTY get() = EntryType("none")
+        val DEFAULT get() = EntryType("")
+        val IMAGES get() = EntryType("images")
     }
 }

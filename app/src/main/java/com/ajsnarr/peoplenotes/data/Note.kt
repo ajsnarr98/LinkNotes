@@ -18,11 +18,18 @@ data class Note(
 
     companion object {
 
-        const val DEFAULT_NOTE_TYPE = "default"
+        private const val DEFAULT_TYPE = Type.DEFAULT
 
         fun newEmpty(): Note {
             return Note(null)
         }
+    }
+
+    /**
+     * Default note types.
+     */
+    object Type {
+        const val DEFAULT = "default"
     }
 
     /**
@@ -46,6 +53,23 @@ data class Note(
      */
     fun deleteEntry(entryID: String) {
         entries.removeWithEntryID(entryID)
+    }
+
+    /**
+     * Fills up any empty fields with default values. Used after saving an
+     * incomplete new note.
+     */
+    fun fillDefaults() {
+        if (type.isEmpty()) type = DEFAULT_TYPE
+        for (entry in entries){
+            entry.fillDefaults()
+        }
+
+        if (notes != null) {
+            for (n in notes) {
+                n.fillDefaults()
+            }
+        }
     }
 
 

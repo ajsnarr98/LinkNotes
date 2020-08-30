@@ -6,7 +6,7 @@ import java.util.*
 
 @Parcelize
 class Entry(val id: UUID,
-            var type: EntryType = EntryType.EMPTY,
+            var type: EntryType = EntryType.DEFAULT,
             private var mContent: EntryContent = EntryContent.EMPTY,
             var dateCreated: Date = Date(),
             var lastDateEdited: Date = Date(),
@@ -27,4 +27,15 @@ class Entry(val id: UUID,
      * Add a new sub entry.
      */
     fun addSubEntry(subEntry: Entry) = subEntries.add(subEntry)
+
+    /**
+     * Fills up any empty fields with default values. Used after saving an
+     * incomplete new note.
+     */
+    fun fillDefaults() {
+        if (type.type.isEmpty()) type = EntryType.DEFAULT
+        for (entry in subEntries) {
+            entry.fillDefaults()
+        }
+    }
 }

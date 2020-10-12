@@ -33,7 +33,7 @@ class Entry(val id: UUID,
      * incomplete new note.
      */
     fun fillDefaults() {
-        if (type.type.isEmpty()) type = EntryType.DEFAULT
+        if (type.value.isEmpty()) type = EntryType.DEFAULT
         for (entry in subEntries) {
             entry.fillDefaults()
         }

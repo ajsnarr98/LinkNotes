@@ -149,15 +149,21 @@ class EditNoteAdapter(private val note: Note,
             val entryType = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
             val entryContent = view.findViewById<EditText>(R.id.edittext_editnote_content)
 
+            // add stored content
+            entryContent.text.clear()
+            entryContent.text.append(entry.content.value)
+            entryType.text.clear()
+            entryType.text.append(entry.type.value)
+
             // add listeners
             entryType.addTextChangedListener(AfterTextChangedWatcher {
                 val type: String? = it?.toString()
-                entry.type = if (type != null) EntryType(type = type) else EntryType.DEFAULT
+                entry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
                 actionListener.onEditEntry(entry)
             })
             entryContent.addTextChangedListener(AfterTextChangedWatcher {
                 val content: String? = it?.toString()
-                entry.content = if (content != null) EntryContent(content = content) else EntryContent.EMPTY
+                entry.content = if (content != null) EntryContent(value = content) else EntryContent.EMPTY
                 actionListener.onEditEntry(entry)
             })
             deleteBtn.setOnClickListener { actionListener.onDeleteEntryPress(entry) }

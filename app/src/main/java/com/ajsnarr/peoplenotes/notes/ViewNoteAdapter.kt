@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.databinding.ItemViewnoteDetailsBinding
+import com.ajsnarr.peoplenotes.databinding.ItemViewnoteEntryBinding
 import java.lang.IllegalArgumentException
 
 class ViewNoteAdapter(private val note: Note,
@@ -15,8 +17,8 @@ class ViewNoteAdapter(private val note: Note,
 ) : RecyclerView.Adapter<ViewNoteAdapter.ViewHolder>() {
 
     companion object {
-        val ENTRY_TYPE = 0
-        val NOTE_DETAILS_TYPE = 1
+        const val ENTRY_TYPE = 0
+        const val NOTE_DETAILS_TYPE = 1
     }
 
     /**
@@ -74,48 +76,41 @@ class ViewNoteAdapter(private val note: Note,
     class EntryViewHolder(view: View, adapter: ViewNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
-        fun onBind(entry: Entry) {
-            val entryType = view.findViewById<TextView>(R.id.entrytype)
-            val entryContent = view.findViewById<TextView>(R.id.content)
+        val binding = ItemViewnoteEntryBinding.bind(view)
 
-            entryType.text = entry.type.value
-            entryContent.text = entry.content.value
+        fun onBind(entry: Entry) {
+            binding.entryType.text = entry.type.value
+            binding.content.text = entry.content.value
         }
     }
 
     class NoteDetailViewHolder(view: View, adapter: ViewNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
-        private lateinit var numEntriesText: TextView
+        val binding = ItemViewnoteDetailsBinding.bind(view)
 
         fun onBind() {
 
             if (adapter.note.isNewNote()) throw IllegalStateException("Cannot view empty note.")
 
-            numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
-            val title = view.findViewById<TextView>(R.id.title)
-            val editButton = view.findViewById<View>(R.id.edit_button)
-            val noteType = view.findViewById<TextView>(R.id.notetype)
-            val nicknames = view.findViewById<TextView>(R.id.nicknames)
-
             // update num entries text
             updateNumEntriesText()
 
-            title.text = adapter.note.name
-            noteType.text =
+            binding.title.text = adapter.note.name
+            binding.noteType.text =
                 view.context.getString(R.string.viewnote_notetype_text, adapter.note.type)
 
             // leave nicknames field blank if there are no nicknames
             if (adapter.note.nicknames.size > 0) {
                 val nickString: String = adapter.note.nicknames.joinToString(separator = "\n")
-                nicknames.text =
+                binding.nicknames.text =
                     view.context.getString(R.string.viewnote_nicknames_text, nickString)
             } else {
-                nicknames.text = ""
+                binding.nicknames.text = ""
             }
 
             // add listener for edit
-            editButton.setOnClickListener {
+            binding.editButton.setOnClickListener {
                 actionListener.onEditButtonPress()
             }
 
@@ -125,7 +120,7 @@ class ViewNoteAdapter(private val note: Note,
         fun updateNumEntriesText() {
             val numEntries: Int = adapter.note.entries.size
 
-            numEntriesText.text =
+            binding.numEntriesText.text =
                 view.context.getString(R.string.editnote_num_entries, numEntries)
         }
 

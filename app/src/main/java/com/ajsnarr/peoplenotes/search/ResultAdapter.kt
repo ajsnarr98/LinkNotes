@@ -42,20 +42,18 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
 
-        val binding = ItemSearchResultBinding.bind(holder.view)
-
         val note = results[position]
 
-        binding.title.text = note.name
+        holder.binding.title.text = note.name
 
-        binding.resultCard.setOnClickListener {
+        holder.binding.resultCard.setOnClickListener {
             actionListener.onResultClick(note)
         }
 
         for (tag in note.tags) {
             // add a new chip with text matching the tag
 
-            binding.chipGroup.addView(Chip(context).apply {
+            holder.binding.chipGroup.addView(Chip(context).apply {
                 isClickable = false
 
                 text = tag.text
@@ -69,8 +67,10 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
             })
         }
 
-        binding.icon.setImageResource(R.drawable.default_profile) // TODO - load image
+        holder.binding.icon.setImageResource(R.drawable.default_profile) // TODO - load image
     }
 
-    class ResultViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class ResultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val binding = ItemSearchResultBinding.bind(view)
+    }
 }

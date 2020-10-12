@@ -5,11 +5,11 @@ data class EntryType(var type: String? = null):
 
     companion object {
         fun fromAppObject(other: com.ajsnarr.peoplenotes.data.EntryType) : EntryType {
-            return EntryType(type = other.type)
+            return EntryType(type = other.value)
         }
     }
 
     override fun toAppObject(): com.ajsnarr.peoplenotes.data.EntryType {
-        return com.ajsnarr.peoplenotes.data.EntryType(type=type!!)
+        return com.ajsnarr.peoplenotes.data.EntryType(value=type!!)
     }
 }

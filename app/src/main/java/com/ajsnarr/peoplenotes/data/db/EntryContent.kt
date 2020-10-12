@@ -5,11 +5,11 @@ data class EntryContent(var content: String? = null)
 
     companion object {
         fun fromAppObject(other: com.ajsnarr.peoplenotes.data.EntryContent) : EntryContent {
-            return EntryContent(content = other.content)
+            return EntryContent(content = other.value)
         }
     }
 
     override fun toAppObject(): com.ajsnarr.peoplenotes.data.EntryContent {
-        return com.ajsnarr.peoplenotes.data.EntryContent(content=this.content!!)
+        return com.ajsnarr.peoplenotes.data.EntryContent(value=this.content!!)
     }
 }

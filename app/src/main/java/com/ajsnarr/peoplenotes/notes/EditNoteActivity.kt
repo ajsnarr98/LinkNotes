@@ -16,6 +16,7 @@ import com.ajsnarr.peoplenotes.ConfirmationDialogFragment
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.data.UUID
 import com.ajsnarr.peoplenotes.search.SearchActivity
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import com.ajsnarr.peoplenotes.util.hideKeyboard
@@ -33,8 +34,16 @@ open class EditNoteActivity : BaseActivity() {
         }
 
         fun getEditNoteIntent(context: Context, note: Note): Intent {
+            if (note.id != null && note.id.isNotEmpty()) {
+                return getEditNoteIntent(context, note.id)
+            } else {
+                throw IllegalStateException("Note ID cannot be null or empty")
+            }
+        }
+
+        fun getEditNoteIntent(context: Context, noteID: UUID): Intent {
             return Intent(context, EditNoteActivity::class.java).apply {
-                putExtra(NOTE_INTENT_KEY, note)
+                putExtra(NOTE_INTENT_KEY, noteID)
             }
         }
     }
@@ -140,7 +149,8 @@ open class EditNoteActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editnote)
 
-        val inNote: Note? = intent.getParcelableExtra(NOTE_INTENT_KEY)
+        val inNoteID: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
+        val inNote: Note? = mNotesCollection.findByID(inNoteID)
 
         viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNote)).get(EditNoteViewModel::class.java)
 

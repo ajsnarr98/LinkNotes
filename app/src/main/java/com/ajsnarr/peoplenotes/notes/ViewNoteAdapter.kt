@@ -78,8 +78,8 @@ class ViewNoteAdapter(private val note: Note,
             val entryType = view.findViewById<TextView>(R.id.entrytype)
             val entryContent = view.findViewById<TextView>(R.id.content)
 
-            entryType.text = entry.type.type
-            entryContent.text = entry.content.content
+            entryType.text = entry.type.value
+            entryContent.text = entry.content.value
         }
     }
 

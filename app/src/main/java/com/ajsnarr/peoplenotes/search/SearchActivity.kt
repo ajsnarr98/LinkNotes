@@ -7,10 +7,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.Spinner
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
@@ -19,6 +17,7 @@ import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.Tag
+import com.ajsnarr.peoplenotes.databinding.ActivitySearchBinding
 import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.ajsnarr.peoplenotes.notes.ViewNoteActivity
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
@@ -56,23 +55,25 @@ class SearchActivity : BaseActivity() {
 
     private var isSearchBarActive = false
 
+    private lateinit var binding: ActivitySearchBinding
+    private lateinit var recyclerAdapter: ResultAdapter
+
     private lateinit var viewModel: SearchViewModel
 
-    private lateinit var searchBar: TextInputEditText
-    private lateinit var searchFiltersDropdown: Spinner
-    private lateinit var recyclerAdapter: ResultAdapter
     private lateinit var addNoteButton: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        binding = ActivitySearchBinding.bind(root)
+
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         // TODO: Use the ViewModel
 
         // setup search bar view to allow handling of back buttn presses within
         // keyboard
-        search_bar_view.searchActivity = this
+        binding.searchBarView.searchActivity = this
 
         // setup recycler view
         val recycler = recycler_view
@@ -84,15 +85,14 @@ class SearchActivity : BaseActivity() {
         }
 
         // setup search bar
-        searchBar = search_bar
-        searchBar.setOnFocusChangeListener { v, hasFocus ->
+        binding.searchBar.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 setSearchBarActive(true)
             } else {
                 setSearchBarActive(false)
             }
         }
-        searchBar.addTextChangedListener(object: TextWatcher {
+        binding.searchBar.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // do nothing
             }
@@ -101,20 +101,19 @@ class SearchActivity : BaseActivity() {
                 // do nothing
             }
             override fun afterTextChanged(s: Editable?) {
-                Timber.d("Searching with string '${searchBar.text}'")
+                Timber.d("Searching with string '${binding.searchBar.text}'")
                 loadNotes()
             }
         })
-        searchBar.setOnEditorActionListener { v, actionId, event ->
+        binding.searchBar.setOnEditorActionListener { v, actionId, event ->
             setSearchBarActive(false)
             true
         }
 
         // setup filter dropdown
-        searchFiltersDropdown = search_filters_dropdown
-        searchFiltersDropdown.adapter = ArrayAdapter<SearchType>(this,
+        binding.searchFiltersDropdown.adapter = ArrayAdapter<SearchType>(this,
             android.R.layout.simple_spinner_item, SearchType.values())
-        searchFiltersDropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.searchFiltersDropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(
@@ -157,11 +156,11 @@ class SearchActivity : BaseActivity() {
 
         // TODO - improve search results shown (search "my " and "my random note" will show but not "my 1")
 
-        val searchStr = searchBar.text.toString()
+        val searchStr = binding.searchBar.text.toString()
         val filtered = notes.filter {note ->
             // search must be at least MIN_SEARCH_LENGTH chars (otherwise all are shown)
             (searchStr.length < MIN_SEARCH_LENGTH) or
-            when (searchFiltersDropdown.selectedItem) {
+            when (binding.searchFiltersDropdown.selectedItem) {
                 SearchType.ALL -> fuzzyMatch(searchStr, note.name)
                         || note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
                 SearchType.NAME ->  fuzzyMatch(searchStr, note.name)
@@ -172,7 +171,7 @@ class SearchActivity : BaseActivity() {
 
         // order by fuzzy match
         return filtered.sortedByDescending { note ->
-            when (searchFiltersDropdown.selectedItem) {
+            when (binding.searchFiltersDropdown.selectedItem) {
                 SearchType.ALL -> max(
                     FuzzySearch.ratio(searchStr, note.name),
                     note.tags.map
@@ -221,8 +220,8 @@ class SearchActivity : BaseActivity() {
         this.isSearchBarActive = isActive
 
         if (!isActive) {
-            hideKeyboardFrom(searchBar.context, search_bar)
-            searchBar.clearFocus() // un-click from search bar
+            hideKeyboardFrom(binding.searchBar.context, search_bar)
+            binding.searchBar.clearFocus() // un-click from search bar
         }
     }
 

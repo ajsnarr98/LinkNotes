@@ -12,6 +12,7 @@ import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.UUID
+import com.ajsnarr.peoplenotes.databinding.ActivityViewnoteBinding
 import kotlinx.android.synthetic.main.activity_viewnote.*
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
@@ -38,6 +39,8 @@ open class ViewNoteActivity : BaseActivity() {
 
     lateinit var viewModel: ViewNoteViewModel
 
+    private lateinit var binding : ActivityViewnoteBinding
+
     protected lateinit var recyclerAdapter: ViewNoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
 
@@ -55,6 +58,8 @@ open class ViewNoteActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_viewnote)
 
+        binding = ActivityViewnoteBinding.bind(root)
+
         val inNoteId: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
         val inNote: Note? = mNotesCollection.findByID(inNoteId)
 
@@ -69,7 +74,7 @@ open class ViewNoteActivity : BaseActivity() {
         val recyclerManager = LinearLayoutManager(this)
         recyclerAdapter = ViewNoteAdapter(viewModel.note, mRecyclerActionListener)
 
-        recycler_view.apply {
+        binding.recyclerView.apply {
             layoutManager = recyclerManager
             adapter = recyclerAdapter
         }

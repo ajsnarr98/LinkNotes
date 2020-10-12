@@ -14,6 +14,9 @@ import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.EntryContent
 import com.ajsnarr.peoplenotes.data.EntryType
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.databinding.ItemEditnoteAddBtnBinding
+import com.ajsnarr.peoplenotes.databinding.ItemEditnoteDetailsBinding
+import com.ajsnarr.peoplenotes.databinding.ItemEditnoteEntryBinding
 import com.ajsnarr.peoplenotes.util.MultiEditText
 import timber.log.Timber
 import java.lang.IllegalArgumentException
@@ -144,70 +147,62 @@ class EditNoteAdapter(private val note: Note,
     class EntryViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
+        val binding = ItemEditnoteEntryBinding.bind(view)
+
         fun onBind(entry: Entry) {
-            val deleteBtn = view.findViewById<View>(R.id.button_delete_entry)
-            val entryType = view.findViewById<EditText>(R.id.textinput_editnote_entrytype)
-            val entryContent = view.findViewById<EditText>(R.id.edittext_editnote_content)
 
             // add stored content
-            entryContent.text.clear()
-            entryContent.text.append(entry.content.value)
-            entryType.text.clear()
-            entryType.text.append(entry.type.value)
+            binding.content.text.clear()
+            binding.content.text.append(entry.content.value)
+            binding.entryType.text.clear()
+            binding.entryType.text.append(entry.type.value)
 
             // add listeners
-            entryType.addTextChangedListener(AfterTextChangedWatcher {
+            binding.entryType.addTextChangedListener(AfterTextChangedWatcher {
                 val type: String? = it?.toString()
                 entry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
                 actionListener.onEditEntry(entry)
             })
-            entryContent.addTextChangedListener(AfterTextChangedWatcher {
+            binding.content.addTextChangedListener(AfterTextChangedWatcher {
                 val content: String? = it?.toString()
                 entry.content = if (content != null) EntryContent(value = content) else EntryContent.EMPTY
                 actionListener.onEditEntry(entry)
             })
-            deleteBtn.setOnClickListener { actionListener.onDeleteEntryPress(entry) }
+            binding.deleteButton.setOnClickListener { actionListener.onDeleteEntryPress(entry) }
         }
     }
 
     class NoteDetailViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
-        private lateinit var numEntriesText: TextView
+        val binding = ItemEditnoteDetailsBinding.bind(view)
 
         fun onBind() {
             Timber.d("onBindNoteDetails")
 
-            numEntriesText = view.findViewById<TextView>(R.id.num_entries_text)
-            val titleInput = view.findViewById<EditText>(R.id.title_input)
-//            val tagsPopupButton = view.findViewById<View>(R.id.save_button)
-            val noteTypeInput = view.findViewById<AutoCompleteTextView>(R.id.notetype_auto_input)
-            val nickNameInput = view.findViewById<MultiEditText>(R.id.nicknames_auto_multi_input)
-            val deleteButton = view.findViewById<View>(R.id.delete_button)
-
 //            // setup popup button
-//            tagsPopupButton.setOnClickListener {
+//            binding.tagsPopupButton.setOnClickListener {
 //                actionListener.onAddTag()
 //            }
 
             // add to note type autocomplete text view
-            actionListener.onSetupNoteTypes(noteTypeInput)
+            actionListener.onSetupNoteTypes(binding.noteTypeInput)
 
             // update fields
             if (adapter.note.isNewNote()) {
                 // hide delete button if note is new
-                deleteButton.visibility = View.INVISIBLE
+                binding.deleteButton.visibility = View.INVISIBLE
             } else {
                 // if not a new note
-                titleInput.text.clear()
-                titleInput.text.append(adapter.note.name)
+                binding.titleInput.text.clear()
+                binding.titleInput.text.append(adapter.note.name)
 
-                noteTypeInput.text.clear()
-                noteTypeInput.text.append(adapter.note.type)
+                binding.noteTypeInput.text.clear()
+                binding.noteTypeInput.text.append(adapter.note.type)
 
                 // setup the delete button
-                deleteButton.visibility = View.VISIBLE
-                deleteButton.setOnClickListener { actionListener.onDeletePress() }
+                binding.deleteButton.visibility = View.VISIBLE
+                binding.deleteButton.setOnClickListener { actionListener.onDeletePress() }
 
                 // TODO nicknames
 
@@ -218,7 +213,7 @@ class EditNoteAdapter(private val note: Note,
             updateNumEntriesText()
 
             // setup update listeners
-            titleInput.addTextChangedListener(AfterTextChangedWatcher {
+            binding.titleInput.addTextChangedListener(AfterTextChangedWatcher {
                 actionListener.onSetTitle(it?.toString() ?: "")
             })
         }
@@ -227,7 +222,7 @@ class EditNoteAdapter(private val note: Note,
         fun updateNumEntriesText() {
             val numEntries: Int = adapter.note.entries.size
 
-            numEntriesText.text =
+            binding.numEntriesText.text =
                 view.context.getString(R.string.editnote_num_entries, numEntries)
         }
 
@@ -236,14 +231,14 @@ class EditNoteAdapter(private val note: Note,
     class AddButtonViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
             ViewHolder(view, adapter, actionListener) {
 
+        val binding = ItemEditnoteAddBtnBinding.bind(view)
+
         fun onBind() {
 
             Timber.d("OnBindAddButton")
 
-            val addEntryButton = view.findViewById<View>(R.id.add_entry_button)
-
             // set up add entry button
-            addEntryButton.setOnClickListener {
+            binding.addEntryButton.setOnClickListener {
                 actionListener.onAddButtonPress()
                 adapter.updateNumEntriesText()
             }

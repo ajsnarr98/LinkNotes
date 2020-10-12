@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
+import com.ajsnarr.peoplenotes.databinding.ItemSearchResultBinding
 import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -40,23 +41,21 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
     override fun getItemCount() = results.size
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        val full_card = holder.view.findViewById<View>(R.id.result_card)
-        val icon = holder.view.findViewById<ImageView>(R.id.note_icon)
-        val title = holder.view.findViewById<TextView>(R.id.title)
-        val chipGroup = holder.view.findViewById<ChipGroup>(R.id.chip_group)
+
+        val binding = ItemSearchResultBinding.bind(holder.view)
 
         val note = results[position]
 
-        title.text = note.name
+        binding.title.text = note.name
 
-        full_card.setOnClickListener {
+        binding.resultCard.setOnClickListener {
             actionListener.onResultClick(note)
         }
 
         for (tag in note.tags) {
             // add a new chip with text matching the tag
 
-            chipGroup.addView(Chip(context).apply {
+            binding.chipGroup.addView(Chip(context).apply {
                 isClickable = false
 
                 text = tag.text
@@ -70,7 +69,7 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
             })
         }
 
-        icon.setImageResource(R.drawable.default_profile) // TODO - load image
+        binding.icon.setImageResource(R.drawable.default_profile) // TODO - load image
     }
 
     class ResultViewHolder(val view: View) : RecyclerView.ViewHolder(view)

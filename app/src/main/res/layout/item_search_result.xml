@@ -16,7 +16,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/note_icon"
+            android:id="@+id/icon"
             android:layout_width="64sp"
             android:layout_height="64sp"
             android:layout_marginStart="12dp"

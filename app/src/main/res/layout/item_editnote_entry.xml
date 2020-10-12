@@ -14,17 +14,17 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textinputL_editnote_entrytype"
+            android:id="@+id/entry_type_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="Entry type..."
             app:errorEnabled="true"
-            app:layout_constraintEnd_toStartOf="@id/button_delete_entry"
+            app:layout_constraintEnd_toStartOf="@id/delete_button"
             app:layout_constraintTop_toTopOf="parent">
 
             <EditText
-                android:id="@+id/textinput_editnote_entrytype"
+                android:id="@+id/entry_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Entry type...           "
@@ -33,7 +33,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            android:id="@+id/button_delete_entry"
+            android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -43,7 +43,7 @@
             app:srcCompat="@android:drawable/btn_dialog" />
 
         <EditText
-            android:id="@+id/edittext_editnote_content"
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -57,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textinputL_editnote_entrytype" />
+            app:layout_constraintTop_toBottomOf="@+id/entry_type_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

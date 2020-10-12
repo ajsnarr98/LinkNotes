@@ -8,7 +8,7 @@
     android:layout_marginBottom="8dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/title_inputL"
+        android:id="@+id/title_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -40,11 +40,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_inputL"
+        app:layout_constraintTop_toBottomOf="@+id/title_input_view"
         app:srcCompat="@drawable/default_profile" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/notetype_inputL"
+        android:id="@+id/note_type_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -56,10 +56,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/title_inputL">
+        app:layout_constraintTop_toBottomOf="@+id/title_input_view">
 
         <AutoCompleteTextView
-            android:id="@+id/notetype_auto_input"
+            android:id="@+id/note_type_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:completionThreshold="0"
@@ -68,7 +68,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nicknames_inputL"
+        android:id="@+id/nicknames_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -80,10 +80,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/notetype_inputL">
+        app:layout_constraintTop_toBottomOf="@+id/note_type_input_view">
 
         <com.ajsnarr.peoplenotes.util.MultiEditText
-            android:id="@+id/nicknames_auto_multi_input"
+            android:id="@+id/nicknames_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/editnote_nickname_suggestion" />

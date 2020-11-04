@@ -8,7 +8,7 @@ data class Entry(
     val content: EntryContent? = null,
     val dateCreated: Date? = null,
     val lastDateEdited: Date? = null,
-    val isDeletable:Boolean = true,
+    val isDeletable: Boolean? = null,
     val subEntries: MutableList<Entry>? = null
 ): DBObject<com.ajsnarr.peoplenotes.data.Entry> {
 
@@ -36,7 +36,7 @@ data class Entry(
             mContent = this.content!!.toAppObject(),
             dateCreated = this.dateCreated!!,
             lastDateEdited = this.lastDateEdited!!,
-            isDeletable = this.isDeletable,
+            isDeletable = this.isDeletable ?: true,
             subEntries = this.subEntries!!.map { it.toAppObject() }.toMutableList()
         )
     }

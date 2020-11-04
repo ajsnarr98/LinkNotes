@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/notetype"
+        app:layout_constraintTop_toBottomOf="@+id/note_type"
         tools:text="nicknames"/>
 
     <Button
@@ -75,7 +75,7 @@
         android:drawablePadding="6dp"
         android:gravity="center"
         android:text="@string/viewnote_editbtn"
-        android:drawableTop="@android:drawable/ic_menu_edit"
+        android:drawableLeft="@android:drawable/ic_menu_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

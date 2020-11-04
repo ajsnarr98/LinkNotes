@@ -193,21 +193,20 @@ class EditNoteAdapter(private val note: Note,
                 // hide delete button if note is new
                 binding.deleteButton.visibility = View.INVISIBLE
             } else {
-                // if not a new note
-                binding.titleInput.text.clear()
-                binding.titleInput.text.append(adapter.note.name)
-
-                binding.noteTypeInput.text.clear()
-                binding.noteTypeInput.text.append(adapter.note.type)
-
                 // setup the delete button
                 binding.deleteButton.visibility = View.VISIBLE
                 binding.deleteButton.setOnClickListener { actionListener.onDeletePress() }
-
-                // TODO nicknames
-
-                // TODO image
             }
+
+            binding.titleInput.text.clear()
+            binding.titleInput.text.append(adapter.note.name)
+
+            binding.noteTypeInput.text.clear()
+            binding.noteTypeInput.text.append(adapter.note.type)
+
+            // TODO nicknames
+
+            // TODO image
 
             // update num entries text
             updateNumEntriesText()

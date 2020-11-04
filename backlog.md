@@ -16,6 +16,7 @@
 - prompt to save in edit mode on back button hit, if changes were made
 - add images to entries
 - add back navigation in toolbar
+- add real editnote screen/boxes
 
 ## Bugs
-- isDeletable not being saved to DB
+- 

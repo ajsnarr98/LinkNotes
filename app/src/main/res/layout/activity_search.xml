@@ -11,42 +11,48 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="74dp"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:elevation="0dp"
+        app:elevation="0dp"
         android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center"
+            android:background="#00FFFFFF"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <com.ajsnarr.peoplenotes.search.SearchCardView
+                android:id="@+id/search_bar_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/search_searchbar_corner_radius"
+                app:cardElevation="4dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_bar"
+                    style="@style/RoundedEditText.Bordered"
+                    android:layout_width="match_parent"
+                    android:layout_height="48sp"
+                    android:drawableRight="@android:drawable/ic_menu_search"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp" />
+
+            </com.ajsnarr.peoplenotes.search.SearchCardView>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <com.ajsnarr.peoplenotes.search.SearchCardView
-        android:id="@+id/search_bar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        app:cardCornerRadius="@dimen/search_searchbar_corner_radius"
-        app:cardElevation="4dp"
-        android:layout_gravity="top" >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_bar"
-            android:layout_width="match_parent"
-            android:layout_height="48sp"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:drawableRight="@android:drawable/ic_menu_search"
-            style="@style/RoundedEditText.Bordered" />
-
-    </com.ajsnarr.peoplenotes.search.SearchCardView>
 
     <Spinner
         android:id="@+id/search_filters_dropdown"

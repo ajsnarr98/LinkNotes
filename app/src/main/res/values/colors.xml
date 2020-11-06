@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="colorOnPrimary">@android:color/white</color>
+    <color name="colorOnPrimary2">@color/colorPrimaryDark</color>
+
+    <color name="black_87">#de000000</color>
+    <color name="black_54">#8a000000</color>
+
     <color name="grey">#808080</color>
 
     <color name="add_button_1">#d5e0e8</color>

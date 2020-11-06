@@ -14,9 +14,12 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/base_padding"
         android:text="@string/app_name"
+        style="?attr/textAppearanceHeadline6"
+        android:textColor="@color/colorOnPrimary"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/header_icon" />
 
     <ImageView
@@ -26,10 +29,12 @@
         android:contentDescription="@string/note_icon"
         android:maxWidth="@dimen/icon_deco_size"
         android:maxHeight="@dimen/icon_deco_size"
-        android:padding="@dimen/base_padding"
         android:scaleType="fitCenter"
+        android:layout_marginTop="@dimen/base_padding"
+        android:layout_marginBottom="@dimen/base_padding"
         app:layout_constraintStart_toEndOf="@id/header_title"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/ic_note" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

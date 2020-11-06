@@ -8,5 +8,5 @@
     <dimen name="text_margin">16dp</dimen>
 
     <dimen name="search_searchbar_corner_radius">12dp</dimen>
-    <dimen name="icon_deco_size">64dp</dimen>
+    <dimen name="icon_deco_size">32dp</dimen>
 </resources>

@@ -105,6 +105,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        app:headerLayout="@layout/view_search_drawer_header"
         app:menu="@menu/menu_search_nav_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

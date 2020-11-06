@@ -27,6 +27,7 @@
 
     <!-- Search activity -->
     <string name="search_add_note">Add new note</string>
+    <string name="note_icon">Note Icon</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

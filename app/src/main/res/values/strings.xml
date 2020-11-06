@@ -25,4 +25,10 @@
     <string name="viewnote_num_entries">Showing %1$d entries</string>
     <string name="viewnote_editbtn">EDIT</string>
 
+    <!-- Search activity -->
+    <string name="search_add_note">Add new note</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>

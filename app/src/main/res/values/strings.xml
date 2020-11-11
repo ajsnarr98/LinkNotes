@@ -29,6 +29,14 @@
     <string name="search_add_note">Add new note</string>
     <string name="note_icon">Note Icon</string>
 
+    <string name="nav_advanced_search_title">Advanced Search</string>
+    <string name="nav_search_filters_title">Search By</string>
+    <string name="nav_sort_order_title">Order Results</string>
+    <string name="nav_sort_order_recent">Recent</string>
+    <string name="nav_sort_order_alpha">Alphabetical</string>
+    <string name="nav_search_filter_titles">Titles</string>
+    <string name="nav_search_filter_tags">Tags</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 

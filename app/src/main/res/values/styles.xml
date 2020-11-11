@@ -29,14 +29,12 @@
     <style name="TextAppearance.PeopleNotes.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <style name="TextAppearance.PeopleNotes.Headline7" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">@color/black_54</item>
-    </style>
-
-    <style name="TextAppearance.PeopleNotes.Subtitle1.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextAppearance.PeopleNotes.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1" />
 
     <style name="TextAppearance.PeopleNotes.Body1" parent="TextAppearance.MaterialComponents.Body1">
     </style>

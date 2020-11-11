@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -34,8 +35,15 @@ const val MIN_SEARCH_LENGTH = 3
 
 private enum class SearchType(val text: String) {
     ALL("All Results"),
-    TAG("TAG"),
-    NAME("NAME");
+    TAG("Tag"),
+    NAME("Name");
+
+    override fun toString() = text
+}
+
+private enum class ResultOrderType(val text: String) {
+    RECENT("Recent"),
+    ALPHABETICAL("Alphabetical");
 
     override fun toString() = text
 }
@@ -84,43 +92,8 @@ class SearchActivity : BaseActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        drawerToggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            binding.toolbar,
-            R.string.drawer_open,
-            R.string.drawer_close
-        ).apply {
-            syncState()
-        }
-        binding.drawerLayout.addDrawerListener(drawerToggle)
-
-        // setup search bar
-        binding.searchBar.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                setSearchBarActive(true)
-            } else {
-                setSearchBarActive(false)
-            }
-        }
-        binding.searchBar.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // do nothing
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // do nothing
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                Timber.d("Searching with string '${binding.searchBar.text}'")
-                loadNotes()
-            }
-        })
-        binding.searchBar.setOnEditorActionListener { v, actionId, event ->
-            setSearchBarActive(false)
-            true
-        }
+        setupNavDrawer()
+        setupSearchBar()
 
         // setup filter dropdown
         binding.searchFiltersDropdown.adapter = ArrayAdapter<SearchType>(
@@ -180,6 +153,49 @@ class SearchActivity : BaseActivity() {
         Timber.d("onBackPressed")
         setSearchBarActive(false)
     }
+
+    private fun setupNavDrawer() {
+        drawerToggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.drawer_open,
+            R.string.drawer_close
+        ).apply {
+            syncState()
+        }
+        binding.drawerLayout.addDrawerListener(drawerToggle)
+    }
+
+    private fun setupSearchBar() {
+        // setup search bar
+        binding.searchBar.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                setSearchBarActive(true)
+            } else {
+                setSearchBarActive(false)
+            }
+        }
+        binding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // do nothing
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                Timber.d("Searching with string '${binding.searchBar.text}'")
+                loadNotes()
+            }
+        })
+        binding.searchBar.setOnEditorActionListener { v, actionId, event ->
+            setSearchBarActive(false)
+            true
+        }
+    }
+
 
     /**
      * Filter notes based on search

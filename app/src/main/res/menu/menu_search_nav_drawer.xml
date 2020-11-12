@@ -8,12 +8,12 @@
                 <item
                     android:id="@+id/sort_order_recent"
                     android:title="@string/nav_sort_order_recent"
-                    android:checkable="true"
+                    android:checkable="false"
                     app:actionLayout="@layout/view_drawer_radio_btn" />
                 <item
                     android:id="@+id/sort_order_alpha"
                     android:title="@string/nav_sort_order_alpha"
-                    android:checkable="true"
+                    android:checkable="false"
                     app:actionLayout="@layout/view_drawer_radio_btn" />
             </group>
         </menu>
@@ -25,11 +25,11 @@
                 <item
                     android:id="@+id/search_filter_title"
                     android:title="@string/nav_search_filter_titles"
-                    android:checkable="true"
+                    android:checkable="false"
                     app:actionLayout="@layout/view_drawer_checkbox" />
                 <item
                     android:id="@+id/search_filter_tags"
-                    android:checkable="true"
+                    android:checkable="false"
                     android:title="@string/nav_search_filter_tags"
                     app:actionLayout="@layout/view_drawer_checkbox"/>
             </group>

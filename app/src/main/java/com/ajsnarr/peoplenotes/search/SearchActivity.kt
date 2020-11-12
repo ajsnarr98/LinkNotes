@@ -26,11 +26,6 @@ import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import timber.log.Timber
 
-/**
- * Min number of characters used in a search
- */
-const val MIN_SEARCH_LENGTH = 3
-
 class SearchActivity : BaseActivity() {
 
     companion object {

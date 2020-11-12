@@ -13,6 +13,11 @@ enum class ResultOrderType(val resId: Int) {
     ALPHABETICAL(R.id.sort_order_alpha),
 }
 
+/**
+ * Min number of characters used in a search
+ */
+const val MIN_SEARCH_LENGTH = 3
+
 class SearchViewModel : ViewModel() {
     // TODO: Implement the ViewModel
 }

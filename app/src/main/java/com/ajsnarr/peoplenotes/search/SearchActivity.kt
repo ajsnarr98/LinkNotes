@@ -31,16 +31,6 @@ import timber.log.Timber
  */
 const val MIN_SEARCH_LENGTH = 3
 
-private enum class SearchType(val resId: Int) {
-    TAG(R.id.search_filter_tags),
-    TITLE(R.id.search_filter_title),
-}
-
-private enum class ResultOrderType(val resId: Int) {
-    RECENT(R.id.sort_order_recent),
-    ALPHABETICAL(R.id.sort_order_alpha),
-}
-
 class SearchActivity : BaseActivity() {
 
     companion object {

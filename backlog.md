@@ -5,7 +5,6 @@
 
 ## Features
 - better delete button
-- add defined text styles
 - make search screen look nicer
 - advanced searches
 - adding tags

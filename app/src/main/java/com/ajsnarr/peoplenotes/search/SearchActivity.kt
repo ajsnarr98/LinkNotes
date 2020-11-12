@@ -23,7 +23,6 @@ import com.ajsnarr.peoplenotes.databinding.ActivitySearchBinding
 import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.ajsnarr.peoplenotes.notes.ViewNoteActivity
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
-import com.ajsnarr.peoplenotes.util.max
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import timber.log.Timber
 
@@ -32,12 +31,14 @@ import timber.log.Timber
  */
 const val MIN_SEARCH_LENGTH = 3
 
-private enum class SearchType(val text: String) {
-    ALL("All Results"),
-    TAG("TAG"),
-    NAME("NAME");
+private enum class SearchType(val resId: Int) {
+    TAG(R.id.search_filter_tags),
+    TITLE(R.id.search_filter_title),
+}
 
-    override fun toString() = text
+private enum class ResultOrderType(val resId: Int) {
+    RECENT(R.id.sort_order_recent),
+    ALPHABETICAL(R.id.sort_order_alpha),
 }
 
 class SearchActivity : BaseActivity() {
@@ -59,6 +60,9 @@ class SearchActivity : BaseActivity() {
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var drawerToggle: ActionBarDrawerToggle
+
+    private lateinit var searchTypeSelections: MenuActionGroup
+    private lateinit var resultOrderSelections: MenuActionGroup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,43 +88,8 @@ class SearchActivity : BaseActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        drawerToggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            binding.toolbar,
-            R.string.drawer_open,
-            R.string.drawer_close
-        ).apply {
-            syncState()
-        }
-        binding.drawerLayout.addDrawerListener(drawerToggle)
-
-        // setup search bar
-        binding.searchBar.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                setSearchBarActive(true)
-            } else {
-                setSearchBarActive(false)
-            }
-        }
-        binding.searchBar.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // do nothing
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // do nothing
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                Timber.d("Searching with string '${binding.searchBar.text}'")
-                loadNotes()
-            }
-        })
-        binding.searchBar.setOnEditorActionListener { v, actionId, event ->
-            setSearchBarActive(false)
-            true
-        }
+        setupNavDrawer()
+        setupSearchBar()
 
         // setup filter dropdown
         binding.searchFiltersDropdown.adapter = ArrayAdapter<SearchType>(
@@ -181,40 +150,100 @@ class SearchActivity : BaseActivity() {
         setSearchBarActive(false)
     }
 
+    private fun setupNavDrawer() {
+        drawerToggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.drawer_open,
+            R.string.drawer_close
+        ).apply {
+            syncState()
+        }
+        binding.drawerLayout.addDrawerListener(drawerToggle)
+
+        // setup search type selection
+        val searchTypeGroup = SearchType.values().map { searchType -> binding.navView.menu.findItem(searchType.resId) }
+        val defaultSearchTypes = searchTypeGroup
+        searchTypeSelections = MultiSelectMenuActionGroup(searchTypeGroup, defaultSearchTypes) { selections ->
+            Timber.d("selected titles: ${SearchType.TITLE.resId in selections}; tags: ${SearchType.TAG.resId in selections}" )
+        }
+
+        // setup search result order selection
+        val resultOrderTypeGroup = ResultOrderType.values().map { resultOrderType -> binding.navView.menu.findItem(resultOrderType.resId) }
+        val defaultResultOrder = binding.navView.menu.findItem(ResultOrderType.RECENT.resId)
+        resultOrderSelections = SingleSelectMenuActionGroup(resultOrderTypeGroup, defaultResultOrder) { selection ->
+            val name = ResultOrderType.values().find { it.resId == selection }
+            Timber.d("selected $name" )
+        }
+    }
+
+    private fun setupSearchBar() {
+        // setup search bar
+        binding.searchBar.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                setSearchBarActive(true)
+            } else {
+                setSearchBarActive(false)
+            }
+        }
+        binding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // do nothing
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                Timber.d("Searching with string '${binding.searchBar.text}'")
+                loadNotes()
+            }
+        })
+        binding.searchBar.setOnEditorActionListener { v, actionId, event ->
+            setSearchBarActive(false)
+            true
+        }
+    }
+
+
     /**
      * Filter notes based on search
      */
     private fun filterForSearch(notes: List<Note>): List<Note> {
 
-        // TODO - improve search results shown (search "my " and "my random note" will show but not "my 1")
+//        // TODO - improve search results shown (search "my " and "my random note" will show but not "my 1")
+//
+//        val searchStr = binding.searchBar.text.toString()
+//        val filtered = notes.filter { note ->
+//            // search must be at least MIN_SEARCH_LENGTH chars (otherwise all are shown)
+//            (searchStr.length < MIN_SEARCH_LENGTH) or
+//            when (binding.searchFiltersDropdown.selectedItem) {
+//                SearchType.ALL -> fuzzyMatch(searchStr, note.name)
+//                        || note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
+//                SearchType.NAME -> fuzzyMatch(searchStr, note.name)
+//                SearchType.TAG -> note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
+//                else -> true // display everything
+//            }
+//        }
+//
+//        // order by fuzzy match
+//        return filtered.sortedByDescending { note ->
+//            when (binding.searchFiltersDropdown.selectedItem) {
+//                SearchType.ALL -> max(
+//                    FuzzySearch.ratio(searchStr, note.name),
+//                    note.tags.map
+//                    { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max() ?: Int.MIN_VALUE
+//                )
+//                SearchType.NAME -> FuzzySearch.ratio(searchStr, note.name)
+//                SearchType.TAG -> note.tags.map<Tag, Int>
+//                { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max()
+//                else -> throw IllegalArgumentException("Unrecognized search filter type")
+//            }
+//        }
 
-        val searchStr = binding.searchBar.text.toString()
-        val filtered = notes.filter { note ->
-            // search must be at least MIN_SEARCH_LENGTH chars (otherwise all are shown)
-            (searchStr.length < MIN_SEARCH_LENGTH) or
-            when (binding.searchFiltersDropdown.selectedItem) {
-                SearchType.ALL -> fuzzyMatch(searchStr, note.name)
-                        || note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
-                SearchType.NAME -> fuzzyMatch(searchStr, note.name)
-                SearchType.TAG -> note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
-                else -> true // display everything
-            }
-        }
-
-        // order by fuzzy match
-        return filtered.sortedByDescending { note ->
-            when (binding.searchFiltersDropdown.selectedItem) {
-                SearchType.ALL -> max(
-                    FuzzySearch.ratio(searchStr, note.name),
-                    note.tags.map
-                    { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max() ?: Int.MIN_VALUE
-                )
-                SearchType.NAME -> FuzzySearch.ratio(searchStr, note.name)
-                SearchType.TAG -> note.tags.map<Tag, Int>
-                { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max()
-                else -> throw IllegalArgumentException("Unrecognized search filter type")
-            }
-        }
+        return notes
     }
 
     private fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {

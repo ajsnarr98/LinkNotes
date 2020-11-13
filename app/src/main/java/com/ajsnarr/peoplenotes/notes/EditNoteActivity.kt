@@ -3,9 +3,6 @@ package com.ajsnarr.peoplenotes.notes
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -17,10 +14,10 @@ import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.UUID
+import com.ajsnarr.peoplenotes.databinding.ActivityEditnoteBinding
 import com.ajsnarr.peoplenotes.search.SearchActivity
 import com.ajsnarr.peoplenotes.util.getScreenSize
 import com.ajsnarr.peoplenotes.util.hideKeyboard
-import kotlinx.android.synthetic.main.activity_editnote.*
 import timber.log.Timber
 
 open class EditNoteActivity : BaseActivity() {
@@ -49,6 +46,7 @@ open class EditNoteActivity : BaseActivity() {
     }
 
     lateinit var viewModel: EditNoteViewModel
+    lateinit var binding: ActivityEditnoteBinding
 
     protected lateinit var recyclerAdapter: EditNoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
@@ -68,7 +66,7 @@ open class EditNoteActivity : BaseActivity() {
             // set up tags popup window
             EditNoteTagsPopup(
                 inflater = activity.layoutInflater,
-                parentView = activity.popupcontainer,
+                parentView = activity.binding.root,
                 screenSize = getScreenSize(activity)
             )
         }
@@ -147,7 +145,8 @@ open class EditNoteActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_editnote)
+        binding = ActivityEditnoteBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val inNoteID: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
         val inNote: Note? = mNotesCollection.findByID(inNoteID)
@@ -155,16 +154,16 @@ open class EditNoteActivity : BaseActivity() {
         viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNote)).get(EditNoteViewModel::class.java)
 
         // set up close button
-        close_button.setOnClickListener { onBackPressed() }
+        binding.closeButton.setOnClickListener { onBackPressed() }
 
         // set up save button
-        save_button.setOnClickListener { mRecyclerActionListener.onSaveButtonPress() }
+        binding.saveButton.setOnClickListener { mRecyclerActionListener.onSaveButtonPress() }
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
         recyclerAdapter = EditNoteAdapter(viewModel.note, mRecyclerActionListener)
 
-        recycler_view.apply {
+        binding.recyclerView.apply {
             layoutManager = recyclerManager
             adapter = recyclerAdapter
         }

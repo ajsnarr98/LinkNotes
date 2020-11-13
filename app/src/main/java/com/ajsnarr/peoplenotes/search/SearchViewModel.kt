@@ -79,8 +79,11 @@ class SearchViewModel : ViewModel() {
         val sortRatingMethods: (type: SearchType, note: Note) -> Int = { type, note ->
             when (type) {
                 SearchType.TITLE -> FuzzySearch.ratio(searchStr, note.name)
-                SearchType.TAG -> note.tags.map<Tag, Int>
-                { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max() ?: Int.MIN_VALUE
+                SearchType.TAG -> {
+                    note.tags.map<Tag, Int> { tag ->
+                        FuzzySearch.ratio(searchStr, tag.text)
+                    }.max() ?: Int.MIN_VALUE
+                }
             }
         }
         return filtered.sortedByDescending { note ->

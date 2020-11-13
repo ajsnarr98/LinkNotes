@@ -1,12 +1,16 @@
 package com.ajsnarr.peoplenotes.data.db
 
+import java.util.*
+
 
 data class Note(
     val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
-    var type: String? = null,
-    var name: String? = null,
+    val type: String? = null,
+    val name: String? = null,
+    val dateCreated: Date? = null,
+    val lastDateEdited: Date? = null,
     val nicknames: MutableList<String>? = null,
-    var mainPicture: Picture? = null,
+    val mainPicture: Picture? = null,
     val pictures: MutableList<Picture>? = null,
     val tags: MutableList<Tag>? = null,
     val entries: MutableList<Entry>? = null,
@@ -19,6 +23,8 @@ data class Note(
                 id = other.id,
                 type = other.type,
                 name = other.name,
+                dateCreated = other.dateCreated,
+                lastDateEdited = other.lastDateEdited,
                 nicknames = other.nicknames,
                 mainPicture = if (other.mainPicture != null) Picture.fromAppObject(
                     other.mainPicture!!
@@ -58,8 +64,10 @@ data class Note(
     override fun toAppObject(): com.ajsnarr.peoplenotes.data.Note {
         return com.ajsnarr.peoplenotes.data.Note(
             id = this.id!!,
-            type = this.type!!,
-            name = this.name!!,
+            _type = this.type!!,
+            _name = this.name!!,
+            dateCreated = this.dateCreated!!,
+            lastDateEdited = this.lastDateEdited!!,
             nicknames = this.nicknames!!,
             mainPicture = this.mainPicture?.url,
             pictures = this.pictures!!.map { it.url!! }.toMutableList(),

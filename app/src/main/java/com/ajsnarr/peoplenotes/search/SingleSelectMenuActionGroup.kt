@@ -10,7 +10,7 @@ class SingleSelectMenuActionGroup(
     menuItems: List<MenuItem>,
     defaultSelection: MenuItem = menuItems.first(),
     val onSelectionChange: (selection: Int) -> Unit,
-) : MenuActionGroup(menuItems, listOf(defaultSelection)) {
+) : MenuActionGroup(menuItems, setOf(defaultSelection)) {
 
     init {
         // update based on current (default) selection

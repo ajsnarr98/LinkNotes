@@ -6,6 +6,8 @@ import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.NoteCollection
 import com.ajsnarr.peoplenotes.data.Tag
 import me.xdrop.fuzzywuzzy.FuzzySearch
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 enum class SearchType(val resId: Int) {
     TAG(R.id.search_filter_tags),
@@ -34,7 +36,7 @@ class SearchViewModel : ViewModel() {
     /**
      * Load notes from DB and filter for search.
      */
-    val filteredForSearch get() = filterForSearch(mNotesCollection.toList())
+    val filteredForSearch get() = orderForSearch(filterForSearch(mNotesCollection.toList()))
 
     private val isValidSearch: Boolean get() = searchStr.length >= MIN_SEARCH_LENGTH
 
@@ -87,6 +89,15 @@ class SearchViewModel : ViewModel() {
                 if (searchTypesSelected[type] == true) sortRatingMethods(type, note)
                 else Int.MIN_VALUE
             }.max()
+        }
+    }
+
+    private fun orderForSearch(notes: List<Note>): List<Note> {
+        return notes.sortedBy { note ->
+            when (resultOrderSelected) {
+                ResultOrderType.RECENT -> (Long.MAX_VALUE - note.lastDateEdited.time).toString()
+                ResultOrderType.ALPHABETICAL -> note.name.toUpperCase(Locale.ROOT)
+            }
         }
     }
 

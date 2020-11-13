@@ -263,21 +263,6 @@ class SearchActivity : BaseActivity() {
         recyclerAdapter.updateResults(filterForSearch(mNotesCollection.toList()))
     }
 
-    private fun loadDefaultNotes() {
-        val notes = mutableListOf<Note>(
-            Note(
-                id = "123", name = "Devin James", tags = mutableListOf<Tag>(
-                    Tag("friend"),
-                    Tag("charlotesville"), Tag("JMU"), Tag("1"), Tag("1"),
-                    Tag("1"), Tag("1")
-                )
-            ),
-            Note(id = "1233", name = "John Smith"),
-            Note(id = "1234", name = "Openheimer Shmitt")
-        )
-        recyclerAdapter.updateResults(notes)
-    }
-
     private fun setSearchBarActive(isActive: Boolean) {
         // return if state of bar is not changed
         if (isActive == this.isSearchBarActive) return

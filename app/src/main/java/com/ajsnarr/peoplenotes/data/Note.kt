@@ -2,12 +2,15 @@ package com.ajsnarr.peoplenotes.data
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 data class Note(
     val id: UUID?, // a null id will be assigned when stored in db
-    var type: String = "",
-    var name: String = "",
+    var _type: String = "",
+    var _name: String = "",
+    val dateCreated: Date = Date(),
+    var lastDateEdited: Date = Date(),
     val nicknames: MutableList<String> = mutableListOf(),
     var mainPicture: UUID? = null,
     val pictures: MutableList<UUID> = mutableListOf(),
@@ -15,6 +18,24 @@ data class Note(
     val entries: EntryList = EntryList.getEmpty(),
     val notes: MutableList<Note>? = null // for noteGroup types
 ) : AppDataObject, Parcelable {
+
+    init {
+        entries.parentNote = this
+    }
+
+    var type
+        get() = _type
+        set(value) {
+            _type = value
+            onEditNote()
+        }
+
+    var name
+        get() = _name
+        set(value) {
+            _name = value
+            onEditNote()
+        }
 
     companion object {
 
@@ -32,11 +53,17 @@ data class Note(
         const val DEFAULT = "default"
     }
 
+    fun addPicture(picture: UUID) {
+        pictures.add(picture)
+        onEditNote()
+    }
+
     /**
      * Add a new entry to this note.
      */
     fun addNewEntry() {
         entries.add(Entry(id = entries.nextEntryID))
+        onEditNote()
     }
 
     /**
@@ -53,6 +80,7 @@ data class Note(
      */
     fun deleteEntry(entryID: String) {
         entries.removeWithEntryID(entryID)
+        onEditNote()
     }
 
     /**
@@ -97,6 +125,16 @@ data class Note(
     }
 
     /**
+     * WARNING - This method is only meant for internal use within Note and its
+     * properties.
+     *
+     * Called when the note is updated.
+     */
+    fun onEditNote() {
+        lastDateEdited = Date()
+    }
+
+    /**
      * Restores the entries recently deleted since the last save.
      */
     fun restoreRecentlyDeletedEntries() {
@@ -109,7 +147,7 @@ data class Note(
      * @return true if succesfully updated or false if failure
      */
     fun updateExistingEntry(updated: Entry): Boolean {
-        return entries.updateExisting(updated)
+        return entries.updateExisting(updated).also { if (it) onEditNote() }
     }
 
     /**

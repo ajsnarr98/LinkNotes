@@ -2,6 +2,7 @@ package com.ajsnarr.peoplenotes.data
 
 import android.os.Parcelable
 import com.ajsnarr.peoplenotes.util.max
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.math.BigInteger
 
@@ -17,6 +18,17 @@ class EntryList: ArrayList<Entry>(), Parcelable {
         }
     }
 
+    /**
+     * Note containing this list of entries.
+     */
+    @IgnoredOnParcel
+    var parentNote: Note? = null
+        set(value) {
+            field = value
+            this.forEach { entry -> entry.parentNote = value }
+        }
+
+    @IgnoredOnParcel
     private val lastDeletedEntries = mutableSetOf<Entry>()
 
     // next entry is either 0 or one more than the most recently added entry
@@ -105,6 +117,7 @@ class EntryList: ArrayList<Entry>(), Parcelable {
         val index = this.indexOfFirst { entry -> entry.id == updated.id }
         if (index >= 0) {
             this[index] = updated
+            this[index].parentNote = parentNote
             return true
         }
         return false

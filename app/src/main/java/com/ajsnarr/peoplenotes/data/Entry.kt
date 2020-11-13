@@ -1,6 +1,7 @@
 package com.ajsnarr.peoplenotes.data
 
 import android.os.Parcelable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -14,14 +15,25 @@ class Entry(val id: UUID,
             val subEntries: MutableList<Entry> = mutableListOf()
 ): AppDataObject, Parcelable {
 
+    /**
+     * Note containing this list of entries.
+     */
+    @IgnoredOnParcel
+    var parentNote: Note? = null
+        set(value) {
+            field = value
+            this.subEntries.forEach { entry -> entry.parentNote = value }
+        }
+
     // Setup content add to datesEdited every time it is updated
+    @IgnoredOnParcel
     var content: EntryContent = mContent
         set(value) {
-            this.lastDateEdited = Date() // TODO - update parent note or entry as well
+            this.lastDateEdited = Date()
+            parentNote?.onEditNote()
             mContent = value
             field = value
         }
-        get() = field
 
     /**
      * Add a new sub entry.

@@ -18,28 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.peoplenotes.BaseActivity
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
-import com.ajsnarr.peoplenotes.data.Tag
 import com.ajsnarr.peoplenotes.databinding.ActivitySearchBinding
 import com.ajsnarr.peoplenotes.notes.EditNoteActivity
 import com.ajsnarr.peoplenotes.notes.ViewNoteActivity
 import com.ajsnarr.peoplenotes.util.hideKeyboardFrom
-import me.xdrop.fuzzywuzzy.FuzzySearch
 import timber.log.Timber
-
-/**
- * Min number of characters used in a search
- */
-const val MIN_SEARCH_LENGTH = 3
-
-private enum class SearchType(val resId: Int) {
-    TAG(R.id.search_filter_tags),
-    TITLE(R.id.search_filter_title),
-}
-
-private enum class ResultOrderType(val resId: Int) {
-    RECENT(R.id.sort_order_recent),
-    ALPHABETICAL(R.id.sort_order_alpha),
-}
+import java.lang.IllegalStateException
 
 class SearchActivity : BaseActivity() {
 
@@ -70,7 +54,6 @@ class SearchActivity : BaseActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
-        // TODO: Use the ViewModel
 
         // setup search bar view to allow handling of back buttn presses within
         // keyboard
@@ -91,31 +74,10 @@ class SearchActivity : BaseActivity() {
         setupNavDrawer()
         setupSearchBar()
 
-        // setup filter dropdown
-        binding.searchFiltersDropdown.adapter = ArrayAdapter<SearchType>(
-            this,
-            android.R.layout.simple_spinner_item, SearchType.values()
-        )
-        binding.searchFiltersDropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (view is AppCompatTextView) {
-                    loadNotes() // search again
-                }
-            }
-        }
-
         // load notes
-//        loadDefaultNotes()
-        mNotesCollection.observe(this, Observer { updatedNotes ->
+        viewModel.mNotesCollection.observe(this, {
             // update notes based on live data changes
-            loadNotes()
+            onNotesUpdate()
         })
 
         // setup add note button
@@ -164,17 +126,20 @@ class SearchActivity : BaseActivity() {
 
         // setup search type selection
         val searchTypeGroup = SearchType.values().map { searchType -> binding.navView.menu.findItem(searchType.resId) }
-        val defaultSearchTypes = searchTypeGroup
+        val defaultSearchTypes = searchTypeGroup.toSet()
         searchTypeSelections = MultiSelectMenuActionGroup(searchTypeGroup, defaultSearchTypes) { selections ->
-            Timber.d("selected titles: ${SearchType.TITLE.resId in selections}; tags: ${SearchType.TAG.resId in selections}" )
+            val selectedTypes = SearchType.values().filter { searchType -> searchType.resId in selections }
+            viewModel.onSearchTypesSelected(selectedTypes)
+            onNotesUpdate() // load changes in recycler view to show any search changes
         }
 
         // setup search result order selection
         val resultOrderTypeGroup = ResultOrderType.values().map { resultOrderType -> binding.navView.menu.findItem(resultOrderType.resId) }
         val defaultResultOrder = binding.navView.menu.findItem(ResultOrderType.RECENT.resId)
         resultOrderSelections = SingleSelectMenuActionGroup(resultOrderTypeGroup, defaultResultOrder) { selection ->
-            val name = ResultOrderType.values().find { it.resId == selection }
-            Timber.d("selected $name" )
+            val selectedType = ResultOrderType.values().find { it.resId == selection } ?: throw IllegalStateException("Invalid resource ID")
+            viewModel.onResultOrderSelected(selectedType)
+            onNotesUpdate() // load changes in recycler view if order has changed
         }
     }
 
@@ -197,8 +162,9 @@ class SearchActivity : BaseActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                Timber.d("Searching with string '${binding.searchBar.text}'")
-                loadNotes()
+                Timber.d("Searching with string '${s.toString()}'")
+                viewModel.searchStr = s.toString()
+                onNotesUpdate()
             }
         })
         binding.searchBar.setOnEditorActionListener { v, actionId, event ->
@@ -207,60 +173,11 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-
     /**
-     * Filter notes based on search
+     * Load notes from view model, filtered for search.
      */
-    private fun filterForSearch(notes: List<Note>): List<Note> {
-
-//        // TODO - improve search results shown (search "my " and "my random note" will show but not "my 1")
-//
-//        val searchStr = binding.searchBar.text.toString()
-//        val filtered = notes.filter { note ->
-//            // search must be at least MIN_SEARCH_LENGTH chars (otherwise all are shown)
-//            (searchStr.length < MIN_SEARCH_LENGTH) or
-//            when (binding.searchFiltersDropdown.selectedItem) {
-//                SearchType.ALL -> fuzzyMatch(searchStr, note.name)
-//                        || note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
-//                SearchType.NAME -> fuzzyMatch(searchStr, note.name)
-//                SearchType.TAG -> note.tags.any { tag -> fuzzyMatch(searchStr, tag.text) }
-//                else -> true // display everything
-//            }
-//        }
-//
-//        // order by fuzzy match
-//        return filtered.sortedByDescending { note ->
-//            when (binding.searchFiltersDropdown.selectedItem) {
-//                SearchType.ALL -> max(
-//                    FuzzySearch.ratio(searchStr, note.name),
-//                    note.tags.map
-//                    { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max() ?: Int.MIN_VALUE
-//                )
-//                SearchType.NAME -> FuzzySearch.ratio(searchStr, note.name)
-//                SearchType.TAG -> note.tags.map<Tag, Int>
-//                { tag -> FuzzySearch.ratio(searchStr, tag.text) }.max()
-//                else -> throw IllegalArgumentException("Unrecognized search filter type")
-//            }
-//        }
-
-        return notes
-    }
-
-    private fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
-        return if (searchStr.length <= matchTo.length) {
-            // match for part of given strs if search string is less than string to be matched to
-            FuzzySearch.partialRatio(searchStr, matchTo) >= 70
-        } else {
-            // make search more condensed as search string gets bigger
-            FuzzySearch.ratio(searchStr, matchTo) >= 85
-        }
-    }
-
-    /**
-     * Load notes from DB and filter for search.
-     */
-    private fun loadNotes() {
-        recyclerAdapter.updateResults(filterForSearch(mNotesCollection.toList()))
+    private fun onNotesUpdate() {
+        recyclerAdapter.updateResults(viewModel.filteredForSearch)
     }
 
     private fun setSearchBarActive(isActive: Boolean) {

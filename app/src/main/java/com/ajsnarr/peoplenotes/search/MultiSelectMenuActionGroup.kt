@@ -8,8 +8,8 @@ import android.widget.Checkable
  */
 class MultiSelectMenuActionGroup(
     menuItems: List<MenuItem>,
-    defaultSelections: List<MenuItem> = menuItems,
-    val onSelectionChange: (selections: List<Int>) -> Unit,
+    defaultSelections: Set<MenuItem> = menuItems.toSet(),
+    val onSelectionChange: (selections: Set<Int>) -> Unit,
 ) : MenuActionGroup(menuItems, defaultSelections) {
 
     init {
@@ -31,5 +31,5 @@ class MultiSelectMenuActionGroup(
         // do nothing
     }
 
-    override fun onMenuItemClick(menuItem: MenuItem) = onSelectionChange(selectedItems.map { it.itemId })
+    override fun onMenuItemClick(menuItem: MenuItem) = onSelectionChange(selectedItems.map { it.itemId }.toSet())
 }

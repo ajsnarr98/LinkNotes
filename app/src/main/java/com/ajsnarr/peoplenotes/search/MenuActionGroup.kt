@@ -6,7 +6,7 @@ import android.widget.Checkable
 /**
  * Represents a group of menu items and their action views.
  */
-abstract class MenuActionGroup(val menuItems: List<MenuItem>, val defaultSelections: List<MenuItem>) {
+abstract class MenuActionGroup(val menuItems: List<MenuItem>, val defaultSelections: Set<MenuItem>) {
 
     /**
      * Used to figure out if menu item or the actionView was first item clicked.

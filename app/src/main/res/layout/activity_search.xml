@@ -59,20 +59,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <Spinner
-            android:id="@+id/search_filters_dropdown"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="12dp"
-            android:textSize="16sp"
-            android:background="@color/redirect_button">
-
-        </Spinner>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

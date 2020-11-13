@@ -13,7 +13,6 @@ import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.data.UUID
 import com.ajsnarr.peoplenotes.databinding.ActivityViewnoteBinding
-import kotlinx.android.synthetic.main.activity_viewnote.*
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
@@ -56,9 +55,9 @@ open class ViewNoteActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_viewnote)
 
-        binding = ActivityViewnoteBinding.bind(root)
+        binding = ActivityViewnoteBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val inNoteId: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
         val inNote: Note? = mNotesCollection.findByID(inNoteId)

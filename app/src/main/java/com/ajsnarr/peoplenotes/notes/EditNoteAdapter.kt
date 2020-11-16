@@ -22,7 +22,7 @@ import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 
-class EditNoteAdapter(private val note: Note,
+class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                       private val actionListener: ActionListener) : RecyclerView.Adapter<EditNoteAdapter.ViewHolder>() {
 
     private lateinit var mNoteDetailsViewHolder: NoteDetailViewHolder
@@ -85,20 +85,20 @@ class EditNoteAdapter(private val note: Note,
             ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_entry, parent, false),
-                this, actionListener
+                viewModel, actionListener
             )
             NOTE_DETAILS_TYPE -> {
                 mNoteDetailsViewHolder = NoteDetailViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_editnote_details, parent, false),
-                    this, actionListener
+                    viewModel, actionListener
                 )
                 mNoteDetailsViewHolder
             }
             ADD_ENTRY_BUTTON_TYPE -> AddButtonViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_add_btn, parent, false),
-                this, actionListener
+                viewModel, this, actionListener
             )
             else -> throw IllegalArgumentException("Unhandled viewType: $viewType")
         }
@@ -112,11 +112,11 @@ class EditNoteAdapter(private val note: Note,
         }
     }
 
-    override fun getItemCount(): Int = note.entries.size + 2
+    override fun getItemCount(): Int = viewModel.note.entries.size + 2
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return when (holder) {
-            is EntryViewHolder      -> holder.onBind(note.entries[position - 1])
+            is EntryViewHolder      -> holder.onBind(viewModel.note.entries[position - 1])
             is NoteDetailViewHolder -> holder.onBind()
             is AddButtonViewHolder  -> holder.onBind()
             else -> throw IllegalArgumentException("Unhandled viewType: ${holder::class.qualifiedName}")
@@ -129,7 +129,7 @@ class EditNoteAdapter(private val note: Note,
 
     abstract class ViewHolder(
         protected val view: View,
-        protected val adapter: EditNoteAdapter,
+        protected val viewModel: EditNoteViewModel,
         protected val actionListener: ActionListener
     ) : RecyclerView.ViewHolder(view) {
 
@@ -144,8 +144,8 @@ class EditNoteAdapter(private val note: Note,
     }
 
 
-    class EntryViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
-        ViewHolder(view, adapter, actionListener) {
+    class EntryViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
+        ViewHolder(view, viewModel, actionListener) {
 
         val binding = ItemEditnoteEntryBinding.bind(view)
 
@@ -172,8 +172,8 @@ class EditNoteAdapter(private val note: Note,
         }
     }
 
-    class NoteDetailViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
-        ViewHolder(view, adapter, actionListener) {
+    class NoteDetailViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
+        ViewHolder(view, viewModel, actionListener) {
 
         val binding = ItemEditnoteDetailsBinding.bind(view)
 
@@ -189,7 +189,7 @@ class EditNoteAdapter(private val note: Note,
             actionListener.onSetupNoteTypes(binding.noteTypeInput)
 
             // update fields
-            if (adapter.note.isNewNote()) {
+            if (viewModel.note.isNewNote()) {
                 // hide delete button if note is new
                 binding.deleteButton.visibility = View.INVISIBLE
             } else {
@@ -199,10 +199,10 @@ class EditNoteAdapter(private val note: Note,
             }
 
             binding.titleInput.text.clear()
-            binding.titleInput.text.append(adapter.note.name)
+            binding.titleInput.text.append(viewModel.note.name)
 
             binding.noteTypeInput.text.clear()
-            binding.noteTypeInput.text.append(adapter.note.type)
+            binding.noteTypeInput.text.append(viewModel.note.type)
 
             // TODO nicknames
 
@@ -219,7 +219,7 @@ class EditNoteAdapter(private val note: Note,
 
 
         fun updateNumEntriesText() {
-            val numEntries: Int = adapter.note.entries.size
+            val numEntries: Int = viewModel.note.entries.size
 
             binding.numEntriesText.text =
                 view.context.getString(R.string.editnote_num_entries, numEntries)
@@ -227,8 +227,8 @@ class EditNoteAdapter(private val note: Note,
 
     }
 
-    class AddButtonViewHolder(view: View, adapter: EditNoteAdapter, actionListener: ActionListener) :
-            ViewHolder(view, adapter, actionListener) {
+    class AddButtonViewHolder(view: View, viewModel: EditNoteViewModel, val adapter: EditNoteAdapter, actionListener: ActionListener) :
+            ViewHolder(view, viewModel, actionListener) {
 
         val binding = ItemEditnoteAddBtnBinding.bind(view)
 

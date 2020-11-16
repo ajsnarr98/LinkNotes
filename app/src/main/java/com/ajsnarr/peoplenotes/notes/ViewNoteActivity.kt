@@ -71,7 +71,7 @@ open class ViewNoteActivity : BaseActivity() {
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = ViewNoteAdapter(viewModel.note, mRecyclerActionListener)
+        recyclerAdapter = ViewNoteAdapter(viewModel, mRecyclerActionListener)
 
         binding.recyclerView.apply {
             layoutManager = recyclerManager

@@ -161,7 +161,7 @@ open class EditNoteActivity : BaseActivity() {
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = EditNoteAdapter(viewModel.note, mRecyclerActionListener)
+        recyclerAdapter = EditNoteAdapter(viewModel, mRecyclerActionListener)
 
         binding.recyclerView.apply {
             layoutManager = recyclerManager

@@ -60,17 +60,31 @@
         tools:text="note_type" />
 
     <TextView
-        android:id="@+id/nicknames"
+        android:id="@+id/nicknames_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_half_horizontal_padding"
         android:layout_marginTop="@dimen/activity_vertical_padding"
         android:layout_marginEnd="@dimen/activity_half_horizontal_padding"
+        style="?attr/textAppearanceSubtitle1Bold"
+        android:text="@string/editnote_nicknames_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/note_type"/>
+
+    <TextView
+        android:id="@+id/nicknames"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_half_horizontal_padding"
+        android:layout_marginTop="@dimen/activity_quarter_vertical_padding"
+        android:layout_marginEnd="@dimen/activity_half_horizontal_padding"
+        android:paddingStart="4sp"
+        android:paddingEnd="0sp"
         style="?attr/textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/note_type"
+        app:layout_constraintTop_toBottomOf="@+id/nicknames_title"
         tools:text="nicknames"/>
 
     <Button

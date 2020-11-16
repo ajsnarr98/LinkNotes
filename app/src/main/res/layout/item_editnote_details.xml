@@ -62,21 +62,33 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/note_type_title"
         app:layout_constraintTop_toBottomOf="@+id/title_input"
-        app:layout_constraintBottom_toTopOf="@id/nicknames_input" />
+        app:layout_constraintBottom_toTopOf="@id/nicknames_title" />
+
+    <TextView
+        android:id="@+id/nicknames_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_half_horizontal_padding"
+        android:layout_marginTop="@dimen/activity_half_vertical_padding"
+        android:layout_marginEnd="@dimen/activity_horizontal_padding"
+        style="?attr/textAppearanceSubtitle1Bold"
+        android:text="@string/editnote_nicknames_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/note_type_input"/>
 
     <com.ajsnarr.peoplenotes.util.MultiEditText
         android:id="@+id/nicknames_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_half_horizontal_padding"
-        android:layout_marginTop="@dimen/activity_half_vertical_padding"
+        android:layout_marginTop="@dimen/quarter_base_padding"
         android:layout_marginEnd="@dimen/activity_horizontal_padding"
         android:hint="@string/editnote_nickname_suggestion"
         style="?attr/textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/note_type_input" />
+        app:layout_constraintTop_toBottomOf="@+id/nicknames_title" />
 
     <ImageView
         android:id="@+id/delete_button"

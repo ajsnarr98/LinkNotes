@@ -100,11 +100,11 @@ class ViewNoteAdapter(private val note: Note,
 
             // leave nicknames field blank if there are no nicknames
             if (adapter.note.nicknames.size > 0) {
-                val nickString: String = adapter.note.nicknames.joinToString(separator = "\n")
-                binding.nicknames.text =
-                    view.context.getString(R.string.viewnote_nicknames_text, nickString)
+                val nickString: String = adapter.note.nicknames.joinToString(separator = ", ")
+                binding.nicknames.text = nickString
             } else {
-                binding.nicknames.text = ""
+                binding.nicknamesTitle.visibility = View.INVISIBLE
+                binding.nicknames.visibility = View.INVISIBLE
             }
 
             // add listener for edit

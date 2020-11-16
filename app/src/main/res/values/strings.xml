@@ -9,21 +9,25 @@
     <!-- Editnote Activity -->
     <string name="editnote_activity_title">Add New Note</string>
     <string name="editnote_title_suggestion">Note Title...</string>
-    <string name="editnote_notetype_suggestion">note type...</string>
+    <string name="editnote_note_type_suggestion">note type...</string>
     <string name="editnote_nickname_suggestion">nicknames...</string>
-    <string name="editnote_savebtn">SAVE</string>
-    <string name="editnote_addentrybtn">ADD NEW ENTRY</string>
+    <string name="editnote_entry_type_suggestion">entry type...</string>
+    <string name="editnote_entry_content_suggestion">Enter content...</string>
+    <string name="editnote_save_btn">SAVE</string>
+    <string name="editnote_add_entry_btn">ADD NEW ENTRY</string>
     <string name="editnote_num_entries">Showing %1$d entries</string>
     <string name="editnote_profile_image_desc">Profile Image</string>
     <string name="editnote_delete_button_desc">Delete Button</string>
-    <string name="editnote_notetype_text">Note Type: </string>
+    <string name="editnote_delete_entry_button_desc">Delete Entry Button</string>
+    <string name="editnote_note_type_text">Note Type: </string>
+    <string name="editnote_entry_type_text">Entry Type: </string>
     <string name="editnote_delete_entry_confirmation">Are you sure you want to delete this entry?</string>
     <string name="editnote_delete_note_confirmation">Are you sure you want to delete the note \"%s\"? This cannot be undone</string>
     
     <!-- Viewnote Activity -->
     <string name="viewnote_nicknames_text"><b>Nicknames:\n</b>%1$s</string>
     <string name="viewnote_num_entries">Showing %1$d entries</string>
-    <string name="viewnote_editbtn">EDIT</string>
+    <string name="viewnote_edit_btn">EDIT</string>
 
     <!-- Search activity -->
     <string name="search_add_note">Add new note</string>

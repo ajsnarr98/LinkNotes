@@ -74,7 +74,7 @@
         android:layout_marginEnd="16dp"
         android:drawablePadding="6dp"
         android:gravity="center"
-        android:text="@string/viewnote_editbtn"
+        android:text="@string/viewnote_edit_btn"
         android:drawableLeft="@android:drawable/ic_menu_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

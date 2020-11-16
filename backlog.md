@@ -20,4 +20,5 @@
 - add default entries for pictures and the like
 
 ## Bugs
-- 
+- add entry -> type in its content -> add another entry :: content disappears
+- adding an entry on existing note removes note title

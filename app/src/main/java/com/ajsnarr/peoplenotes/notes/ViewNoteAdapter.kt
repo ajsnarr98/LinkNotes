@@ -11,7 +11,7 @@ import com.ajsnarr.peoplenotes.databinding.ItemViewnoteDetailsBinding
 import com.ajsnarr.peoplenotes.databinding.ItemViewnoteEntryBinding
 import java.lang.IllegalArgumentException
 
-class ViewNoteAdapter(private val note: Note,
+class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
                       private val actionListener: ActionListener
 ) : RecyclerView.Adapter<ViewNoteAdapter.ViewHolder>() {
 
@@ -36,13 +36,13 @@ class ViewNoteAdapter(private val note: Note,
             ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_viewnote_entry, parent, false),
-                this, actionListener
+                viewModel, actionListener
             )
             NOTE_DETAILS_TYPE -> {
                 NoteDetailViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_viewnote_details, parent, false),
-                    this, actionListener
+                    viewModel, actionListener
                 )
             }
             else -> throw IllegalArgumentException("Unhandled viewType: $viewType")
@@ -56,11 +56,11 @@ class ViewNoteAdapter(private val note: Note,
         }
     }
 
-    override fun getItemCount(): Int = note.entries.size + 1
+    override fun getItemCount(): Int = viewModel.note.entries.size + 1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return when (holder) {
-            is EntryViewHolder -> holder.onBind(note.entries[position - 1])
+            is EntryViewHolder -> holder.onBind(viewModel.note.entries[position - 1])
             is NoteDetailViewHolder -> holder.onBind()
             else -> throw IllegalArgumentException("Unhandled viewType: ${holder::class.qualifiedName}")
         }
@@ -68,12 +68,12 @@ class ViewNoteAdapter(private val note: Note,
 
     abstract class ViewHolder(
         protected val view: View,
-        protected val adapter: ViewNoteAdapter,
+        protected val viewModel: ViewNoteViewModel,
         protected val actionListener: ActionListener
     ) : RecyclerView.ViewHolder(view)
 
-    class EntryViewHolder(view: View, adapter: ViewNoteAdapter, actionListener: ActionListener) :
-        ViewHolder(view, adapter, actionListener) {
+    class EntryViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener) :
+        ViewHolder(view, viewModel, actionListener) {
 
         val binding = ItemViewnoteEntryBinding.bind(view)
 
@@ -83,24 +83,24 @@ class ViewNoteAdapter(private val note: Note,
         }
     }
 
-    class NoteDetailViewHolder(view: View, adapter: ViewNoteAdapter, actionListener: ActionListener) :
-        ViewHolder(view, adapter, actionListener) {
+    class NoteDetailViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener) :
+        ViewHolder(view, viewModel, actionListener) {
 
         private val binding = ItemViewnoteDetailsBinding.bind(view)
 
         fun onBind() {
 
-            if (adapter.note.isNewNote()) throw IllegalStateException("Cannot view empty note.")
+            if (viewModel.note.isNewNote()) throw IllegalStateException("Cannot view empty note.")
 
             // update num entries text
             updateNumEntriesText()
 
-            binding.title.text = adapter.note.name
-            binding.noteType.text = adapter.note.type
+            binding.title.text = viewModel.note.name
+            binding.noteType.text = viewModel.note.type
 
             // leave nicknames field blank if there are no nicknames
-            if (adapter.note.nicknames.size > 0) {
-                val nickString: String = adapter.note.nicknames.joinToString(separator = ", ")
+            if (viewModel.note.nicknames.size > 0) {
+                val nickString: String = viewModel.note.nicknames.joinToString(separator = ", ")
                 binding.nicknames.text = nickString
             } else {
                 binding.nicknamesTitle.visibility = View.INVISIBLE
@@ -116,7 +116,7 @@ class ViewNoteAdapter(private val note: Note,
         }
 
         fun updateNumEntriesText() {
-            val numEntries: Int = adapter.note.entries.size
+            val numEntries: Int = viewModel.note.entries.size
 
             binding.numEntriesText.text =
                 view.context.getString(R.string.editnote_num_entries, numEntries)

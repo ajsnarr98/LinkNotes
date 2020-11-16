@@ -5,7 +5,6 @@
 
 ## Features
 - make default profile image a square
-- use viewmodel properly in viewnoteadapter/editnoteadapter
 - better delete button
 - advanced searches
 - adding tags
@@ -20,6 +19,7 @@
 - add real editnote screen/boxes
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like
+- move notecollection out of base activity and into a base viewmodel?
 
 ## Bugs
 - add entry -> type in its content -> add another entry :: content disappears

@@ -7,20 +7,18 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp">
 
-
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="@dimen/activity_horizontal_padding"
+        android:layout_marginEnd="@dimen/activity_horizontal_padding"
         android:textSize="24sp"
         app:errorEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/edit_button"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edit_button"
+        app:layout_constraintBottom_toBottomOf="@id/edit_button"
         tools:text="Name" />
 
     <ImageView
@@ -28,37 +26,47 @@
         android:layout_width="178dp"
         android:layout_height="165dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:srcCompat="@drawable/default_profile" />
+        app:srcCompat="@drawable/default_profile"
+        android:contentDescription="@string/editnote_profile_image_desc" />
 
+
+    <TextView
+        android:id="@+id/note_type_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="0sp"
+        android:paddingEnd="6sp"
+        android:layout_marginStart="@dimen/activity_half_horizontal_padding"
+        android:text="@string/editnote_note_type_text"
+        style="?attr/textAppearanceSubtitle1Bold"
+        app:layout_constraintEnd_toStartOf="@id/note_type"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="@+id/note_type"
+        app:layout_constraintBottom_toBottomOf="@id/note_type" />
 
     <TextView
         android:id="@+id/note_type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="24dp"
-        android:textSize="18sp"
+        android:layout_marginTop="@dimen/base_padding"
+        android:layout_marginEnd="@dimen/activity_vertical_padding"
+        style="?attr/textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintStart_toEndOf="@+id/note_type_title"
+        app:layout_constraintTop_toTopOf="@+id/profile_image"
         tools:text="note_type" />
 
     <TextView
         android:id="@+id/nicknames"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:textSize="18sp"
+        android:layout_marginStart="@dimen/activity_half_horizontal_padding"
+        android:layout_marginTop="@dimen/activity_vertical_padding"
+        android:layout_marginEnd="@dimen/activity_half_horizontal_padding"
+        style="?attr/textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
@@ -70,8 +78,8 @@
         style="@style/SquareRoundedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/activity_vertical_padding"
+        android:layout_marginEnd="@dimen/activity_horizontal_padding"
         android:drawablePadding="6dp"
         android:gravity="center"
         android:text="@string/viewnote_edit_btn"
@@ -83,13 +91,11 @@
         android:id="@+id/num_entries_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:layout_marginStart="@dimen/activity_double_horizontal_padding"
+        android:layout_marginTop="@dimen/activity_horizontal_padding"
+        style="?attr/textAppearanceSubtitle1Bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_image"
+        tools:text="Showing 10 entries"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

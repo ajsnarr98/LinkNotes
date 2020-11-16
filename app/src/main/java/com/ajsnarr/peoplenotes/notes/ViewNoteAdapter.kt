@@ -86,7 +86,7 @@ class ViewNoteAdapter(private val note: Note,
     class NoteDetailViewHolder(view: View, adapter: ViewNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
-        val binding = ItemViewnoteDetailsBinding.bind(view)
+        private val binding = ItemViewnoteDetailsBinding.bind(view)
 
         fun onBind() {
 
@@ -96,8 +96,7 @@ class ViewNoteAdapter(private val note: Note,
             updateNumEntriesText()
 
             binding.title.text = adapter.note.name
-            binding.noteType.text =
-                view.context.getString(R.string.editnote_note_type_text, adapter.note.type)
+            binding.noteType.text = adapter.note.type
 
             // leave nicknames field blank if there are no nicknames
             if (adapter.note.nicknames.size > 0) {

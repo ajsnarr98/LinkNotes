@@ -4,6 +4,8 @@
 -
 
 ## Features
+- make default profile image a square
+- use viewmodel properly in viewnoteadapter/editnoteadapter
 - better delete button
 - advanced searches
 - adding tags

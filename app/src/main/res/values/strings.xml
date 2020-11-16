@@ -16,11 +16,11 @@
     <string name="editnote_num_entries">Showing %1$d entries</string>
     <string name="editnote_profile_image_desc">Profile Image</string>
     <string name="editnote_delete_button_desc">Delete Button</string>
+    <string name="editnote_notetype_text">Note Type: </string>
     <string name="editnote_delete_entry_confirmation">Are you sure you want to delete this entry?</string>
     <string name="editnote_delete_note_confirmation">Are you sure you want to delete the note \"%s\"? This cannot be undone</string>
     
     <!-- Viewnote Activity -->
-    <string name="viewnote_notetype_text"><b>Note Type: </b>%1$s</string>
     <string name="viewnote_nicknames_text"><b>Nicknames:\n</b>%1$s</string>
     <string name="viewnote_num_entries">Showing %1$d entries</string>
     <string name="viewnote_editbtn">EDIT</string>

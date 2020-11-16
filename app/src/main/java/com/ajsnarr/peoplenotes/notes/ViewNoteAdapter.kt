@@ -98,7 +98,7 @@ class ViewNoteAdapter(private val note: Note,
 
             binding.title.text = adapter.note.name
             binding.noteType.text =
-                view.context.getString(R.string.viewnote_notetype_text, adapter.note.type)
+                view.context.getString(R.string.editnote_notetype_text, adapter.note.type)
 
             // leave nicknames field blank if there are no nicknames
             if (adapter.note.nicknames.size > 0) {

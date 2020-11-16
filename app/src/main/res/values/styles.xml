@@ -36,6 +36,13 @@
 
     <style name="TextAppearance.PeopleNotes.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1" />
 
+    <style name="TextAppearance.PeopleNotes.Subtitle1.Bold" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
+    <style name="TextAppearance.PeopleNotes.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2" />
+
     <style name="TextAppearance.PeopleNotes.Body1" parent="TextAppearance.MaterialComponents.Body1">
     </style>
 

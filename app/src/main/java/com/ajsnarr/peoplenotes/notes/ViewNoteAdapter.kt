@@ -3,7 +3,6 @@ package com.ajsnarr.peoplenotes.notes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
@@ -87,7 +86,7 @@ class ViewNoteAdapter(private val note: Note,
     class NoteDetailViewHolder(view: View, adapter: ViewNoteAdapter, actionListener: ActionListener) :
         ViewHolder(view, adapter, actionListener) {
 
-        val binding = ItemViewnoteDetailsBinding.bind(view)
+        private val binding = ItemViewnoteDetailsBinding.bind(view)
 
         fun onBind() {
 
@@ -97,16 +96,15 @@ class ViewNoteAdapter(private val note: Note,
             updateNumEntriesText()
 
             binding.title.text = adapter.note.name
-            binding.noteType.text =
-                view.context.getString(R.string.viewnote_notetype_text, adapter.note.type)
+            binding.noteType.text = adapter.note.type
 
             // leave nicknames field blank if there are no nicknames
             if (adapter.note.nicknames.size > 0) {
-                val nickString: String = adapter.note.nicknames.joinToString(separator = "\n")
-                binding.nicknames.text =
-                    view.context.getString(R.string.viewnote_nicknames_text, nickString)
+                val nickString: String = adapter.note.nicknames.joinToString(separator = ", ")
+                binding.nicknames.text = nickString
             } else {
-                binding.nicknames.text = ""
+                binding.nicknamesTitle.visibility = View.INVISIBLE
+                binding.nicknames.visibility = View.INVISIBLE
             }
 
             // add listener for edit

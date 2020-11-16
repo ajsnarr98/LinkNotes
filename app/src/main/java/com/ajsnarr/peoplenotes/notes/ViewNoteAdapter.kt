@@ -9,6 +9,7 @@ import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.databinding.ItemViewnoteDetailsBinding
 import com.ajsnarr.peoplenotes.databinding.ItemViewnoteEntryBinding
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
@@ -75,9 +76,12 @@ class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
     class EntryViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener) :
         ViewHolder(view, viewModel, actionListener) {
 
-        val binding = ItemViewnoteEntryBinding.bind(view)
+        private lateinit var binding: ItemViewnoteEntryBinding
 
         fun onBind(entry: Entry) {
+            Timber.d("onBindEntry")
+            binding = ItemViewnoteEntryBinding.bind(view)
+
             binding.entryType.text = entry.type.value
             binding.content.text = entry.content.value
         }
@@ -86,11 +90,14 @@ class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
     class NoteDetailViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener) :
         ViewHolder(view, viewModel, actionListener) {
 
-        private val binding = ItemViewnoteDetailsBinding.bind(view)
+        private lateinit var binding: ItemViewnoteDetailsBinding
 
         fun onBind() {
 
             if (viewModel.note.isNewNote()) throw IllegalStateException("Cannot view empty note.")
+
+            Timber.d("onBindNoteDetails")
+            binding = ItemViewnoteDetailsBinding.bind(view)
 
             // update num entries text
             updateNumEntriesText()

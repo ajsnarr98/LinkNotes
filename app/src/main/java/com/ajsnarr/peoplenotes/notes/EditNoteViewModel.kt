@@ -17,6 +17,9 @@ class EditNoteViewModel(inNote: Note?) : ViewModel() {
     var title: String
         get() = note.name
         set(value) { note.name = value }
+    var noteType: String
+        get() = note.type
+        set(value) { note.type = value }
 
     fun addNewEntry() {
         note.addNewEntry()

@@ -130,6 +130,10 @@ open class EditNoteActivity : BaseActivity() {
             }
         }
 
+        override fun onSetNoteType(noteType: String) {
+            activity.viewModel.noteType = noteType
+        }
+
         override fun onSetTitle(title: String) {
             activity.viewModel.title = title
         }

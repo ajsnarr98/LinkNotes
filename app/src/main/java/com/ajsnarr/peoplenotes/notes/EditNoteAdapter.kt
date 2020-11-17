@@ -6,18 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
-import android.widget.EditText
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.peoplenotes.R
 import com.ajsnarr.peoplenotes.data.Entry
 import com.ajsnarr.peoplenotes.data.EntryContent
 import com.ajsnarr.peoplenotes.data.EntryType
-import com.ajsnarr.peoplenotes.data.Note
 import com.ajsnarr.peoplenotes.databinding.ItemEditnoteAddBtnBinding
 import com.ajsnarr.peoplenotes.databinding.ItemEditnoteDetailsBinding
 import com.ajsnarr.peoplenotes.databinding.ItemEditnoteEntryBinding
-import com.ajsnarr.peoplenotes.util.MultiEditText
 import timber.log.Timber
 import java.lang.IllegalArgumentException
 
@@ -25,12 +21,10 @@ import java.lang.IllegalArgumentException
 class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                       private val actionListener: ActionListener) : RecyclerView.Adapter<EditNoteAdapter.ViewHolder>() {
 
-    private lateinit var mNoteDetailsViewHolder: NoteDetailViewHolder
-
     companion object {
-        val ENTRY_TYPE = 0
-        val NOTE_DETAILS_TYPE = 1
-        val ADD_ENTRY_BUTTON_TYPE = 2
+        const val ENTRY_TYPE = 0
+        const val NOTE_DETAILS_TYPE = 1
+        const val ADD_ENTRY_BUTTON_TYPE = 2
     }
 
     /**
@@ -49,9 +43,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         fun onAddTag()
 
         /**
-         * Called when an entry is edited.
+         * Called when an entry is edited. If successful edit, return updated
+         * entry, else return null.
          */
-        fun onEditEntry(entry: Entry)
+        fun onEditEntry(entry: Entry): Entry?
 
         /**
          * Called when someone presses the delete button for the note.
@@ -67,6 +62,11 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
          * Called when the save button is pressed.
          */
         fun onSaveButtonPress()
+
+        /**
+         * Called when the notetype is changed.
+         */
+        fun onSetNoteType(noteType: String)
 
         /**
          * Set note title.
@@ -87,18 +87,15 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                     .inflate(R.layout.item_editnote_entry, parent, false),
                 viewModel, actionListener
             )
-            NOTE_DETAILS_TYPE -> {
-                mNoteDetailsViewHolder = NoteDetailViewHolder(
+            NOTE_DETAILS_TYPE -> NoteDetailViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_editnote_details, parent, false),
                     viewModel, actionListener
-                )
-                mNoteDetailsViewHolder
-            }
+            )
             ADD_ENTRY_BUTTON_TYPE -> AddButtonViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_add_btn, parent, false),
-                viewModel, this, actionListener
+                viewModel, actionListener
             )
             else -> throw IllegalArgumentException("Unhandled viewType: $viewType")
         }
@@ -123,8 +120,8 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    private fun updateNumEntriesText() {
-        mNoteDetailsViewHolder.updateNumEntriesText()
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        holder.onDetach()
     }
 
     abstract class ViewHolder(
@@ -136,49 +133,83 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         /**
          * Used for watching for after text changes, and no other time.
          */
-        protected class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Any) : TextWatcher {
+        protected class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Unit) : TextWatcher {
             override fun afterTextChanged(s: Editable?) { onAfterTextChanged(s) }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
+
+        /**
+         * Called when this view is getting detached from its window.
+         */
+        open fun onDetach() {}
     }
 
 
     class EntryViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
         ViewHolder(view, viewModel, actionListener) {
 
-        val binding = ItemEditnoteEntryBinding.bind(view)
+        private lateinit var binding: ItemEditnoteEntryBinding
+
+        private var entryTypeListener: TextWatcher? = null
+        private var contentListener: TextWatcher? = null
+        private lateinit var entry: Entry
 
         fun onBind(entry: Entry) {
+            Timber.d("onBindEntry")
+            binding = ItemEditnoteEntryBinding.bind(view)
+            this.entry = entry
+
+            if (entryTypeListener != null) return
+
+            // remove old update listeners before refreshing views
+            removeListeners()
 
             // add stored content
             binding.content.text.clear()
-            binding.content.text.append(entry.content.value)
+            binding.content.text.append(this.entry.content.value)
             binding.entryType.text.clear()
-            binding.entryType.text.append(entry.type.value)
+            binding.entryType.text.append(this.entry.type.value)
 
             // add listeners
-            binding.entryType.addTextChangedListener(AfterTextChangedWatcher {
+            entryTypeListener = AfterTextChangedWatcher {
                 val type: String? = it?.toString()
-                entry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
-                actionListener.onEditEntry(entry)
-            })
-            binding.content.addTextChangedListener(AfterTextChangedWatcher {
+                val newEntry = this.entry.copy()
+                newEntry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
+                this.entry = actionListener.onEditEntry(newEntry) ?: this.entry // update stored entry if successful
+            }.also { binding.entryType.addTextChangedListener(it) }
+
+            contentListener = AfterTextChangedWatcher {
                 val content: String? = it?.toString()
-                entry.content = if (content != null) EntryContent(value = content) else EntryContent.EMPTY
-                actionListener.onEditEntry(entry)
-            })
-            binding.deleteButton.setOnClickListener { actionListener.onDeleteEntryPress(entry) }
+                val newEntry = this.entry.copy()
+                newEntry.content = if (content != null) EntryContent(value = content) else EntryContent.EMPTY
+                this.entry = actionListener.onEditEntry(newEntry) ?: this.entry // update stored entry if successful
+            }.also { binding.content.addTextChangedListener(it) }
+
+            binding.deleteButton.setOnClickListener { actionListener.onDeleteEntryPress(this.entry.copy()) }
+        }
+
+        private fun removeListeners() {
+            if (entryTypeListener != null) binding.entryType.removeTextChangedListener(entryTypeListener)
+            if (contentListener != null) binding.content.removeTextChangedListener(contentListener)
+            binding.deleteButton.setOnClickListener(null)
         }
     }
 
     class NoteDetailViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
         ViewHolder(view, viewModel, actionListener) {
 
-        val binding = ItemEditnoteDetailsBinding.bind(view)
+        private lateinit var binding: ItemEditnoteDetailsBinding
+
+        private var titleWatcher: TextWatcher? = null
+        private var noteTypeWatcher: TextWatcher? = null
 
         fun onBind() {
             Timber.d("onBindNoteDetails")
+            binding = ItemEditnoteDetailsBinding.bind(view)
+
+            // remove old update listeners before refreshing views
+            removeListeners()
 
 //            // setup popup button
 //            binding.tagsPopupButton.setOnClickListener {
@@ -209,37 +240,42 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             // TODO image
 
             // update num entries text
-            updateNumEntriesText()
+            binding.numEntriesText.text =
+                view.context.getString(R.string.editnote_num_entries, viewModel.note.entries.size)
 
             // setup update listeners
-            binding.titleInput.addTextChangedListener(AfterTextChangedWatcher {
+            titleWatcher = AfterTextChangedWatcher {
                 actionListener.onSetTitle(it?.toString() ?: "")
-            })
+            }.also { binding.titleInput.addTextChangedListener(it) }
+
+            noteTypeWatcher = AfterTextChangedWatcher {
+                actionListener.onSetNoteType(it?.toString() ?: "")
+            }.also { binding.noteTypeInput.addTextChangedListener(it) }
         }
 
-
-        fun updateNumEntriesText() {
-            val numEntries: Int = viewModel.note.entries.size
-
-            binding.numEntriesText.text =
-                view.context.getString(R.string.editnote_num_entries, numEntries)
+        override fun onDetach() {
+            removeListeners()
         }
 
+        private fun removeListeners() {
+            if (titleWatcher != null) binding.titleInput.removeTextChangedListener(titleWatcher)
+            if (noteTypeWatcher != null) binding.noteTypeInput.removeTextChangedListener(noteTypeWatcher)
+            binding.deleteButton.setOnClickListener(null)
+        }
     }
 
-    class AddButtonViewHolder(view: View, viewModel: EditNoteViewModel, val adapter: EditNoteAdapter, actionListener: ActionListener) :
+    class AddButtonViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
             ViewHolder(view, viewModel, actionListener) {
 
-        val binding = ItemEditnoteAddBtnBinding.bind(view)
+        private lateinit var binding: ItemEditnoteAddBtnBinding
 
         fun onBind() {
-
             Timber.d("OnBindAddButton")
+            binding = ItemEditnoteAddBtnBinding.bind(view)
 
             // set up add entry button
             binding.addEntryButton.setOnClickListener {
                 actionListener.onAddButtonPress()
-                adapter.updateNumEntriesText()
             }
         }
     }

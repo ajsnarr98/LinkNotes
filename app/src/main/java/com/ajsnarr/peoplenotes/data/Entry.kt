@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-class Entry(val id: UUID,
+data class Entry(val id: UUID,
             var type: EntryType = EntryType.DEFAULT,
             private var mContent: EntryContent = EntryContent.EMPTY,
             var dateCreated: Date = Date(),

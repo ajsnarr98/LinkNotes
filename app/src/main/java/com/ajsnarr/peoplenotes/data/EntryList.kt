@@ -33,14 +33,13 @@ class EntryList: ArrayList<Entry>(), Parcelable {
 
     // next entry is either 0 or one more than the most recently added entry
     val nextEntryID: String get() {
-        return if (this.isEmpty()) {
-            "0"
-        } else {
-            // check if a deleted ID was the previous largest index
-            val biggestActiveID: BigInteger = this.last().id.toBigInteger()
-            val biggestDeletedID: BigInteger = lastDeletedEntries.map { it.id.toBigInteger() }.max() ?: Int.MIN_VALUE.toBigInteger()
-            max(biggestActiveID, biggestDeletedID).toString()
-        }
+        // default value if there are no values in list or in deleted list
+        val initialId = BigInteger.ZERO
+        // check if a deleted ID was the previous largest index
+        val default = initialId.minus(BigInteger.ONE) // go one less than initial to start
+        val biggestActiveID: BigInteger = this.map { it.id.toBigInteger() }.maxOrNull() ?: default
+        val biggestDeletedID: BigInteger = lastDeletedEntries.map { it.id.toBigInteger() }.maxOrNull() ?: Int.MIN_VALUE.toBigInteger()
+        return max(biggestActiveID, biggestDeletedID).add(BigInteger.ONE).toString()
     }
 
     /**

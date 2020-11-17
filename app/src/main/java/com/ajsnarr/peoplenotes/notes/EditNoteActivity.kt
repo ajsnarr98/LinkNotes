@@ -104,8 +104,11 @@ open class EditNoteActivity : BaseActivity() {
             dialog.show(activity.supportFragmentManager, "fragment_alert_entry_delete")
         }
 
-        override fun onEditEntry(entry: Entry) {
-            activity.viewModel.updateExistingEntry(entry)
+        override fun onEditEntry(entry: Entry): Entry? {
+            return if (activity.viewModel.updateExistingEntry(entry))
+                entry
+            else
+                null
         }
 
         override fun onSaveButtonPress() {

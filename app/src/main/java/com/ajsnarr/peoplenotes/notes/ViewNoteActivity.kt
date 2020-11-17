@@ -79,6 +79,11 @@ open class ViewNoteActivity : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        recyclerAdapter.notifyDataSetChanged()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main_options, menu)
         return true

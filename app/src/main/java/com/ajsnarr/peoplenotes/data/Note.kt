@@ -147,7 +147,7 @@ data class Note(
      * @return true if succesfully updated or false if failure
      */
     fun updateExistingEntry(updated: Entry): Boolean {
-        return entries.updateExisting(updated).also { if (it) onEditNote() }
+        return entries.updateExisting(updated).also { isUpdated -> if (isUpdated) onEditNote() }
     }
 
     /**

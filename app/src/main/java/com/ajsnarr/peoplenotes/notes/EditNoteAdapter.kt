@@ -43,9 +43,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         fun onAddTag()
 
         /**
-         * Called when an entry is edited.
+         * Called when an entry is edited. If successful edit, return updated
+         * entry, else return null.
          */
-        fun onEditEntry(entry: Entry)
+        fun onEditEntry(entry: Entry): Entry?
 
         /**
          * Called when someone presses the delete button for the note.
@@ -132,7 +133,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         /**
          * Used for watching for after text changes, and no other time.
          */
-        protected class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Any) : TextWatcher {
+        protected class AfterTextChangedWatcher(val onAfterTextChanged: (Editable?) -> Unit) : TextWatcher {
             override fun afterTextChanged(s: Editable?) { onAfterTextChanged(s) }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -152,44 +153,45 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
         private var entryTypeListener: TextWatcher? = null
         private var contentListener: TextWatcher? = null
-        private var deleteListener: View.OnClickListener? = null
+        private lateinit var entry: Entry
 
         fun onBind(entry: Entry) {
             Timber.d("onBindEntry")
             binding = ItemEditnoteEntryBinding.bind(view)
+            this.entry = entry
+
+            if (entryTypeListener != null) return
 
             // remove old update listeners before refreshing views
             removeListeners()
 
             // add stored content
             binding.content.text.clear()
-            binding.content.text.append(entry.content.value)
+            binding.content.text.append(this.entry.content.value)
             binding.entryType.text.clear()
-            binding.entryType.text.append(entry.type.value)
+            binding.entryType.text.append(this.entry.type.value)
 
             // add listeners
             entryTypeListener = AfterTextChangedWatcher {
                 val type: String? = it?.toString()
-                entry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
-                actionListener.onEditEntry(entry)
+                val newEntry = this.entry.copy()
+                newEntry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
+                this.entry = actionListener.onEditEntry(newEntry) ?: this.entry // update stored entry if successful
             }.also { binding.entryType.addTextChangedListener(it) }
 
             contentListener = AfterTextChangedWatcher {
                 val content: String? = it?.toString()
-                entry.content = if (content != null) EntryContent(value = content) else EntryContent.EMPTY
-                actionListener.onEditEntry(entry)
+                val newEntry = this.entry.copy()
+                newEntry.content = if (content != null) EntryContent(value = content) else EntryContent.EMPTY
+                this.entry = actionListener.onEditEntry(newEntry) ?: this.entry // update stored entry if successful
             }.also { binding.content.addTextChangedListener(it) }
 
-            binding.deleteButton.setOnClickListener { actionListener.onDeleteEntryPress(entry) }
-        }
-
-        override fun onDetach() {
-            removeListeners()
+            binding.deleteButton.setOnClickListener { actionListener.onDeleteEntryPress(this.entry.copy()) }
         }
 
         private fun removeListeners() {
-            binding.entryType.removeTextChangedListener(entryTypeListener)
-            binding.content.removeTextChangedListener(contentListener)
+            if (entryTypeListener != null) binding.entryType.removeTextChangedListener(entryTypeListener)
+            if (contentListener != null) binding.content.removeTextChangedListener(contentListener)
             binding.deleteButton.setOnClickListener(null)
         }
     }

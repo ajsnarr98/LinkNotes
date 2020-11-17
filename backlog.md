@@ -5,6 +5,7 @@
 
 ## Features
 - make default profile image a square
+- sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
 - advanced searches
 - adding tags
@@ -22,5 +23,5 @@
 - move notecollection out of base activity and into a base viewmodel?
 
 ## Bugs
-- add entry -> type in its content -> add another entry :: content disappears
-- adding an entry on existing note removes note title
+- returning back to viewnote after adding entries on an existing note does not update view
+-

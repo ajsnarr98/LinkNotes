@@ -211,6 +211,9 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             // remove old update listeners before refreshing views
             removeListeners()
 
+            // setup tags
+
+
             // add to note type autocomplete text view
             actionListener.onSetupNoteTypes(binding.noteTypeInput)
 

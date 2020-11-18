@@ -10,15 +10,15 @@
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
 
         <!--Typography-->
-        <item name="textAppearanceHeadline4">@style/TextAppearance.PeopleNotes.Headline4</item>
-        <item name="textAppearanceHeadline5">@style/TextAppearance.PeopleNotes.Headline5</item>
-        <item name="textAppearanceHeadline6">@style/TextAppearance.PeopleNotes.Headline6</item>
-        <item name="textAppearanceHeadline7">@style/TextAppearance.PeopleNotes.Headline7</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.PeopleNotes.Subtitle1</item>
-        <item name="textAppearanceSubtitle1Bold">@style/TextAppearance.PeopleNotes.Subtitle1.Bold</item>
-        <item name="textAppearanceSubtitle2">@style/TextAppearance.PeopleNotes.Subtitle2</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.PeopleNotes.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.PeopleNotes.Body2</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.LinkNotes.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.LinkNotes.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.LinkNotes.Headline6</item>
+        <item name="textAppearanceHeadline7">@style/TextAppearance.LinkNotes.Headline7</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.LinkNotes.Subtitle1</item>
+        <item name="textAppearanceSubtitle1Bold">@style/TextAppearance.LinkNotes.Subtitle1.Bold</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.LinkNotes.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.LinkNotes.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.LinkNotes.Body2</item>
 
     </style>
 

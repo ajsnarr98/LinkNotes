@@ -63,12 +63,7 @@ open class EditNoteActivity : BaseActivity() {
         }
 
         override fun onAddTag() {
-            // set up tags popup window
-            EditNoteTagsPopup(
-                inflater = activity.layoutInflater,
-                parentView = activity.binding.root,
-                screenSize = getScreenSize(activity)
-            )
+
         }
 
         override fun onDeletePress() {

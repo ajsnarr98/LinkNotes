@@ -34,7 +34,7 @@
                 android:gravity="center_horizontal"
                 app:layout_scrollFlags="scroll|enterAlways" >
 
-                <com.ajsnarr.peoplenotes.search.SearchCardView
+                <com.ajsnarr.linknotes.search.SearchCardView
                     android:id="@+id/search_bar_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp" />
 
-                </com.ajsnarr.peoplenotes.search.SearchCardView>
+                </com.ajsnarr.linknotes.search.SearchCardView>
 
             </androidx.appcompat.widget.Toolbar>
 

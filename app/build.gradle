@@ -8,7 +8,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.ajsnarr.peoplenotes"
+        applicationId "com.ajsnarr.linknotes"
         minSdkVersion 17
         targetSdkVersion 28
         multiDexEnabled true

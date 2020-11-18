@@ -20,33 +20,33 @@
     </style>
 
     <!-- Text styles -->
-    <style name="TextAppearance.PeopleNotes.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+    <style name="TextAppearance.LinkNotes.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+    <style name="TextAppearance.LinkNotes.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="TextAppearance.LinkNotes.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Headline7" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <style name="TextAppearance.LinkNotes.Headline7" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">@color/black_54</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1" />
+    <style name="TextAppearance.LinkNotes.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1" />
 
-    <style name="TextAppearance.PeopleNotes.Subtitle1.Bold" parent="TextAppearance.MaterialComponents.Subtitle1">
+    <style name="TextAppearance.LinkNotes.Subtitle1.Bold" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/black_54</item>
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2" />
+    <style name="TextAppearance.LinkNotes.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2" />
 
-    <style name="TextAppearance.PeopleNotes.Body1" parent="TextAppearance.MaterialComponents.Body1">
+    <style name="TextAppearance.LinkNotes.Body1" parent="TextAppearance.MaterialComponents.Body1">
     </style>
 
-    <style name="TextAppearance.PeopleNotes.Body2" parent="TextAppearance.MaterialComponents.Body2">
+    <style name="TextAppearance.LinkNotes.Body2" parent="TextAppearance.MaterialComponents.Body2">
     </style>
 
 </resources>

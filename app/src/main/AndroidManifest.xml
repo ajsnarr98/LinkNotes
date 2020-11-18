@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ajsnarr.peoplenotes">
+    package="com.ajsnarr.linknotes">
 
     <application
-        android:name=".App"
+        android:name="com.ajsnarr.linknotes.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".search.SearchActivity"
+            android:name="com.ajsnarr.linknotes.search.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,9 +20,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".notes.EditNoteActivity"
+            android:name="com.ajsnarr.linknotes.notes.EditNoteActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".notes.ViewNoteActivity"/>
+        <activity android:name="com.ajsnarr.linknotes.notes.ViewNoteActivity"/>
     </application>
 
 </manifest>

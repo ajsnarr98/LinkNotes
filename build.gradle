@@ -4,7 +4,7 @@ buildscript {
     ext {
         kotlin_version = '1.4.10'
         google_service_version = '4.3.0'
-        gradle_plugin_version = '4.1.0'
+        gradle_plugin_version = '4.1.1'
     }
     repositories {
         google()

@@ -120,9 +120,7 @@ data class Note(
     /**
      * This method should be called when this note is saved to the db.
      */
-    fun onSaveNote() {
-        entries.clearDeletedEntries()
-    }
+    fun onSaveNote() {}
 
     /**
      * WARNING - This method is only meant for internal use within Note and its
@@ -132,13 +130,6 @@ data class Note(
      */
     fun onEditNote() {
         lastDateEdited = Date()
-    }
-
-    /**
-     * Restores the entries recently deleted since the last save.
-     */
-    fun restoreRecentlyDeletedEntries() {
-        entries.restoreRecentlyDeleted()
     }
 
     /**

@@ -28,35 +28,14 @@ class EntryList: ArrayList<Entry>(), Parcelable {
             this.forEach { entry -> entry.parentNote = value }
         }
 
-    @IgnoredOnParcel
-    private val lastDeletedEntries = mutableSetOf<Entry>()
-
     // next entry is either 0 or one more than the most recently added entry
     val nextEntryID: String get() {
         // default value if there are no values in list or in deleted list
         val initialId = BigInteger.ZERO
-        // check if a deleted ID was the previous largest index
+        // check if any ids exist already
         val default = initialId.minus(BigInteger.ONE) // go one less than initial to start
         val biggestActiveID: BigInteger = this.map { it.id.toBigInteger() }.maxOrNull() ?: default
-        val biggestDeletedID: BigInteger = lastDeletedEntries.map { it.id.toBigInteger() }.maxOrNull() ?: Int.MIN_VALUE.toBigInteger()
-        return max(biggestActiveID, biggestDeletedID).add(BigInteger.ONE).toString()
-    }
-
-    /**
-     * Clears all deleted entries from this list. Can no longer restore afterwards.
-     */
-    fun clearDeletedEntries() {
-        lastDeletedEntries.clear()
-    }
-
-    override fun remove(element: Entry): Boolean {
-        return super.remove(element).also { lastDeletedEntries.add(element) }
-    }
-
-    override fun removeAt(index: Int): Entry {
-        val entry = super.removeAt(index)
-        lastDeletedEntries.add(entry)
-        return entry
+        return biggestActiveID.add(BigInteger.ONE).toString()
     }
 
     /**
@@ -65,48 +44,6 @@ class EntryList: ArrayList<Entry>(), Parcelable {
     fun removeWithEntryID(entryID: String) {
         val index = this.indexOfFirst { entry -> entry.id == entryID }
         this.removeAt(index)
-    }
-
-    /**
-     * Restores all entries removed since the last call to
-     * clearDeletedEntries().
-     */
-    fun restoreRecentlyDeleted() {
-        for (entry in lastDeletedEntries) {
-            val ind = getAppropriateIndex(entry)
-            if (ind >= 0) {
-                this.add(ind, entry)
-            }
-        }
-        clearDeletedEntries()
-    }
-
-    /**
-     * Used for re-adding deleted entries. Finds a suitable index in the list
-     * based on ID.
-     *
-     * Returns -1 if there is an unexpected error.
-     */
-    private fun getAppropriateIndex(entry: Entry): Int {
-        // use a binary search
-        if (this.size == 0) return 0
-        var ind = this.size / 2
-        var upper = this.size - 1
-        var lower = 0
-        while (upper != lower) {
-            if (this[ind].id < entry.id) {
-                lower = ind
-            } else if (this[ind].id > entry.id ) {
-                upper = ind
-            } else {
-                return -1 // stop because there should not be an entry with matching ID still in the list
-            }
-        }
-        // ind == upper == lower
-        while (ind != (this.size + 1) && this[ind].id < entry.id) {
-            ind++ // id at index should be next greatest
-        }
-        return ind
     }
 
     /**

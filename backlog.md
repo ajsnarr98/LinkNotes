@@ -20,6 +20,8 @@
 - add real editnote screen/boxes
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like
+- implement undo button when editing notes
 
 ## Bugs
 - deleting an entry does not visibly update the list of entries
+- editnote saving does not always update entry type?

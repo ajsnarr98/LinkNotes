@@ -116,8 +116,7 @@ open class EditNoteActivity : BaseActivity() {
             // save a valid note, refuse to save invalid note
             if (note.isValidNote()) {
                 val msg = if (note.isNewNote()) "Saved new note!" else "Saved note!"
-                note.fillDefaults()
-                activity.viewModel.notesCollection.add(note)
+                activity.viewModel.saveNote()
                 Timber.i("${msg} ${note.name}")
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
 

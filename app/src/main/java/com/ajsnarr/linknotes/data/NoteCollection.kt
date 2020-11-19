@@ -1,5 +1,6 @@
 package com.ajsnarr.linknotes.data
 
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
 import com.ajsnarr.linknotes.data.db.FirestoreNoteCollection
 import timber.log.Timber
@@ -9,7 +10,7 @@ import timber.log.Timber
  *
  * DO NOT modify the value field of this class.
  */
-abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
+abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note>, DefaultLifecycleObserver {
 
     init {
         if (this.value == null) {
@@ -29,26 +30,6 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note> {
      * Guaranteed to run iff add() is called and note is a newNote.
      */
     protected abstract fun generateNewUUID(newNote: Note): UUID
-
-    /**
-     * Called when the activity is created.
-     */
-    open fun onActivityCreate() {}
-
-    /**
-     * Called when the activity is destroyed.
-     */
-    open fun onActivityDestroy() {}
-
-    /**
-     * Called when the activity starts.
-     */
-    open fun onActivityStart() {}
-
-    /**
-     * Called when the activity stops.
-     */
-    open fun onActivityStop() {}
 
     /**
      * Sets LiveData value to cause an event.

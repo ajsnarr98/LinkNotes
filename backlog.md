@@ -20,8 +20,6 @@
 - add real editnote screen/boxes
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like
-- move notecollection out of base activity and into a base viewmodel?
 
 ## Bugs
-- returning back to viewnote after adding entries on an existing note does not update view
 - deleting an entry does not visibly update the list of entries

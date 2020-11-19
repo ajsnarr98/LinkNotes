@@ -62,7 +62,7 @@ open class EditNoteActivity : BaseActivity() {
             hideKeyboard(activity)
         }
 
-        override fun onAddTag() {
+        override fun onAddTags() {
 
         }
 

@@ -21,7 +21,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/tag_chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/empty_add_tags_button"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/title_input"
@@ -35,7 +40,7 @@
         android:autofillHints=""
         style="?attr/textAppearanceHeadline5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/empty_add_tags_button"
+        app:layout_constraintTop_toBottomOf="@id/tag_chip_group"
         tools:text="Title" />
 
 

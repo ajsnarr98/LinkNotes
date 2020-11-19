@@ -1,13 +1,10 @@
 package com.ajsnarr.linknotes.notes
 
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.ajsnarr.linknotes.BaseViewModel
 import com.ajsnarr.linknotes.data.Entry
 import com.ajsnarr.linknotes.data.Note
-import com.ajsnarr.linknotes.data.NoteCollection
 import com.ajsnarr.linknotes.data.UUID
-import java.lang.IllegalStateException
 
 /**
  * If passed in noteID is null, creates a new note.

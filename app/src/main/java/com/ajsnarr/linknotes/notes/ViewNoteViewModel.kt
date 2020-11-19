@@ -1,15 +1,22 @@
 package com.ajsnarr.linknotes.notes
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.ajsnarr.linknotes.BaseViewModel
 import com.ajsnarr.linknotes.data.Note
 import com.ajsnarr.linknotes.data.UUID
 import java.lang.IllegalStateException
 
-class ViewNoteViewModel(noteId: UUID): BaseViewModel() {
+class ViewNoteViewModel(private val noteId: UUID): BaseViewModel(), DefaultLifecycleObserver {
 
-    val note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided.")
+    var note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided.")
+
+    override val lifecycleObservers: MutableCollection<LifecycleObserver>
+        get() = super.lifecycleObservers.also { it.add(this) } // add this as a LifecycleObserver
+
+    override fun onStart(owner: LifecycleOwner) {
+        // update note when lifecycleOwner loads
+        note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided.")
+    }
 
     /**
      * Unlike EditNoteViewModel, passed in note cannot be null.

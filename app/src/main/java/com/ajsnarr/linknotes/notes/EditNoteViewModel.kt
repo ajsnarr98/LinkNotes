@@ -11,7 +11,8 @@ import com.ajsnarr.linknotes.data.UUID
  */
 class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
 
-    val note: Note = notesCollection.findByID(noteID) ?: Note.newEmpty()
+    // grab a copy of the existing note (to modify) or create a new empty note
+    var note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
 
     val entries: MutableList<Entry>
         get() = note.entries
@@ -32,6 +33,15 @@ class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
 
     fun deleteEntry(entry: Entry) {
         note.deleteEntry(entry)
+    }
+
+    /**
+     * Saves the stored note to the db.
+     */
+    fun saveNote() {
+        val toSave = this.note.copy()
+        toSave.fillDefaults()
+        notesCollection.add(toSave)
     }
 
     /**

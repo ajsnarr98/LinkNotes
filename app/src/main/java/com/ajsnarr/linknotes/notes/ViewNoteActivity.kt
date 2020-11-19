@@ -60,14 +60,14 @@ open class ViewNoteActivity : BaseActivity() {
         setContentView(binding.root)
 
         val inNoteId: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
-        val inNote: Note? = mNotesCollection.findByID(inNoteId)
 
-        if (inNote != null) {
-            viewModel = ViewModelProviders.of(this, ViewNoteViewModel.Factory(inNote))
+        if (inNoteId != null) {
+            viewModel = ViewModelProviders.of(this, ViewNoteViewModel.Factory(inNoteId))
                 .get(ViewNoteViewModel::class.java)
         } else {
             throw IllegalStateException("No note provided to ViewNoteActivity.")
         }
+        viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)

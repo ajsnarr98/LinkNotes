@@ -49,6 +49,7 @@ class SearchActivity : BaseActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // setup search bar view to allow handling of back buttn presses within
         // keyboard
@@ -70,7 +71,7 @@ class SearchActivity : BaseActivity() {
         setupSearchBar()
 
         // load notes
-        viewModel.mNotesCollection.observe(this, {
+        viewModel.notesCollection.observe(this, {
             // update notes based on live data changes
             onNotesUpdate()
         })

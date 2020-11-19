@@ -69,7 +69,7 @@ open class EditNoteActivity : BaseActivity() {
         override fun onDeletePress() {
             val note = activity.viewModel.note
             val onConfirmDelete: () -> Unit = {
-                activity.mNotesCollection.remove(note)
+                activity.viewModel.notesCollection.remove(note)
 
                 // clear backstack and go to search activity
                 activity.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -117,7 +117,7 @@ open class EditNoteActivity : BaseActivity() {
             if (note.isValidNote()) {
                 val msg = if (note.isNewNote()) "Saved new note!" else "Saved note!"
                 note.fillDefaults()
-                activity.mNotesCollection.add(note)
+                activity.viewModel.notesCollection.add(note)
                 Timber.i("${msg} ${note.name}")
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
 
@@ -151,9 +151,9 @@ open class EditNoteActivity : BaseActivity() {
         setContentView(binding.root)
 
         val inNoteID: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
-        val inNote: Note? = mNotesCollection.findByID(inNoteID)
 
-        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNote)).get(EditNoteViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNoteID)).get(EditNoteViewModel::class.java)
+        viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // set up close button
         binding.closeButton.setOnClickListener { onBackPressed() }

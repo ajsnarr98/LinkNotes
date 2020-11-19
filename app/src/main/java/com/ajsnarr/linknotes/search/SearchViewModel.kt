@@ -1,6 +1,7 @@
 package com.ajsnarr.linknotes.search
 
 import androidx.lifecycle.ViewModel
+import com.ajsnarr.linknotes.BaseViewModel
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.data.Note
 import com.ajsnarr.linknotes.data.NoteCollection
@@ -24,19 +25,19 @@ enum class ResultOrderType(val resId: Int) {
  */
 const val MIN_SEARCH_LENGTH = 3
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel : BaseViewModel() {
 
-    val mNotesCollection = NoteCollection.instance
     var searchStr: String = ""
-    val searchTypesSelected: MutableMap<SearchType, Boolean> = LinkedHashMap<SearchType, Boolean>().also { map ->
+
+    private val searchTypesSelected: MutableMap<SearchType, Boolean> = LinkedHashMap<SearchType, Boolean>().also { map ->
         SearchType.values().forEach { searchType ->  map[searchType] = false }
     }
-    var resultOrderSelected: ResultOrderType = ResultOrderType.RECENT
+    private var resultOrderSelected: ResultOrderType = ResultOrderType.RECENT
 
     /**
      * Load notes from DB and filter for search.
      */
-    val filteredForSearch get() = orderForSearch(filterForSearch(mNotesCollection.toList()))
+    val filteredForSearch get() = orderForSearch(filterForSearch(notesCollection.toList()))
 
     private val isValidSearch: Boolean get() = searchStr.length >= MIN_SEARCH_LENGTH
 

@@ -1,5 +1,6 @@
 package com.ajsnarr.linknotes.data.db
 
+import androidx.lifecycle.LifecycleOwner
 import com.ajsnarr.linknotes.data.NoteCollection
 import com.ajsnarr.linknotes.data.UUID
 import com.google.firebase.firestore.DocumentChange
@@ -22,10 +23,7 @@ class FirestoreNoteCollection : NoteCollection() {
         )
     }
 
-    /**
-     * Add a listener for updating notes based on remote changes.
-     */
-    override fun onActivityCreate() {
+    override fun onStart(owner: LifecycleOwner) {
         dao.addNotesChangeListener { snapshots, firebaseFirestoreException ->
             if (snapshots?.documentChanges == null) return@addNotesChangeListener
 
@@ -53,7 +51,7 @@ class FirestoreNoteCollection : NoteCollection() {
     /**
      * Remove listener at end of activity.
      */
-    override fun onActivityDestroy() {
+    override fun onStop(owner: LifecycleOwner) {
         dao.removeNotesChangeListener()
     }
 

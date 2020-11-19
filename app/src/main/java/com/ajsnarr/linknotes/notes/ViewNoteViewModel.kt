@@ -1,6 +1,10 @@
 package com.ajsnarr.linknotes.notes
 
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.ajsnarr.linknotes.BaseViewModel
 import com.ajsnarr.linknotes.data.Note
 import com.ajsnarr.linknotes.data.UUID

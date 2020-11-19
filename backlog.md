@@ -22,5 +22,4 @@
 - add default entries for pictures and the like
 
 ## Bugs
-- returning back to viewnote after adding entries on an existing note does not update view
 - deleting an entry does not visibly update the list of entries

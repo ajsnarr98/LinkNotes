@@ -23,6 +23,9 @@ class FirestoreNoteCollection : NoteCollection() {
         )
     }
 
+    /**
+     * Add a listener for updating notes based on remote changes.
+     */
     override fun onStart(owner: LifecycleOwner) {
         dao.addNotesChangeListener { snapshots, firebaseFirestoreException ->
             if (snapshots?.documentChanges == null) return@addNotesChangeListener

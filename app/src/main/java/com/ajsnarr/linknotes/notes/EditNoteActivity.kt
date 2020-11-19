@@ -62,13 +62,8 @@ open class EditNoteActivity : BaseActivity() {
             hideKeyboard(activity)
         }
 
-        override fun onAddTag() {
-            // set up tags popup window
-            EditNoteTagsPopup(
-                inflater = activity.layoutInflater,
-                parentView = activity.binding.root,
-                screenSize = getScreenSize(activity)
-            )
+        override fun onAddTags() {
+
         }
 
         override fun onDeletePress() {

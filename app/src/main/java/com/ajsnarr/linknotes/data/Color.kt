@@ -69,4 +69,14 @@ data class Color(val r: Int, val g: Int, val b: Int, val a: Int? = null)
             return Color(rgb[0], rgb[1], rgb[2])
         }
     }
+
+    /**
+     * Returns the integer representation of this color.
+     */
+    fun asInt(): Int {
+        return if (a == null)
+            android.graphics.Color.rgb(r, g, b)
+        else
+            android.graphics.Color.argb(a, r, g, b)
+    }
 }

@@ -10,7 +10,7 @@ import timber.log.Timber
  *
  * DO NOT modify the value field of this class.
  */
-abstract class TagCollection : LiveData<MutableSet<TagTree>>(), MutableSet<TagTree>, DefaultLifecycleObserver {
+abstract class TagCollection : LiveData<MutableSet<TagTree>>(), MutableSet<String>, DefaultLifecycleObserver {
 
     init {
         if (this.value == null) {
@@ -21,7 +21,7 @@ abstract class TagCollection : LiveData<MutableSet<TagTree>>(), MutableSet<TagTr
     }
 
     companion object {
-        val instance =
+        // val instance =
     }
 
     /**

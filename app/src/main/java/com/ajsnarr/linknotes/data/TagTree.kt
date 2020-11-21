@@ -1,5 +1,6 @@
 package com.ajsnarr.linknotes.data
 
+import java.lang.UnsupportedOperationException
 import java.util.LinkedList
 
 /**
@@ -51,8 +52,26 @@ data class TagTree(val value: String, val children: MutableSet<TagTree> = mutabl
     override val size: Int
         get() = if (isLeaf) 1 else children.size + 1
 
+    /**
+     * Whether or not this tree contains the given element.
+     *
+     * @param element - if this node's value is "foo", and you want to know if
+     *                  this tree contains "foo.bar" element would be the full
+     *                  string "foo.bar"
+     */
     override fun contains(element: String): Boolean {
-        TODO("Not yet implemented")
+        if (element.isEmpty()) return false // cannot have empty tag
+        if (element == this.value) return true // at a matching point
+        val split = getSubtag(element)
+
+        if (split.first != this.value || split.second == null) return false
+
+        // get next matching child, or return false if not found
+        val childValue = getSubtag(split.second!!).first
+        val child: TagTree = children.firstOrNull { it.value == childValue }
+            ?: return false
+
+        return child.contains(split.second ?: "")
     }
 
     override fun containsAll(elements: Collection<String>): Boolean {
@@ -64,9 +83,9 @@ data class TagTree(val value: String, val children: MutableSet<TagTree> = mutabl
         return false
     }
 
-    override fun iterator(): Iterator<String> {
+    override fun iterator(): MutableIterator<String> {
         //Build each tag using a depth first traversal.
-        return object : Iterator<String> {
+        return object : MutableIterator<String> {
 
             val valStack: LinkedList<String> = LinkedList()
             val iterStack: LinkedList<Iterator<TagTree>> = LinkedList()
@@ -110,7 +129,11 @@ data class TagTree(val value: String, val children: MutableSet<TagTree> = mutabl
 
             override fun hasNext(): Boolean = next != null
 
-            override fun next(): String = next.also { fetchNext() } ?: throw NoSuchElementException()
+            override fun next(): String = next.also { next = fetchNext() } ?: throw NoSuchElementException()
+
+            override fun remove() {
+                throw UnsupportedOperationException("Deletion within iterator not supported")
+            }
 
         }
     }
@@ -120,10 +143,14 @@ data class TagTree(val value: String, val children: MutableSet<TagTree> = mutabl
 
     /**
      * Add a tag string to the tree.
+     *
+     * @param subTag A subtag of this tag. For example, if this node's value is
+     *               "foo", and you want to add "foo.bar.baz", subTag would be
+     *               "bar.baz".
      */
-    override fun add(tag: String): Boolean {
-        if (tag.isEmpty()) return false // cannot add empty tag
-        val split = getSubtag(tag)
+    override fun add(subTag: String): Boolean {
+        if (subTag.isEmpty()) return false // cannot add empty tag
+        val split = getSubtag(subTag)
 
         // get existing child or create new one for next part of tag
         val child: TagTree = children.firstOrNull { it.value == split.first }
@@ -141,15 +168,42 @@ data class TagTree(val value: String, val children: MutableSet<TagTree> = mutabl
         this.children.clear()
     }
 
+    /**
+     * Try to remove a given element from this tree. Will only remove elements
+     * that have no children.
+     *
+     * @param element - if this node's value is "foo", and you want to remove
+     *                  "foo.bar" element would be the full string "foo.bar"
+     */
     override fun remove(element: String): Boolean {
-        TODO("Not yet implemented")
+        if (element.isEmpty()) return false // cannot have empty tag
+        val split = getSubtag(element)
+
+        if (split.first != this.value || split.second == null) return false
+
+        // get next matching child, or return false if not found
+        val childValue = getSubtag(split.second!!).first
+        val child: TagTree = children.firstOrNull { it.value == childValue }
+            ?: return false
+
+        if (child.value == split.second) {
+            // child is a match
+            return if (child.isLeaf) children.remove(child) else false
+        }
+
+        return child.remove(split.second ?: "")
     }
 
     override fun removeAll(elements: Collection<String>): Boolean {
-        TODO("Not yet implemented")
+        return elements.all { remove(it) }
     }
 
     override fun retainAll(elements: Collection<String>): Boolean {
-        TODO("Not yet implemented")
+
+        // cannot retail all if they aren't all here
+        if (!containsAll(elements)) return false
+
+        clear()
+        return addAll(elements)
     }
 }

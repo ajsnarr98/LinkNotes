@@ -2,7 +2,6 @@ package com.ajsnarr.linknotes.data
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
-import com.ajsnarr.linknotes.data.db.FirestoreNoteCollection
 import timber.log.Timber
 
 /**
@@ -10,18 +9,48 @@ import timber.log.Timber
  *
  * DO NOT modify the value field of this class.
  */
-abstract class TagCollection : LiveData<MutableSet<TagTree>>(), MutableSet<String>, DefaultLifecycleObserver {
+abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, DefaultLifecycleObserver {
 
     init {
         if (this.value == null) {
-            this.value = mutableSetOf<TagTree>()
+            this.value = TagTreesSet()
         }
 
-        Timber.i("Created note collection")
+        Timber.i("Created tag collection")
     }
 
     companion object {
+        /**
+         * Instance of the TagCollection
+         */
         // val instance =
+
+        /**
+         * Separator between tags and sub-tags. Ex: "classes.jmu"
+         */
+        const val SEPARATOR = "."
+
+        fun isValidTag(tag: String): Boolean = reasonInvalidTag(tag).isEmpty()
+
+        fun isValidTag(tag: Tag): Boolean = isValidTag(tag.text)
+
+        /**
+         * Gives the reason this tag is invalid, or "" if it is valid.
+         */
+        fun reasonInvalidTag(tag: Tag): String = reasonInvalidTag(tag.text)
+
+        /**
+         * Gives the reason this tag is invalid, or "" if it is valid.
+         */
+        fun reasonInvalidTag(tag: String): String {
+            return when {
+                tag.isEmpty() -> "Tag cannot be empty"
+                tag.startsWith(SEPARATOR) -> "Invalid tag. Tag cannot start with $SEPARATOR"
+                tag.endsWith(SEPARATOR) -> "Invalid tag. Tag cannot end with $SEPARATOR"
+                else -> ""
+            }
+        }
+
     }
 
     /**
@@ -31,30 +60,93 @@ abstract class TagCollection : LiveData<MutableSet<TagTree>>(), MutableSet<Strin
         this.value = this.value
     }
 
+    /**
+     * Get a tag for a given string.
+     *
+     * Return null if cannot find.
+     */
+    fun getMatch(tag: String): Tag? = this.value.let { value ->
+        if (value is TagTreesSet)
+            value.get(tag)
+        else
+            value?.find { it.text == tag }
+    }
 
     // inherit set methods
     override val size: Int get() = this.value?.size ?: 0
-    override fun contains(element: Note): Boolean = this.value?.contains(element) ?: false
-    override fun containsAll(elements: Collection<Note>): Boolean = this.value?.containsAll(elements) ?: false
+    override fun contains(element: Tag): Boolean = this.value?.contains(element) ?: false
+    override fun containsAll(elements: Collection<Tag>): Boolean = this.value?.containsAll(elements) ?: false
     override fun isEmpty(): Boolean = this.value?.isEmpty() ?: true
-    override fun iterator(): MutableIterator<Note> = this.value?.iterator() ?: mutableSetOf<Note>().iterator()
+    override fun iterator(): MutableIterator<Tag> = this.value?.iterator() ?: mutableSetOf<Tag>().iterator()
 
     // inherit mutable set methods
-    override fun add(element: Note): Boolean {
-
-        Timber.d("Adding note to note collection: $element")
-
-        // a new note will need a valid id
-        val note = if (element.isNewNote()) element.copy(id=generateNewUUID(element)) else element
-
-        note.onSaveNote()
-
-        this.value?.remove(note) // remove old if exists
-        return this.value?.add(note).also { update() } ?: false
-    }
-    override fun addAll(elements: Collection<Note>): Boolean = elements.map { note -> this.add(note) }.any { it } // add all and return true if any were added
+    override fun add(element: Tag): Boolean = this.value?.add(element).also { update() } ?: false
+    override fun addAll(elements: Collection<Tag>): Boolean = this.value?.addAll(elements).also { update() } ?: false // add all and return true if any were added
     override fun clear() { this.value?.clear().also { update() } }
-    override fun remove(element: Note): Boolean = this.value?.remove(element).also { update() } ?: false
-    override fun removeAll(elements: Collection<Note>): Boolean = this.value?.removeAll(elements).also { update() } ?: false
-    override fun retainAll(elements: Collection<Note>): Boolean = this.value?.retainAll(elements).also { update() } ?: false
+    override fun remove(element: Tag): Boolean = this.value?.remove(element).also { update() } ?: false
+    override fun removeAll(elements: Collection<Tag>): Boolean = this.value?.removeAll(elements).also { update() } ?: false
+    override fun retainAll(elements: Collection<Tag>): Boolean = this.value?.retainAll(elements).also { update() } ?: false
+
+    protected open class TagTreesSet : MutableSet<Tag> {
+
+        private val tagTrees = mutableSetOf<TagTree>()
+
+        /**
+         * Get a matching tag for a given string.
+         *
+         * Return null if cannot find.
+         */
+        fun get(tag: String): Tag? = getMatchingRoot(tag)?.getAndReturn(tag)
+
+        /**
+         * Get the root of the three for the given tag, or null if no matching
+         * tree exists yet.
+         */
+        private fun getMatchingRoot(element: Tag): TagTree? = getMatchingRoot(element.text)
+
+        /**
+         * Get the root of the three for the given tag, or null if no matching
+         * tree exists yet.
+         */
+        private fun getMatchingRoot(element: String): TagTree? {
+            val firstValue = TagTree.getSubtag(element).first
+            return tagTrees.find { it.value == firstValue }
+        }
+
+        // inherit set methods
+        override val size: Int get() = tagTrees.map { it.size }.sum()
+        override fun contains(element: Tag): Boolean  = getMatchingRoot(element)?.contains(element) ?: false
+        override fun containsAll(elements: Collection<Tag>): Boolean = elements.all { contains(it) }
+        override fun isEmpty(): Boolean = tagTrees.isEmpty()
+        override fun iterator(): MutableIterator<Tag> = object : MutableIterator<Tag> {
+
+            val iterIter = tagTrees.iterator()
+            var curIter: MutableIterator<Tag>? = null
+
+            override fun hasNext(): Boolean = curIter?.hasNext() == true || iterIter.hasNext()
+
+            override fun next(): Tag {
+                if (curIter?.hasNext() != true) curIter = iterIter.next().iterator()
+                return curIter?.next() ?: throw NoSuchElementException()
+            }
+
+            override fun remove() {
+                curIter?.remove() ?: throw NoSuchElementException()
+            }
+        }
+
+        // inherit mutable set methods
+        override fun add(element: Tag): Boolean = getMatchingRoot(element)?.add(element) ?: tagTrees.add(TagTree.newTreeFrom(element))
+        override fun addAll(elements: Collection<Tag>): Boolean = elements.all { add(it) } // add all and return true if any were added
+        override fun clear() { tagTrees.clear() }
+        override fun remove(element: Tag): Boolean = getMatchingRoot(element)?.remove(element) ?: false
+        override fun removeAll(elements: Collection<Tag>): Boolean = elements.all { remove(it) }
+        override fun retainAll(elements: Collection<Tag>): Boolean {
+            // cannot retail all if they aren't all here
+            if (!containsAll(elements)) return false
+
+            clear()
+            return addAll(elements)
+        }
+    }
 }

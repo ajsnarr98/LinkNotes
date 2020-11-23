@@ -2,6 +2,7 @@ package com.ajsnarr.linknotes.data
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
+import com.ajsnarr.linknotes.data.db.FirestoreTagCollection
 import timber.log.Timber
 
 /**
@@ -23,7 +24,7 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
         /**
          * Instance of the TagCollection
          */
-        // val instance =
+         val instance = FirestoreTagCollection()
 
         /**
          * Separator between tags and sub-tags. Ex: "classes.jmu"
@@ -98,11 +99,28 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
          */
         fun get(tag: String): Tag? = getMatchingRoot(tag)?.getAndReturn(tag)
 
+        fun allTreeRoots(): Collection<TagTree> = tagTrees
+
+        /**
+         * Add a whole new tree to the set, or replace the tree with the same id.
+         */
+        fun addTree(root: TagTree) {
+            tagTrees.remove(root) // remove old tree if it exists
+            tagTrees.add(root)
+        }
+
+        /**
+         * Remove a whole tree from the set, if it exists.
+         */
+        fun removeTree(root: TagTree) {
+            tagTrees.remove(root)
+        }
+
         /**
          * Get the root of the three for the given tag, or null if no matching
          * tree exists yet.
          */
-        private fun getMatchingRoot(element: Tag): TagTree? = getMatchingRoot(element.text)
+        fun getMatchingRoot(element: Tag): TagTree? = getMatchingRoot(element.text)
 
         /**
          * Get the root of the three for the given tag, or null if no matching
@@ -137,10 +155,10 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
 
         // inherit mutable set methods
         override fun add(element: Tag): Boolean = getMatchingRoot(element)?.add(element) ?: tagTrees.add(TagTree.newTreeFrom(element))
-        override fun addAll(elements: Collection<Tag>): Boolean = elements.all { add(it) } // add all and return true if any were added
+        override fun addAll(elements: Collection<Tag>): Boolean = elements.map { add(it) }.all { it } // add all and return true if any were added
         override fun clear() { tagTrees.clear() }
         override fun remove(element: Tag): Boolean = getMatchingRoot(element)?.remove(element) ?: false
-        override fun removeAll(elements: Collection<Tag>): Boolean = elements.all { remove(it) }
+        override fun removeAll(elements: Collection<Tag>): Boolean = elements.map { remove(it) }.all { it }
         override fun retainAll(elements: Collection<Tag>): Boolean {
             // cannot retail all if they aren't all here
             if (!containsAll(elements)) return false

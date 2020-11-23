@@ -1,5 +1,6 @@
 package com.ajsnarr.linknotes.data.db
 
+import com.ajsnarr.linknotes.data.TagCollection
 import com.google.firebase.firestore.*
 import timber.log.Timber
 import java.lang.Exception
@@ -11,12 +12,14 @@ class FirestoreDAO {
 
     companion object {
         const val NOTES_COLLECTION: String = "notes"
+        const val TAGS_COLLECTION: String = "tags"
 
         val instance = FirestoreDAO()
     }
 
     private val db = FirebaseFirestore.getInstance()
     private var notesListenerReg: ListenerRegistration? = null
+    private var tagsListenerReg: ListenerRegistration? = null
 
     /**
      * Gets all notes stored in the db.
@@ -27,6 +30,20 @@ class FirestoreDAO {
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     onSuccess(document.toObject(Note::class.java))
+                }
+            }
+            .addOnFailureListener(onFailure)
+    }
+
+    /**
+     * Gets all tag trees stored in the db.
+     */
+    fun getAllTags(onSuccess: (TagTree) -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection(TAGS_COLLECTION)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    onSuccess(document.toObject(TagTree::class.java))
                 }
             }
             .addOnFailureListener(onFailure)
@@ -55,6 +72,33 @@ class FirestoreDAO {
         val removed = notesListenerReg != null
 
         if (removed) { notesListenerReg = null }
+
+        return removed
+    }
+
+    /**
+     * Firestore-specific
+     *
+     * Adds a listener for changes in different notes. Only one listener at a
+     * time. Adding a listener will remove the old one.
+     */
+    fun addTagsChangeListener(listener: (QuerySnapshot?, FirebaseFirestoreException?) -> Unit) {
+        removeTagsChangeListener() // remove if exists
+        tagsListenerReg = db.collection(TAGS_COLLECTION).addSnapshotListener(listener)
+    }
+
+    /**
+     * Firestore-specific
+     *
+     * Removes the current listener for changes in different notes.
+     *
+     * @return true if there was a listener to remove, false otherwise
+     */
+    fun removeTagsChangeListener(): Boolean {
+        tagsListenerReg?.remove()
+        val removed = tagsListenerReg != null
+
+        if (removed) { tagsListenerReg = null }
 
         return removed
     }
@@ -109,7 +153,7 @@ class FirestoreDAO {
                 .document(note.id!!)
                 .delete()
                 .addOnSuccessListener { Timber.i("Note ${note.id} ${note.name} successfully deleted") }
-                .addOnFailureListener { Timber.e("Note ${note.id} ${note.name} successfully deleted") }
+                .addOnFailureListener { Timber.e("Note ${note.id} ${note.name} failed to delete") }
         }
     }
 
@@ -119,6 +163,53 @@ class FirestoreDAO {
     fun deleteNotes(notes: Collection<Note>) {
         for (note in notes) {
             deleteNote(note)
+        }
+    }
+
+    /**
+     * Updates an existing tag tree or inserts this one if it does not exist.
+     *
+     * Returns the tree's UUID.
+     */
+    fun upsertTagTree(tags: TagTree): String {
+
+        Timber.d("upserting tags...")
+
+        // generate a new document if neccesary
+        val documentRef: DocumentReference
+            = db.collection(TAGS_COLLECTION)
+                .document(tags.topValue!!)
+
+        documentRef.set(tags)
+            .addOnSuccessListener {
+                Timber.d("Successfully upserted tags")
+            }
+            .addOnFailureListener { err -> Timber.e("Failed to upsert tags: $err") }
+
+
+        return documentRef.id
+    }
+
+    /**
+     * Deletes given tag tree.
+     */
+    fun deleteTagTree(tags: TagTree) {
+
+        Timber.d("deleting tags...")
+
+        db.collection(TAGS_COLLECTION)
+            .document(tags.topValue!!)
+            .delete()
+            .addOnSuccessListener { Timber.i("Tags ${tags.topValue}${TagCollection.SEPARATOR}* successfully deleted") }
+            .addOnFailureListener { Timber.e("Tags ${tags.topValue}${TagCollection.SEPARATOR}* failed to delete") }
+    }
+
+    /**
+     * Deletes all given tag trees.
+     */
+    fun deleteTagTrees(tags: Collection<TagTree>) {
+        for (tree in tags) {
+            deleteTagTree(tree)
         }
     }
 }

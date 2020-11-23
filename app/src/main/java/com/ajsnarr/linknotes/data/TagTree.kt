@@ -8,7 +8,7 @@ import java.util.LinkedList
  *
  * For example "classes.jmu" would be the "jmu" tag as a leaf under "classes".
  */
-data class TagTree(val value: String, val color: Color, val children: MutableSet<TagTree> = mutableSetOf()): MutableSet<Tag> {
+data class TagTree(val value: String, val color: Color, val children: MutableSet<TagTree> = mutableSetOf()): MutableSet<Tag>, AppDataObject {
 
     companion object {
 
@@ -147,7 +147,7 @@ data class TagTree(val value: String, val color: Color, val children: MutableSet
                 // move down the tree
                 val next = curIter.next()
                 val lastValue = valStack.peek() ?: throw IllegalStateException("This should not happen")
-                val nextValue = lastValue + SEPARATOR + next.value
+                val nextValue = lastValue + TagCollection.SEPARATOR + next.value
 
                 if (!next.isLeaf) {
                     iterStack.push(next.children.iterator())

@@ -9,6 +9,7 @@
 - better delete button
 - advanced searches
 - adding tags
+- display tags in all screens
 - link to note/entry
 - markdown content in entry?
 - link entries based on note/entry type (ex. tag <-> classes <-> people)

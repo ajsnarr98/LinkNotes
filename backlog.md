@@ -21,6 +21,7 @@
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like
 - implement undo button when editing notes
+- add custom recyclerview-like chipgroup
 
 ## Bugs
 - deleting an entry does not visibly update the list of entries

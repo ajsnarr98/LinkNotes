@@ -79,8 +79,8 @@ class FirestoreDAO {
     /**
      * Firestore-specific
      *
-     * Adds a listener for changes in different notes. Only one listener at a
-     * time. Adding a listener will remove the old one.
+     * Adds a listener for changes in different tag trees. Only one listener at
+     * a time. Adding a listener will remove the old one.
      */
     fun addTagsChangeListener(listener: (QuerySnapshot?, FirebaseFirestoreException?) -> Unit) {
         removeTagsChangeListener() // remove if exists
@@ -90,7 +90,7 @@ class FirestoreDAO {
     /**
      * Firestore-specific
      *
-     * Removes the current listener for changes in different notes.
+     * Removes the current listener for changes in different tag trees.
      *
      * @return true if there was a listener to remove, false otherwise
      */

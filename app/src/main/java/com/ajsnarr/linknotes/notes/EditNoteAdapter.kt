@@ -223,7 +223,9 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             } else {
                 binding.tagChipGroup.visibility = View.VISIBLE
                 binding.emptyAddTagsButton.visibility = View.GONE
-                refreshChips()
+
+                // refresh tags
+                binding.tagChipGroup.addTags(viewModel.note.tags)
             }
 
             // add to note type autocomplete text view
@@ -266,32 +268,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         override fun onDetach() {
             removeListeners()
         }
-
-        /**
-         * Update all chip tags
-         */
-        private fun refreshChips() {
-            // clear old tags
-            binding.tagChipGroup.removeAllViews()
-
-            // add each tag
-            for (tag in viewModel.note.tags) {
-                binding.tagChipGroup.addView(Chip(view.context).apply {
-                    text = tag.text
-                    chipBackgroundColor = ColorStateList.valueOf(tag.color.asInt())
-                })
-            }
-
-            // add 'add tags' button
-            addNewTagsChip = Chip(view.context).apply {
-                text = view.context.getString(R.string.editnote_add_tag_small_btn)
-                chipBackgroundColor = view.context.getColorStateList(R.color.tag_button_blue)
-                chipIcon = ResourcesCompat.getDrawable(view.context.resources, R.drawable.ic_add_24, context.theme)
-            }
-            addNewTagsChip?.setOnClickListener { actionListener.onAddTags() }
-            binding.tagChipGroup.addView(addNewTagsChip)
-        }
-
+        
         private fun removeListeners() {
             if (titleWatcher != null) binding.titleInput.removeTextChangedListener(titleWatcher)
             if (noteTypeWatcher != null) binding.noteTypeInput.removeTextChangedListener(noteTypeWatcher)

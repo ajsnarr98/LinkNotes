@@ -2,4 +2,9 @@
 <resources>
     <attr name="textAppearanceHeadline7" format="reference" />
     <attr name="textAppearanceSubtitle1Bold" format="reference" />
+
+    <!-- attributes for Tag Chip Group -->
+    <declare-styleable name="TagChipGroup">
+        <attr name="hasAddButton" format="boolean" />
+    </declare-styleable>
 </resources>

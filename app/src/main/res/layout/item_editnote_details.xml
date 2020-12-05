@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_horizontal_padding"
         app:hasAddButton="true"
+        app:showCloseIcons="true"
         app:layout_constraintTop_toBottomOf="@id/empty_add_tags_button"
         app:layout_constraintStart_toStartOf="parent" />
 

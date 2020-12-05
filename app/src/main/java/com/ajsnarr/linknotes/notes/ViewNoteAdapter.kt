@@ -98,6 +98,14 @@ class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
             Timber.d("onBindNoteDetails")
             binding = ItemViewnoteDetailsBinding.bind(view)
 
+            // setup tags
+            if (viewModel.note.tags.isEmpty()) {
+                binding.tagChipGroup.visibility = View.GONE
+            } else {
+                binding.tagChipGroup.visibility = View.VISIBLE
+                binding.tagChipGroup.setTags(viewModel.note.tags)
+            }
+
             // update num entries text
             updateNumEntriesText()
 

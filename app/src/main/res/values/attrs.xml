@@ -6,5 +6,6 @@
     <!-- attributes for Tag Chip Group -->
     <declare-styleable name="TagChipGroup">
         <attr name="hasAddButton" format="boolean" />
+        <attr name="showCloseIcons" format="boolean" />
     </declare-styleable>
 </resources>

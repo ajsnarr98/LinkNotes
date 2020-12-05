@@ -42,9 +42,9 @@ class ConfirmationDialogFragment: DialogFragment() {
 
         val message = arguments?.getString(MESSAGE_KEY)
             ?: throw IllegalStateException("No message found for Confirmation Dialogue?")
-        val onPositiveButtonClick: () -> Any = arguments?.getSerializable(ON_POSITIVE_KEY) as (() -> Any)?
+        val onPositiveButtonClick: () -> Any = arguments?.getSerializable(ON_POSITIVE_KEY) as? (() -> Any)?
             ?: throw IllegalStateException("No confirm button callback found for Confirmation Dialogue?")
-        val onNegativeButtonClick: () -> Any = arguments?.getSerializable(ON_NEGATIVE_KEY) as (() -> Any)?
+        val onNegativeButtonClick: () -> Any = arguments?.getSerializable(ON_NEGATIVE_KEY) as? (() -> Any)?
             ?: throw IllegalStateException("No cancel button callback found for Confirmation Dialogue?")
 
         val alertDialogBuilder =  AlertDialog.Builder(context)
@@ -52,14 +52,14 @@ class ConfirmationDialogFragment: DialogFragment() {
         alertDialogBuilder.apply {
             setTitle("")
             setMessage(message)
-            setPositiveButton("Confirm", { dialog, which ->
+            setPositiveButton("Confirm") { dialog, _ ->
                 onPositiveButtonClick()
                 dialog?.dismiss()
-            })
-            setNegativeButton("Cancel", { dialog, which ->
-                dialog?.dismiss()
+            }
+            setNegativeButton("Cancel") { dialog, _ ->
                 onNegativeButtonClick()
-            })
+                dialog?.dismiss()
+            }
         }
 
         return alertDialogBuilder.create()

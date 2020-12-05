@@ -6,9 +6,19 @@ import android.graphics.Point
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentActivity
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.lang.IllegalArgumentException
 import java.math.BigInteger
 
+fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
+    return if (searchStr.length <= matchTo.length) {
+        // match for part of given strs if search string is less than string to be matched to
+        FuzzySearch.partialRatio(searchStr, matchTo) >= 70
+    } else {
+        // make search more condensed as search string gets bigger
+        FuzzySearch.ratio(searchStr, matchTo) >= 85
+    }
+}
 
 fun getScreenSize(activity: FragmentActivity) : Point {
     val size = Point()

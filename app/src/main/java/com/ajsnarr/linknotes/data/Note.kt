@@ -14,7 +14,7 @@ data class Note(
     val nicknames: MutableList<String> = mutableListOf(),
     var mainPicture: UUID? = null,
     val pictures: MutableList<UUID> = mutableListOf(),
-    val tags: MutableList<Tag> = mutableListOf(),
+    val tags: MutableSet<Tag> = mutableSetOf(),
     val entries: EntryList = EntryList.getEmpty(),
     val notes: MutableList<Note>? = null // for noteGroup types
 ) : AppDataObject, Parcelable {

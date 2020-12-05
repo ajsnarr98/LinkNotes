@@ -46,7 +46,7 @@ open class EditNoteActivity : BaseActivity() {
     }
 
     lateinit var viewModel: EditNoteViewModel
-    lateinit var binding: ActivityEditnoteBinding
+    private lateinit var binding: ActivityEditnoteBinding
 
     protected lateinit var recyclerAdapter: EditNoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)
@@ -63,7 +63,11 @@ open class EditNoteActivity : BaseActivity() {
         }
 
         override fun onAddTags() {
-
+            AddTagDialog.newInstance(activity.viewModel) { tag ->
+                // this is called when a new tag is going to be added to this note
+                activity.viewModel.addTag(tag)
+                activity.recyclerAdapter.notifyDataSetChanged()
+            }.show(activity.supportFragmentManager, "add_tags_dialog")
         }
 
         override fun onDeletePress() {

@@ -134,12 +134,17 @@ data class TagTree(val value: String, val color: Color, val children: MutableSet
              */
             private fun fetchNext(): Tag? {
 
-                // either get current iterator, or return null, because iterStack is empty
+                // either get current iterator, return root, or return null, because iterStack is empty
                 var curIter: Iterator<TagTree>? = iterStack.peek()
-                while (curIter?.hasNext() == false) {
+                while (curIter?.hasNext() == false && valStack.size > 1) {
                     valStack.pop()
                     iterStack.pop()
                     curIter = iterStack.peek()
+                }
+
+                // return root
+                if (valStack.size == 1) return Tag(valStack.pop(), this@TagTree.color).also {
+                    iterStack.pop()
                 }
 
                 if (curIter == null) return null

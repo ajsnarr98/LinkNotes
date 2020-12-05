@@ -51,9 +51,9 @@ class SearchActivity : BaseActivity() {
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
-        // setup search bar view to allow handling of back buttn presses within
+        // setup search bar view to allow handling of back button presses within
         // keyboard
-        binding.searchBarView.searchActivity = this
+        binding.searchBarView.activity = this
 
         // setup recycler view
         val recyclerManager = LinearLayoutManager(this)

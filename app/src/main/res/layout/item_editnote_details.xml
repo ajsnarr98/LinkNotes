@@ -21,10 +21,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.chip.ChipGroup
+    <com.ajsnarr.linknotes.TagChipGroup
         android:id="@+id/tag_chip_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_padding"
+        app:hasAddButton="true"
         app:layout_constraintTop_toBottomOf="@id/empty_add_tags_button"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -13,6 +13,7 @@ import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.data.Entry
 import com.ajsnarr.linknotes.data.EntryContent
 import com.ajsnarr.linknotes.data.EntryType
+import com.ajsnarr.linknotes.data.Tag
 import com.ajsnarr.linknotes.databinding.ItemEditnoteAddBtnBinding
 import com.ajsnarr.linknotes.databinding.ItemEditnoteDetailsBinding
 import com.ajsnarr.linknotes.databinding.ItemEditnoteEntryBinding
@@ -60,6 +61,11 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
          * Called when the user clicks the delete entry button.
          */
         fun onDeleteEntryPress(entry: Entry)
+
+        /**
+         * Called when the user tries to remove a tag from this note.
+         */
+        fun onRemoveTag(tag: Tag)
 
         /**
          * Called when the save button is pressed.
@@ -224,9 +230,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                 binding.tagChipGroup.visibility = View.VISIBLE
                 binding.emptyAddTagsButton.visibility = View.GONE
                 binding.tagChipGroup.setOnAddButtonClickListener { actionListener.onAddTags() }
+                binding.tagChipGroup.setOnTagClickListener { tag -> actionListener.onRemoveTag(tag) }
 
                 // refresh tags
-                binding.tagChipGroup.addTags(viewModel.note.tags)
+                binding.tagChipGroup.setTags(viewModel.note.tags)
             }
 
             // add to note type autocomplete text view

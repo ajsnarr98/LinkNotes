@@ -2,6 +2,7 @@ package com.ajsnarr.linknotes
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.core.content.res.ResourcesCompat
 import com.ajsnarr.linknotes.data.Tag
@@ -21,10 +22,15 @@ class TagChipGroup : ChipGroup {
     /**
      * Whether or not this chip group has an add button.
      */
-    var hasAddButton: Boolean = false
-        private set
+    private var hasAddButton: Boolean = false
+
+    /**
+     * Whether or not to show the close icon on each chip.
+     */
+    private var showCloseIcons: Boolean = false
 
     private var onAddButtonClick: () -> Unit = {}
+    private var onTagClick: (tag: Tag) -> Unit = {}
     private val tags: MutableSet<Tag> = mutableSetOf()
 
     constructor(context: Context) : super(context) { init(null) }
@@ -40,7 +46,8 @@ class TagChipGroup : ChipGroup {
             0
         ).apply {
                 try {
-                    hasAddButton = getBoolean(R.styleable.TagChipGroup_hasAddButton, false)
+                    hasAddButton = getBoolean(R.styleable.TagChipGroup_hasAddButton, hasAddButton)
+                    showCloseIcons = getBoolean(R.styleable.TagChipGroup_showCloseIcons, showCloseIcons)
                 } finally {
                     recycle() // must recycle typed array
                 }
@@ -55,12 +62,25 @@ class TagChipGroup : ChipGroup {
         refresh()
     }
 
+    fun removeTag(tag: Tag) {
+        this.tags.remove(tag)
+        refresh()
+    }
+
     /**
      * Add a collection of tags to this group.
      */
     fun addTags(tags: Collection<Tag>) {
         this.tags.addAll(tags)
         refresh()
+    }
+
+    /**
+     * Sets the collection of tags to this group.
+     */
+    fun setTags(tags: Collection<Tag>) {
+        this.tags.clear()
+        addTags(tags)
     }
 
     /**
@@ -71,11 +91,20 @@ class TagChipGroup : ChipGroup {
     }
 
     /**
+     * Set the listener for when the chip for a tag is pressed.
+     */
+    fun setOnTagClickListener(onTagClick: (tag: Tag) -> Unit) {
+        this.onTagClick = onTagClick
+    }
+
+    /**
      * Create a chip for the given tag.
      */
     private fun asChip(tag: Tag): Chip = Chip(context).apply {
         text = tag.text
         chipBackgroundColor = ColorStateList.valueOf(tag.color.asInt())
+        isCloseIconVisible = showCloseIcons
+        setOnClickListener { onTagClick(tag) }
     }
 
     /**

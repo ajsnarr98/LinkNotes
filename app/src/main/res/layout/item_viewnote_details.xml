@@ -7,6 +7,14 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp">
 
+    <com.ajsnarr.linknotes.TagChipGroup
+        android:id="@+id/tag_chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_padding"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
@@ -92,14 +100,13 @@
         style="@style/SquareRoundedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_padding"
         android:layout_marginEnd="@dimen/activity_horizontal_padding"
         android:drawablePadding="6dp"
         android:gravity="center"
         android:text="@string/viewnote_edit_btn"
         android:drawableLeft="@android:drawable/ic_menu_edit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tag_chip_group" />
 
     <TextView
         android:id="@+id/num_entries_text"

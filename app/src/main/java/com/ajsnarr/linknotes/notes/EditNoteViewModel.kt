@@ -35,6 +35,13 @@ class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
         note.tags.add(tag)
     }
 
+    /**
+     * Tries to remove a tag from this note.
+     */
+    fun removeTag(tag: Tag) {
+        note.tags.remove(tag)
+    }
+
     fun updateExistingEntry(updated: Entry): Boolean {
         return note.updateExistingEntry(updated)
     }

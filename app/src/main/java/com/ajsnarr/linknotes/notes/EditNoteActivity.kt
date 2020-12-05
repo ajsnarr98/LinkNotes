@@ -13,6 +13,7 @@ import com.ajsnarr.linknotes.ConfirmationDialogFragment
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.data.Entry
 import com.ajsnarr.linknotes.data.Note
+import com.ajsnarr.linknotes.data.Tag
 import com.ajsnarr.linknotes.data.UUID
 import com.ajsnarr.linknotes.databinding.ActivityEditnoteBinding
 import com.ajsnarr.linknotes.search.SearchActivity
@@ -108,6 +109,17 @@ open class EditNoteActivity : BaseActivity() {
                 entry
             else
                 null
+        }
+
+        override fun onRemoveTag(tag: Tag) {
+            ConfirmationDialogFragment.newInstance(
+                message = activity.getString(R.string.editnote_remove_tag_confirmation, tag.text),
+                onConfirm = {
+                    activity.viewModel.removeTag(tag)
+                    activity.recyclerAdapter.notifyDataSetChanged()
+                },
+                onCancel = {},
+            ).show(activity.supportFragmentManager, "confirm_remove_tag")
         }
 
         override fun onSaveButtonPress() {

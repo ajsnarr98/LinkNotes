@@ -71,7 +71,7 @@ data class Note(
             nicknames = this.nicknames!!,
             mainPicture = this.mainPicture?.url,
             pictures = this.pictures!!.map { it.url!! }.toMutableList(),
-            tags = this.tags!!.map { it.toAppObject() }.toMutableList(),
+            tags = this.tags!!.map { it.toAppObject() }.toMutableSet(),
             entries = toAppEntryList(),
             notes = this.notes?.map { it.toAppObject() }?.toMutableList()
         )

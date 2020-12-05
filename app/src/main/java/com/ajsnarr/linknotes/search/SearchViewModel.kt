@@ -1,11 +1,10 @@
 package com.ajsnarr.linknotes.search
 
-import androidx.lifecycle.ViewModel
 import com.ajsnarr.linknotes.BaseViewModel
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.data.Note
-import com.ajsnarr.linknotes.data.NoteCollection
 import com.ajsnarr.linknotes.data.Tag
+import com.ajsnarr.linknotes.util.fuzzyMatch
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -102,16 +101,6 @@ class SearchViewModel : BaseViewModel() {
                 ResultOrderType.RECENT -> (Long.MAX_VALUE - note.lastDateEdited.time).toString()
                 ResultOrderType.ALPHABETICAL -> note.name.toUpperCase(Locale.ROOT)
             }
-        }
-    }
-
-    private fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
-        return if (searchStr.length <= matchTo.length) {
-            // match for part of given strs if search string is less than string to be matched to
-            FuzzySearch.partialRatio(searchStr, matchTo) >= 70
-        } else {
-            // make search more condensed as search string gets bigger
-            FuzzySearch.ratio(searchStr, matchTo) >= 85
         }
     }
 }

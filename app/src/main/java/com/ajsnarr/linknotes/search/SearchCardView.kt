@@ -11,11 +11,7 @@ import androidx.cardview.widget.CardView
  */
 class SearchCardView : CardView {
 
-    private lateinit var mSearchActivity: Activity
-
-    var searchActivity
-        get() = mSearchActivity
-        set(value) { mSearchActivity = value }
+    lateinit var activity: Activity
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet?) : super(context, attributeSet)
@@ -29,16 +25,16 @@ class SearchCardView : CardView {
      * source: https://stackoverflow.com/questions/3940127/intercept-back-button-from-soft-keyboard
      */
     override fun dispatchKeyEventPreIme(event: KeyEvent): Boolean {
-        if (mSearchActivity != null && event.getKeyCode() === KeyEvent.KEYCODE_BACK) {
+        if (event.keyCode == KeyEvent.KEYCODE_BACK) {
             val state = keyDispatcherState
             if (state != null) {
-                if (event.getAction() === KeyEvent.ACTION_DOWN && event.getRepeatCount() === 0) {
+                if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
                     state.startTracking(event, this)
                     return true
-                } else if (event.getAction() === KeyEvent.ACTION_UP
-                    && !event.isCanceled() && state.isTracking(event)
+                } else if (event.action == KeyEvent.ACTION_UP
+                    && !event.isCanceled && state.isTracking(event)
                 ) {
-                    mSearchActivity.onBackPressed()
+                    activity.onBackPressed()
                     return true
                 }
             }

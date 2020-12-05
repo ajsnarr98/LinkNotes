@@ -12,14 +12,14 @@ import java.lang.IllegalStateException
 
 class ViewNoteViewModel(private val noteId: UUID): BaseViewModel(), DefaultLifecycleObserver {
 
-    var note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided.")
+    var note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
 
     override val lifecycleObservers: MutableCollection<LifecycleObserver>
         get() = super.lifecycleObservers.also { it.add(this) } // add this as a LifecycleObserver
 
     override fun onStart(owner: LifecycleOwner) {
         // update note when lifecycleOwner loads
-        note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided.")
+        note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
     }
 
     /**

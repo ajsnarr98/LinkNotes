@@ -223,6 +223,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             } else {
                 binding.tagChipGroup.visibility = View.VISIBLE
                 binding.emptyAddTagsButton.visibility = View.GONE
+                binding.tagChipGroup.setOnAddButtonClickListener { actionListener.onAddTags() }
 
                 // refresh tags
                 binding.tagChipGroup.addTags(viewModel.note.tags)
@@ -268,7 +269,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         override fun onDetach() {
             removeListeners()
         }
-        
+
         private fun removeListeners() {
             if (titleWatcher != null) binding.titleInput.removeTextChangedListener(titleWatcher)
             if (noteTypeWatcher != null) binding.noteTypeInput.removeTextChangedListener(noteTypeWatcher)

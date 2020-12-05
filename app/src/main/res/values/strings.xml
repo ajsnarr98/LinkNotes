@@ -16,7 +16,7 @@
     <string name="editnote_save_btn">SAVE</string>
     <string name="editnote_add_entry_btn">ADD NEW ENTRY</string>
     <string name="editnote_add_tag_btn">ADD NEW TAGS</string>
-    <string name="editnote_add_tag_small_btn">add new</string>
+    <string name="editnote_add_tag_chip_text" />
     <string name="editnote_num_entries">Showing %1$d entries</string>
     <string name="editnote_profile_image_desc">Profile Image</string>
     <string name="editnote_delete_button_desc">Delete Button</string>
@@ -26,6 +26,7 @@
     <string name="editnote_nicknames_text">Nicknames: </string>
     <string name="editnote_delete_entry_confirmation">Are you sure you want to delete this entry?</string>
     <string name="editnote_delete_note_confirmation">Are you sure you want to delete the note \"%s\"? This cannot be undone</string>
+    <string name="editnote_create_new_tag_confirmation">The tag \"%s\" does not yet exist. Are you sure you want to create it?</string>
     
     <!-- Viewnote Activity -->
     <string name="viewnote_num_entries">Showing %1$d entries</string>
@@ -45,5 +46,8 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="generic_confirm">Confirm</string>
+    <string name="generic_cancel">Cancel</string>
 
 </resources>

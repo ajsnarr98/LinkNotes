@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.ajsnarr.linknotes.BaseViewModel
 import com.ajsnarr.linknotes.data.Entry
 import com.ajsnarr.linknotes.data.Note
+import com.ajsnarr.linknotes.data.Tag
 import com.ajsnarr.linknotes.data.UUID
 
 /**
@@ -25,6 +26,13 @@ class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
 
     fun addNewEntry() {
         note.addNewEntry()
+    }
+
+    /**
+     * Adds a tag only if there isn't a matching tag in the note.
+     */
+    fun addTag(tag: Tag) {
+        note.tags.add(tag)
     }
 
     fun updateExistingEntry(updated: Entry): Boolean {

@@ -8,7 +8,10 @@
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
 - advanced searches
-- adding tags
+- add search functionality to add tags screen
+- add ability to delete tags in note
+- add ability to delete/rename tags in general somehow
+- when adding tags, have confirmation dialog that gives suggestions if it looks like there was a typo
 - display tags in all screens
 - link to note/entry
 - markdown content in entry?

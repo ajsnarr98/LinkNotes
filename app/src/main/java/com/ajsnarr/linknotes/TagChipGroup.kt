@@ -16,17 +16,22 @@ import com.google.android.material.chip.ChipGroup
  * @property onAddButtonClick - listener to be called when a the add button is
  *                              clicked. Only used when hasAddButton is true
  */
-class TagChipGroup(
-    context: Context,
-    attrs: AttributeSet?=null,
-    defStyleAttr: Int=com.google.android.material.R.attr.chipGroupStyle,
-    private val tags: MutableSet<Tag> = mutableSetOf(),
-    private var hasAddButton: Boolean = false,
-) : ChipGroup(context, attrs, defStyleAttr) {
+class TagChipGroup : ChipGroup {
 
-    var onAddButtonClick: () -> Unit = {}
+    /**
+     * Whether or not this chip group has an add button.
+     */
+    var hasAddButton: Boolean = false
+        private set
 
-    init {
+    private var onAddButtonClick: () -> Unit = {}
+    private val tags: MutableSet<Tag> = mutableSetOf()
+
+    constructor(context: Context) : super(context) { init(null) }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { init(attrs) }
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { init(attrs) }
+
+    fun init(attrs: AttributeSet?) {
         // get styled attributes
         context.theme.obtainStyledAttributes(
             attrs,
@@ -35,7 +40,7 @@ class TagChipGroup(
             0
         ).apply {
                 try {
-                    hasAddButton = getBoolean(R.styleable.TagChipGroup_hasAddButton, hasAddButton)
+                    hasAddButton = getBoolean(R.styleable.TagChipGroup_hasAddButton, false)
                 } finally {
                     recycle() // must recycle typed array
                 }
@@ -59,6 +64,13 @@ class TagChipGroup(
     }
 
     /**
+     * Set the listener for when the add button is pressed.
+     */
+    fun setOnAddButtonClickListener(onAddButtonClick: () -> Unit) {
+        this.onAddButtonClick = onAddButtonClick
+    }
+
+    /**
      * Create a chip for the given tag.
      */
     private fun asChip(tag: Tag): Chip = Chip(context).apply {
@@ -70,11 +82,14 @@ class TagChipGroup(
      * Create a chip for the add button.
      */
     private fun createAddNewTagsChip(): Chip = Chip(context).apply {
-        text = context.getString(R.string.editnote_add_tag_small_btn)
+        text = context.getString(R.string.editnote_add_tag_chip_text)
         chipBackgroundColor = context.getColorStateList(R.color.tag_button_blue)
         chipIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_add_24, context.theme)
-
-        setOnClickListener { onAddButtonClick }
+        textStartPadding = 0f
+        textEndPadding = 0f
+        chipStartPadding = context.resources.getDimension(R.dimen.quarter_base_padding)
+        chipEndPadding = context.resources.getDimension(R.dimen.quarter_base_padding)
+        setOnClickListener { onAddButtonClick() }
     }
 
     /**

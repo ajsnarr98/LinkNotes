@@ -13,10 +13,10 @@ import com.ajsnarr.linknotes.data.Note
 import com.ajsnarr.linknotes.databinding.ItemSearchResultBinding
 import com.google.android.material.chip.Chip
 
-class ResultAdapter(val context: Context, val actionListener: ActionListener)
-    : RecyclerView.Adapter<ResultAdapter.ResultViewHolder>() {
+class SearchAdapter(val context: Context, val actionListener: ActionListener)
+    : RecyclerView.Adapter<SearchAdapter.ResultViewHolder>() {
 
-    var results: List<Note> = mutableListOf()
+    private var results: List<Note> = mutableListOf()
 
     interface ActionListener {
         fun onResultClick(note: Note)
@@ -44,23 +44,7 @@ class ResultAdapter(val context: Context, val actionListener: ActionListener)
             actionListener.onResultClick(note)
         }
 
-        for (tag in note.tags) {
-            // add a new chip with text matching the tag
-
-            holder.binding.chipGroup.addView(Chip(context).apply {
-                isClickable = false
-
-                text = tag.text
-                textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 5f, resources.displayMetrics)
-                textAlignment = View.TEXT_ALIGNMENT_CENTER
-
-                chipMinHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics)
-                chipStartPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 1f, resources.displayMetrics)
-                chipEndPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 1f, resources.displayMetrics)
-                chipBackgroundColor = ColorStateList.valueOf(Color.rgb(tag.color.r, tag.color.g, tag.color.b))
-            })
-        }
-
+        holder.binding.chipGroup.addTags(note.tags)
         holder.binding.icon.setImageResource(R.drawable.default_profile) // TODO - load image
     }
 

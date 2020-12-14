@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:srcCompat="@drawable/default_profile"
-        android:contentDescription="@string/editnote_profile_image_desc" />
+        android:contentDescription="@string/editnote_note_image_desc" />
 
 
     <TextView

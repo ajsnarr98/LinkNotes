@@ -18,7 +18,7 @@
     <string name="editnote_add_tag_btn">ADD NEW TAGS</string>
     <string name="editnote_add_tag_chip_text" />
     <string name="editnote_num_entries">Showing %1$d entries</string>
-    <string name="editnote_profile_image_desc">Profile Image</string>
+    <string name="editnote_note_image_desc">Note Image</string>
     <string name="editnote_delete_button_desc">Delete Button</string>
     <string name="editnote_delete_entry_button_desc">Delete Entry Button</string>
     <string name="editnote_add_tag_button_desc">Add Tag</string>

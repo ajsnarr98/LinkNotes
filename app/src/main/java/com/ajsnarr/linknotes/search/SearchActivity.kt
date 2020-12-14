@@ -34,7 +34,7 @@ class SearchActivity : BaseActivity() {
     private var isSearchBarActive = false
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var recyclerAdapter: ResultAdapter
+    private lateinit var recyclerAdapter: SearchAdapter
 
     private lateinit var viewModel: SearchViewModel
 
@@ -57,7 +57,7 @@ class SearchActivity : BaseActivity() {
 
         // setup recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = ResultAdapter(this, RecyclerActionLister(this))
+        recyclerAdapter = SearchAdapter(this, RecyclerActionLister(this))
         binding.recyclerView.apply {
             layoutManager = recyclerManager
             adapter = recyclerAdapter
@@ -189,7 +189,7 @@ class SearchActivity : BaseActivity() {
     }
 
     // for recycler view items
-    private class RecyclerActionLister(val context: Context) : ResultAdapter.ActionListener {
+    private class RecyclerActionLister(val context: Context) : SearchAdapter.ActionListener {
 
         override fun onResultClick(note: Note) {
             Timber.d("onResultClick")

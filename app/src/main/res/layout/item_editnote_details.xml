@@ -49,7 +49,7 @@
 
     <ImageView
         android:id="@+id/profile_image"
-        android:contentDescription="@string/editnote_profile_image_desc"
+        android:contentDescription="@string/editnote_note_image_desc"
         android:layout_width="178dp"
         android:layout_height="165dp"
         android:layout_marginStart="@dimen/activity_horizontal_padding"

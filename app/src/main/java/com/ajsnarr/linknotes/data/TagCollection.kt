@@ -139,12 +139,12 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
         override fun iterator(): MutableIterator<Tag> = object : MutableIterator<Tag> {
 
             val iterIter = tagTrees.iterator()
-            var curIter: MutableIterator<Tag>? = null
+            var curIter: MutableIterator<Tag>? = if (iterIter.hasNext()) iterIter.next().iterator() else null
 
             override fun hasNext(): Boolean = curIter?.hasNext() == true || iterIter.hasNext()
 
             override fun next(): Tag {
-                if (curIter?.hasNext() != true) curIter = iterIter.next().iterator()
+                if (curIter?.hasNext() == false) curIter = iterIter.next().iterator()
                 return curIter?.next() ?: throw NoSuchElementException()
             }
 

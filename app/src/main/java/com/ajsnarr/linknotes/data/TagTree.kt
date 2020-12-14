@@ -142,12 +142,14 @@ data class TagTree(val value: String, val color: Color, val children: MutableSet
                     curIter = iterStack.peek()
                 }
 
-                // return root
-                if (valStack.size == 1) return Tag(valStack.pop(), this@TagTree.color).also {
-                    iterStack.pop()
+                if (curIter?.hasNext() != true) {
+                    // return root, or null if root has already been returned
+                    return if (valStack.size == 1) {
+                        Tag(valStack.pop(), this@TagTree.color).also {
+                            iterStack.pop()
+                        }
+                    } else null
                 }
-
-                if (curIter == null) return null
 
                 // move down the tree
                 val next = curIter.next()

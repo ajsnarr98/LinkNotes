@@ -9,6 +9,7 @@
 - better delete button
 - advanced searches
 - add search functionality to add tags screen
+- add cool animation for moving tags back and forth in add tags dialog
 - add ability to delete/rename tags in general somehow
 - when adding tags, have confirmation dialog that gives suggestions if it looks like there was a typo
 - display tags in all screens

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.linknotes.BaseActivity
 import com.ajsnarr.linknotes.ConfirmationDialogFragment
@@ -17,7 +17,7 @@ import com.ajsnarr.linknotes.data.Tag
 import com.ajsnarr.linknotes.data.UUID
 import com.ajsnarr.linknotes.databinding.ActivityEditnoteBinding
 import com.ajsnarr.linknotes.search.SearchActivity
-import com.ajsnarr.linknotes.util.getScreenSize
+import com.ajsnarr.linknotes.util.dialogs.AddTagDialog
 import com.ajsnarr.linknotes.util.hideKeyboard
 import timber.log.Timber
 
@@ -64,9 +64,9 @@ open class EditNoteActivity : BaseActivity() {
         }
 
         override fun onAddTags() {
-            AddTagDialog.newInstance(activity.viewModel) { tag ->
-                // this is called when a new tag is going to be added to this note
-                activity.viewModel.addTag(tag)
+            AddTagDialog.newInstance { tags ->
+                // this is called when new tag(s) are going to be added to this note
+                activity.viewModel.addTags(tags)
                 activity.recyclerAdapter.notifyDataSetChanged()
             }.show(activity.supportFragmentManager, "add_tags_dialog")
         }
@@ -167,7 +167,7 @@ open class EditNoteActivity : BaseActivity() {
 
         val inNoteID: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
 
-        viewModel = ViewModelProviders.of(this, EditNoteViewModel.Factory(inNoteID)).get(EditNoteViewModel::class.java)
+        viewModel = ViewModelProvider(this, EditNoteViewModel.Factory(inNoteID)).get(EditNoteViewModel::class.java)
         viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // set up close button

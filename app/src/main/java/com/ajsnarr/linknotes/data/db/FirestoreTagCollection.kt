@@ -84,6 +84,26 @@ class FirestoreTagCollection : TagCollection() {
         }
     }
 
+    override fun addAll(elements: Collection<com.ajsnarr.linknotes.data.Tag>): Boolean {
+        return this.value.let { masterSet ->
+            if (masterSet is TagTreesSet)
+                super.addAll(elements).also {
+                    // get all roots in a set, in case some elements are from the same tree
+                    val matchingRoots = mutableSetOf<TagTree>()
+                    for (element in elements) {
+                        val matchingRoot = masterSet.getMatchingRoot(element)
+                            ?: throw IllegalStateException("This should never get thrown")
+                        matchingRoots.add(TagTree.fromAppObject(matchingRoot))
+                    }
+                    for (root in matchingRoots) {
+                        dao.upsertTagTree(root)
+                    }
+                }
+            else
+                throw UnsupportedOperationException("Unknown set type")
+        }
+    }
+
     override fun clear() {
         this.value.let { masterSet ->
             if (masterSet is TagTreesSet)

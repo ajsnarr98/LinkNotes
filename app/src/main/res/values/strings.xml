@@ -21,6 +21,7 @@
     <string name="editnote_profile_image_desc">Profile Image</string>
     <string name="editnote_delete_button_desc">Delete Button</string>
     <string name="editnote_delete_entry_button_desc">Delete Entry Button</string>
+    <string name="editnote_add_tag_button_desc">Add Tag</string>
     <string name="editnote_note_type_text">Note Type: </string>
     <string name="editnote_entry_type_text">Entry Type: </string>
     <string name="editnote_nicknames_text">Nicknames: </string>

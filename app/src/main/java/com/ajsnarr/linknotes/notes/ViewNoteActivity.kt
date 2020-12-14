@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajsnarr.linknotes.BaseActivity
 import com.ajsnarr.linknotes.R
@@ -62,7 +62,7 @@ open class ViewNoteActivity : BaseActivity() {
         val inNoteId: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
 
         if (inNoteId != null) {
-            viewModel = ViewModelProviders.of(this, ViewNoteViewModel.Factory(inNoteId))
+            viewModel = ViewModelProvider(this, ViewNoteViewModel.Factory(inNoteId))
                 .get(ViewNoteViewModel::class.java)
         } else {
             throw IllegalStateException("No note provided to ViewNoteActivity.")

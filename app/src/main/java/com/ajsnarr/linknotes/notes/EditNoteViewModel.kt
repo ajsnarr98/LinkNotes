@@ -29,10 +29,10 @@ class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
     }
 
     /**
-     * Adds a tag only if there isn't a matching tag in the note.
+     * Adds tags only if there isn't a matching tag in the note.
      */
-    fun addTag(tag: Tag) {
-        note.tags.add(tag)
+    fun addTags(tags: Collection<Tag>) {
+        note.tags.addAll(tags)
     }
 
     /**

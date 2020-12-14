@@ -2,7 +2,6 @@ package com.ajsnarr.linknotes
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.core.content.res.ResourcesCompat
 import com.ajsnarr.linknotes.data.Tag
@@ -31,7 +30,10 @@ class TagChipGroup : ChipGroup {
 
     private var onAddButtonClick: () -> Unit = {}
     private var onTagClick: (tag: Tag) -> Unit = {}
-    private val tags: MutableSet<Tag> = mutableSetOf()
+    private val _tags: MutableSet<Tag> = mutableSetOf()
+
+    val tags: Set<Tag> get() = _tags
+
 
     constructor(context: Context) : super(context) { init(null) }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { init(attrs) }
@@ -58,12 +60,15 @@ class TagChipGroup : ChipGroup {
      * Add a tag to this group.
      */
     fun addTag(tag: Tag) {
-        this.tags.add(tag)
+        this._tags.add(tag)
         refresh()
     }
 
+    /**
+     * Remove a tag from this group.
+     */
     fun removeTag(tag: Tag) {
-        this.tags.remove(tag)
+        this._tags.remove(tag)
         refresh()
     }
 
@@ -71,7 +76,7 @@ class TagChipGroup : ChipGroup {
      * Add a collection of tags to this group.
      */
     fun addTags(tags: Collection<Tag>) {
-        this.tags.addAll(tags)
+        this._tags.addAll(tags)
         refresh()
     }
 
@@ -79,7 +84,7 @@ class TagChipGroup : ChipGroup {
      * Sets the collection of tags to this group.
      */
     fun setTags(tags: Collection<Tag>) {
-        this.tags.clear()
+        this._tags.clear()
         addTags(tags)
     }
 
@@ -112,7 +117,6 @@ class TagChipGroup : ChipGroup {
      */
     private fun createAddNewTagsChip(): Chip = Chip(context).apply {
         text = context.getString(R.string.editnote_add_tag_chip_text)
-        chipBackgroundColor = context.getColorStateList(R.color.tag_button_blue)
         chipIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_add_24, context.theme)
         textStartPadding = 0f
         textEndPadding = 0f
@@ -131,7 +135,7 @@ class TagChipGroup : ChipGroup {
         this.removeAllViews()
 
         // add each tag
-        for (tag in tags) {
+        for (tag in _tags) {
             this.addView(asChip(tag))
         }
 

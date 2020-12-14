@@ -119,11 +119,13 @@ data class TagTree(val value: String, val color: Color, val children: MutableSet
         return object : MutableIterator<Tag> {
 
             val valStack: LinkedList<String> = LinkedList()
+            val nodeStack: LinkedList<TagTree> = LinkedList()
             val iterStack: LinkedList<Iterator<TagTree>> = LinkedList()
 
             init {
                 // add initial values from this node
                 valStack.push(this@TagTree.value)
+                nodeStack.push(this@TagTree)
                 iterStack.push(this@TagTree.children.iterator())
             }
 
@@ -134,33 +136,35 @@ data class TagTree(val value: String, val color: Color, val children: MutableSet
              */
             private fun fetchNext(): Tag? {
 
-                // either get current iterator, return root, or return null, because iterStack is empty
+                if (valStack.isEmpty() || nodeStack.isEmpty()) return null
+
+                // peek current return value
+                val ret = Tag(valStack.peek()!!, nodeStack.peek()!!.color)
+
+                // get current iterator
                 var curIter: Iterator<TagTree>? = iterStack.peek()
-                while (curIter?.hasNext() == false && valStack.size > 1) {
+                while (curIter?.hasNext() == false) {
                     valStack.pop()
+                    nodeStack.pop()
                     iterStack.pop()
                     curIter = iterStack.peek()
                 }
 
-                // return root
-                if (valStack.size == 1) return Tag(valStack.pop(), this@TagTree.color).also {
-                    iterStack.pop()
-                }
-
-                if (curIter == null) return null
-
                 // move down the tree
-                val next = curIter.next()
-                val lastValue = valStack.peek() ?: throw IllegalStateException("This should not happen")
-                val nextValue = lastValue + TagCollection.SEPARATOR + next.value
+                if (curIter?.hasNext() == true) {
+                    val next =
+                        curIter.next()
+                    val lastValue =
+                        valStack.peek() ?: throw IllegalStateException("This should not happen")
+                    val nextValue = lastValue + TagCollection.SEPARATOR + next.value
 
-                if (!next.isLeaf) {
                     iterStack.push(next.children.iterator())
+                    nodeStack.push(next)
                     valStack.push(nextValue)
                 }
 
-                // return value with value of the leaf at the end
-                return Tag(nextValue, next.color)
+                // return next return value
+                return ret
             }
 
             override fun hasNext(): Boolean = next != null

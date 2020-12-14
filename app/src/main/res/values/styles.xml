@@ -49,4 +49,13 @@
     <style name="TextAppearance.LinkNotes.Body2" parent="TextAppearance.MaterialComponents.Body2">
     </style>
 
+    <!-- Other -->
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">@dimen/quarter_base_padding</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
 </resources>

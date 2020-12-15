@@ -3,10 +3,13 @@ package com.ajsnarr.linknotes
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import androidx.annotation.StyleRes
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.res.ResourcesCompat
 import com.ajsnarr.linknotes.data.Tag
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+
 
 /**
  * A ChipGroup that holds chips pertaining to tags.
@@ -28,16 +31,25 @@ class TagChipGroup : ChipGroup {
      */
     private var showCloseIcons: Boolean = false
 
+    /**
+     * Optional chip style.
+     */
+    @StyleRes
+    private var chipStyle: Int? = null
+
     private var onAddButtonClick: () -> Unit = {}
     private var onTagClick: (tag: Tag) -> Unit = {}
     private val _tags: MutableSet<Tag> = mutableSetOf()
 
     val tags: Set<Tag> get() = _tags
 
-
     constructor(context: Context) : super(context) { init(null) }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { init(attrs) }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { init(attrs) }
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) { init(attrs) }
 
     fun init(attrs: AttributeSet?) {
         // get styled attributes
@@ -49,7 +61,11 @@ class TagChipGroup : ChipGroup {
         ).apply {
                 try {
                     hasAddButton = getBoolean(R.styleable.TagChipGroup_hasAddButton, hasAddButton)
-                    showCloseIcons = getBoolean(R.styleable.TagChipGroup_showCloseIcons, showCloseIcons)
+                    showCloseIcons = getBoolean(
+                        R.styleable.TagChipGroup_showCloseIcons,
+                        showCloseIcons
+                    )
+                    chipStyle = getResourceId(R.styleable.TagChipGroup_chipStyle, 0).let { id -> if (id != 0) id else null }
                 } finally {
                     recycle() // must recycle typed array
                 }
@@ -103,9 +119,17 @@ class TagChipGroup : ChipGroup {
     }
 
     /**
+     * Get the base chip with the correct style.
+     */
+    private fun baseChip(): Chip = chipStyle?.let { style ->
+        Chip(context, null, style)
+    } ?: Chip(context)
+
+
+    /**
      * Create a chip for the given tag.
      */
-    private fun asChip(tag: Tag): Chip = Chip(context).apply {
+    private fun asChip(tag: Tag): Chip = baseChip().apply {
         text = tag.text
         chipBackgroundColor = ColorStateList.valueOf(tag.color.asInt())
         isCloseIconVisible = showCloseIcons
@@ -115,9 +139,13 @@ class TagChipGroup : ChipGroup {
     /**
      * Create a chip for the add button.
      */
-    private fun createAddNewTagsChip(): Chip = Chip(context).apply {
+    private fun createAddNewTagsChip(): Chip = baseChip().apply {
         text = context.getString(R.string.editnote_add_tag_chip_text)
-        chipIcon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_add_24, context.theme)
+        chipIcon = ResourcesCompat.getDrawable(
+            context.resources,
+            R.drawable.ic_add_24,
+            context.theme
+        )
         textStartPadding = 0f
         textEndPadding = 0f
         chipStartPadding = context.resources.getDimension(R.dimen.quarter_base_padding)

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import androidx.annotation.StyleRes
-import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.ajsnarr.linknotes.data.Tag
 import com.google.android.material.chip.Chip
@@ -39,6 +39,12 @@ class TagChipGroup : ChipGroup {
 
     private var onAddButtonClick: () -> Unit = {}
     private var onTagClick: (tag: Tag) -> Unit = {}
+    private var areTagsClickable: Boolean = false
+
+    private val invisibleRippleColor: ColorStateList by lazy {
+        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.transparent))
+    }
+
     private val _tags: MutableSet<Tag> = mutableSetOf()
 
     val tags: Set<Tag> get() = _tags
@@ -116,6 +122,7 @@ class TagChipGroup : ChipGroup {
      */
     fun setOnTagClickListener(onTagClick: (tag: Tag) -> Unit) {
         this.onTagClick = onTagClick
+        this.areTagsClickable = true
     }
 
     /**
@@ -133,7 +140,11 @@ class TagChipGroup : ChipGroup {
         text = tag.text
         chipBackgroundColor = ColorStateList.valueOf(tag.color.asInt())
         isCloseIconVisible = showCloseIcons
-        setOnClickListener { onTagClick(tag) }
+        if (areTagsClickable) {
+            setOnClickListener { onTagClick(tag) }
+        } else {
+            rippleColor = invisibleRippleColor
+        }
     }
 
     /**

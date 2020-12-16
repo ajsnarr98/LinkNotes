@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp">
 
-    <com.ajsnarr.linknotes.TagChipGroup
+    <com.github.ajsnarr98.linknotes.TagChipGroup
         android:id="@+id/tag_chip_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

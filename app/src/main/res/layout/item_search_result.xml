@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Thomas A 'Neo' Anderson" />
 
-        <com.ajsnarr.linknotes.TagChipGroup
+        <com.github.ajsnarr98.linknotes.TagChipGroup
             android:id="@+id/chip_group"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.ajsnarr.linknotes.TagChipGroup
+    <com.github.ajsnarr98.linknotes.TagChipGroup
         android:id="@+id/tag_chip_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
         app:layout_constraintStart_toEndOf="@+id/profile_image"
         app:layout_constraintTop_toBottomOf="@+id/note_type_input"/>
 
-    <com.ajsnarr.linknotes.util.MultiEditText
+    <com.github.ajsnarr98.linknotes.util.MultiEditText
         android:id="@+id/nicknames_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

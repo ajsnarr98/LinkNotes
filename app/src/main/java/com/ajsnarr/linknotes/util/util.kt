@@ -6,9 +6,13 @@ import android.graphics.Point
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentActivity
+import io.noties.markwon.Markwon
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.lang.IllegalArgumentException
 import java.math.BigInteger
+
+fun createMarkwonInstance(context: Context): Markwon = Markwon.builder(context)
+    .build()
 
 fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
     return if (searchStr.length <= matchTo.length) {

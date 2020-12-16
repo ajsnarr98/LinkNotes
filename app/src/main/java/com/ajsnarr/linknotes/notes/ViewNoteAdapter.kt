@@ -8,11 +8,13 @@ import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.data.Entry
 import com.ajsnarr.linknotes.databinding.ItemViewnoteDetailsBinding
 import com.ajsnarr.linknotes.databinding.ItemViewnoteEntryBinding
+import io.noties.markwon.Markwon
 import timber.log.Timber
 import java.lang.IllegalArgumentException
 
 class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
-                      private val actionListener: ActionListener
+                      private val actionListener: ActionListener,
+                      private val markwon: Markwon,
 ) : RecyclerView.Adapter<ViewNoteAdapter.ViewHolder>() {
 
     companion object {
@@ -36,13 +38,13 @@ class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
             ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_viewnote_entry, parent, false),
-                viewModel, actionListener
+                viewModel, actionListener, markwon
             )
             NOTE_DETAILS_TYPE -> {
                 NoteDetailViewHolder(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_viewnote_details, parent, false),
-                    viewModel, actionListener
+                    viewModel, actionListener, markwon
                 )
             }
             else -> throw IllegalArgumentException("Unhandled viewType: $viewType")
@@ -69,11 +71,12 @@ class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
     abstract class ViewHolder(
         protected val view: View,
         protected val viewModel: ViewNoteViewModel,
-        protected val actionListener: ActionListener
+        protected val actionListener: ActionListener,
+        protected val markwon: Markwon,
     ) : RecyclerView.ViewHolder(view)
 
-    class EntryViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener) :
-        ViewHolder(view, viewModel, actionListener) {
+    class EntryViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener, markwon: Markwon) :
+        ViewHolder(view, viewModel, actionListener, markwon) {
 
         private lateinit var binding: ItemViewnoteEntryBinding
 
@@ -82,12 +85,12 @@ class ViewNoteAdapter(private val viewModel: ViewNoteViewModel,
             binding = ItemViewnoteEntryBinding.bind(view)
 
             binding.entryType.text = entry.type.value
-            binding.content.text = entry.content.value
+            binding.content.text = markwon.toMarkdown(entry.content.value)
         }
     }
 
-    class NoteDetailViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener) :
-        ViewHolder(view, viewModel, actionListener) {
+    class NoteDetailViewHolder(view: View, viewModel: ViewNoteViewModel, actionListener: ActionListener, markwon: Markwon) :
+        ViewHolder(view, viewModel, actionListener, markwon) {
 
         private lateinit var binding: ItemViewnoteDetailsBinding
 

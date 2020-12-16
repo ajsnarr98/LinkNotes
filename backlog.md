@@ -13,7 +13,7 @@
 - add ability to delete/rename tags in general somehow
 - when adding tags, have confirmation dialog that gives suggestions if it looks like there was a typo
 - link to note/entry
-- markdown content in entry?
+- add markdown editing helpers for editing entries
 - link entries based on note/entry type (ex. tag <-> classes <-> people)
 - set default values for a new note on save
 - make viewnote screen look nicer

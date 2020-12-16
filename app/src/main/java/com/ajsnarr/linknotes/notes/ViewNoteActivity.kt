@@ -13,10 +13,12 @@ import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.data.Note
 import com.ajsnarr.linknotes.data.UUID
 import com.ajsnarr.linknotes.databinding.ActivityViewnoteBinding
+import com.ajsnarr.linknotes.util.createMarkwonInstance
+import io.noties.markwon.Markwon
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
-open class ViewNoteActivity : BaseActivity() {
+class ViewNoteActivity : BaseActivity() {
 
     companion object {
 
@@ -40,8 +42,9 @@ open class ViewNoteActivity : BaseActivity() {
 
     private lateinit var binding : ActivityViewnoteBinding
 
-    protected lateinit var recyclerAdapter: ViewNoteAdapter
-    private val mRecyclerActionListener = RecyclerActionListener(this)
+    private lateinit var recyclerAdapter: ViewNoteAdapter
+    private val mRecyclerActionListener by lazy { RecyclerActionListener(this) }
+    private val markwon: Markwon by lazy { createMarkwonInstance(this) }
 
     private class RecyclerActionListener(val activity: ViewNoteActivity)
         : ViewNoteAdapter.ActionListener {
@@ -71,7 +74,7 @@ open class ViewNoteActivity : BaseActivity() {
 
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
-        recyclerAdapter = ViewNoteAdapter(viewModel, mRecyclerActionListener)
+        recyclerAdapter = ViewNoteAdapter(viewModel, mRecyclerActionListener, markwon)
 
         binding.recyclerView.apply {
             layoutManager = recyclerManager

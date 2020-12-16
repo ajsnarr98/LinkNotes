@@ -1,4 +1,4 @@
-package com.ajsnarr.linknotes
+package com.github.ajsnarr98.linknotes
 
 import org.junit.Test
 

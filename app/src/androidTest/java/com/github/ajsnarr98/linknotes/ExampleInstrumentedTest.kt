@@ -1,4 +1,4 @@
-package com.ajsnarr.linknotes
+package com.github.ajsnarr98.linknotes
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

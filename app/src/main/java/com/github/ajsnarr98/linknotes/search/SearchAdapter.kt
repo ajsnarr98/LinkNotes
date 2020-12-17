@@ -40,7 +40,7 @@ class SearchAdapter(val context: Context, val actionListener: ActionListener)
             actionListener.onResultClick(note)
         }
 
-        holder.binding.chipGroup.addTags(note.tags)
+        holder.binding.chipGroup.setTags(note.tags)
         holder.binding.icon.setImageResource(R.drawable.default_profile) // TODO - load image
     }
 

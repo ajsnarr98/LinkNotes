@@ -6,7 +6,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.databinding.ViewMarkdownEditHelperBinding
-import com.github.ajsnarr98.linknotes.util.SoftKeyboardBehavior
+import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardBehavior
 
 class MarkdownEditHelperView : LinearLayoutCompat, CoordinatorLayout.AttachedBehavior {
     constructor(context: Context) : super(context)

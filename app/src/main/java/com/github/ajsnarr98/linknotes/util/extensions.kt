@@ -1,6 +1,5 @@
 package com.github.ajsnarr98.linknotes.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import com.github.ajsnarr98.linknotes.BaseActivity
@@ -39,22 +38,4 @@ fun String?.isNotNullOrEmpty(): Boolean {
         returns(true) implies (this@isNotNullOrEmpty != null)
     }
     return this != null && this.isNotEmpty()
-}
-
-/**
- * Attempts to unwrap the current activity from the given context, or will
- * return null if the activity cannot be found. Avoid using this method
- * if possible.
- *
- * This will always return null when given application context.
- */
-fun Context?.getActivityOrNull(): BaseActivity? {
-    return if (this is ContextWrapper) {
-        if (this is BaseActivity)
-            this
-        else
-            this.baseContext.getActivityOrNull()
-    } else {
-        null
-    }
 }

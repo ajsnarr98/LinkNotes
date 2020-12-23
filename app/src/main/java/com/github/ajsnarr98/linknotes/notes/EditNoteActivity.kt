@@ -3,6 +3,7 @@ package com.github.ajsnarr98.linknotes.notes
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -48,6 +49,7 @@ open class EditNoteActivity : BaseActivity() {
 
     lateinit var viewModel: EditNoteViewModel
     private lateinit var binding: ActivityEditnoteBinding
+    override val rootView: ViewGroup get() = binding.root
 
     protected lateinit var recyclerAdapter: EditNoteAdapter
     private val mRecyclerActionListener = RecyclerActionListener(this)

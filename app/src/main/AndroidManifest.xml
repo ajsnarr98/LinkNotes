@@ -21,6 +21,7 @@
         </activity>
         <activity
             android:name="com.github.ajsnarr98.linknotes.notes.EditNoteActivity"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.github.ajsnarr98.linknotes.notes.ViewNoteActivity"/>
     </application>

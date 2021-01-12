@@ -8,7 +8,7 @@ import java.lang.UnsupportedOperationException
 
 class FirestoreTagCollection : TagCollection() {
 
-    private val dao = FirestoreDAO.instance
+    private val dao: FirestoreDAO = FirestoreDAOImpl.instance
 
     init {
         // get tags from db

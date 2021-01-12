@@ -13,7 +13,7 @@ import timber.log.Timber
  */
 class FirestoreNoteCollection : NoteCollection() {
 
-    private val dao = FirestoreDAO.instance
+    private val dao: FirestoreDAO = FirestoreDAOImpl.instance
 
     init {
         // get notes from db

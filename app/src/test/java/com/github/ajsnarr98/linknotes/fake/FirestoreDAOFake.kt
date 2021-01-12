@@ -30,6 +30,7 @@ class FirestoreDAOFake: FirestoreDAO {
 
     override fun removeNotesChangeListener(): Boolean {
         // no op
+        return true
     }
 
     override fun addTagsChangeListener(listener: (QuerySnapshot?, FirebaseFirestoreException?) -> Unit) {
@@ -38,6 +39,7 @@ class FirestoreDAOFake: FirestoreDAO {
 
     override fun removeTagsChangeListener(): Boolean {
         // no op
+        return true
     }
 
     override fun upsertNote(note: Note): String {

@@ -2,13 +2,14 @@ package com.github.ajsnarr98.linknotes.notes
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.widget.LinearLayoutCompat
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.databinding.ViewMarkdownEditHelperBinding
 import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardBehavior
 
-class MarkdownEditHelperView : LinearLayoutCompat, CoordinatorLayout.AttachedBehavior {
+class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehavior {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -26,5 +27,6 @@ class MarkdownEditHelperView : LinearLayoutCompat, CoordinatorLayout.AttachedBeh
 
     }
 
-    override fun getBehavior(): CoordinatorLayout.Behavior<*> = SoftKeyboardBehavior<MarkdownEditHelperView>()
+    override fun getBehavior(): CoordinatorLayout.Behavior<*>
+        = SoftKeyboardBehavior<MarkdownEditHelperView>(defaultVisibility = View.INVISIBLE)
 }

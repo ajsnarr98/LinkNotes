@@ -25,6 +25,9 @@
 - add default entries for pictures and the like
 - implement undo button when editing notes
 - add custom recyclerview-like chipgroup
+- add code obfuscation
+- add security in firestore
+- add separate account support in firestore
 
 ## Bugs
 - deleting an entry does not visibly update the list of entries

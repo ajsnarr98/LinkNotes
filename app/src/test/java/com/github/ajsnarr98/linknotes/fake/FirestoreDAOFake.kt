@@ -9,8 +9,8 @@ import java.lang.Exception
 
 class FirestoreDAOFake: FirestoreDAO {
 
-    private val notes = mutableSetOf<Note>()
-    private val tags = mutableSetOf<TagTree>()
+    val notes = mutableSetOf<Note>()
+    val tags = mutableSetOf<TagTree>()
 
     override fun getAllNotes(onSuccess: (Note) -> Unit, onFailure: (Exception) -> Unit) {
         for (note in notes) {
@@ -44,7 +44,7 @@ class FirestoreDAOFake: FirestoreDAO {
 
     override fun upsertNote(note: Note): String {
         this.notes.add(note)
-        return "0" // some UUID
+        return note.id ?: "0" // some UUID
     }
 
     override fun deleteNote(note: Note) {

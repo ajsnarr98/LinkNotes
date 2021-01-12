@@ -13,8 +13,6 @@ class FirestoreDAOImpl : FirestoreDAO {
     companion object {
         const val NOTES_COLLECTION: String = "notes"
         const val TAGS_COLLECTION: String = "tags"
-
-        val instance = FirestoreDAOImpl()
     }
 
     private val db = FirebaseFirestore.getInstance()

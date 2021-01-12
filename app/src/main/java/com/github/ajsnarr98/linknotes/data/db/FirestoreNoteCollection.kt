@@ -11,9 +11,7 @@ import timber.log.Timber
  *
  * MUST clear listeners via call to onActivityEnd.
  */
-class FirestoreNoteCollection : NoteCollection() {
-
-    private val dao: FirestoreDAO = FirestoreDAOImpl.instance
+class FirestoreNoteCollection(private val dao: FirestoreDAO = FirestoreDAO.instance) : NoteCollection() {
 
     init {
         // get notes from db

@@ -6,9 +6,7 @@ import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 
-class FirestoreTagCollection : TagCollection() {
-
-    private val dao: FirestoreDAO = FirestoreDAOImpl.instance
+class FirestoreTagCollection(private val dao: FirestoreDAO = FirestoreDAO.instance) : TagCollection() {
 
     init {
         // get tags from db

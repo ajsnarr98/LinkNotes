@@ -8,6 +8,10 @@ import java.lang.Exception
  */
 interface FirestoreDAO {
 
+    companion object {
+        val instance: FirestoreDAO = FirestoreDAOImpl()
+    }
+
     /**
      * Gets all notes stored in the db.
      */

@@ -3,6 +3,7 @@ package com.github.ajsnarr98.linknotes
 import com.github.ajsnarr98.linknotes.data.EntryList
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.NoteCollection
+import com.github.ajsnarr98.linknotes.data.db.FirestoreDAO
 import com.github.ajsnarr98.linknotes.data.db.FirestoreNoteCollection
 import com.github.ajsnarr98.linknotes.fake.FirestoreDAOFake
 import org.junit.Assert.*
@@ -15,8 +16,6 @@ import java.util.*
  */
 class NoteCollectionTest {
 
-    private lateinit var dao: FirestoreDAOFake
-    private lateinit var notes: NoteCollection
     private val sampleNotes = listOf<Note>(
         Note(
             id = "1",
@@ -56,16 +55,8 @@ class NoteCollectionTest {
         ),
     )
 
-    fun init() {
-        dao = FirestoreDAOFake()
-        notes = FirestoreNoteCollection(dao)
-    }
-
-    fun initWithNotes() {
-        dao = FirestoreDAOFake()
-        upsertSampleNotes()
-        notes = FirestoreNoteCollection(dao)
-    }
+    private val emptyDAO = FirestoreDAOFake()
+    private val filledDAO = FirestoreDAOFake().also { upsertSampleNotes(it) }
 
     /**
      * Gets a note in db format.
@@ -73,7 +64,7 @@ class NoteCollectionTest {
     private fun dbNote(note: Note): com.github.ajsnarr98.linknotes.data.db.Note
         = com.github.ajsnarr98.linknotes.data.db.Note.fromAppObject(note)
 
-    private fun upsertSampleNotes() {
+    private fun upsertSampleNotes(dao: FirestoreDAO) {
         sampleNotes
             .map { note -> dbNote(note) }
             .forEach { note -> dao.upsertNote(note) }
@@ -81,7 +72,10 @@ class NoteCollectionTest {
 
     @Test
     fun addTest() {
-        init()
+
+        val dao = emptyDAO
+        val notes = FirestoreNoteCollection(emptyDAO)
+
         assertTrue("notes is empty", notes.isEmpty())
         var count = 0
         for (note in sampleNotes) {
@@ -93,14 +87,17 @@ class NoteCollectionTest {
 
         // check if all samples are in collection and db
         for (note in sampleNotes) {
-            assertTrue("is note ${note._name} in collection", this.notes.contains(note))
-            assertTrue("is note ${note._name} in db", this.dao.notes.contains(dbNote(note)))
+            assertTrue("is note ${note._name} in collection", notes.contains(note))
+            assertTrue("is note ${note._name} in db", dao.notes.contains(dbNote(note)))
         }
     }
 
     @Test
     fun addAllTest() {
-        init()
+
+        val dao = emptyDAO
+        val notes = FirestoreNoteCollection(emptyDAO)
+
         assertTrue("notes is empty", notes.isEmpty())
         notes.addAll(sampleNotes)
         assertEquals("notes has ${sampleNotes.size} elements", sampleNotes.size, notes.size)
@@ -108,14 +105,17 @@ class NoteCollectionTest {
 
         // check if all samples are in collection and db
         for (note in sampleNotes) {
-            assertTrue("is note ${note._name} in collection", this.notes.contains(note))
-            assertTrue("is note ${note._name} in db", this.dao.notes.contains(dbNote(note)))
+            assertTrue("is note ${note._name} in collection", notes.contains(note))
+            assertTrue("is note ${note._name} in db", dao.notes.contains(dbNote(note)))
         }
     }
 
     @Test
     fun clearTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         notes.clear()
         assertTrue("notes is empty", notes.isEmpty())
@@ -123,33 +123,39 @@ class NoteCollectionTest {
 
         // make sure all samples are removed from collection and db
         for (note in sampleNotes) {
-            assertFalse("is note ${note._name} not in collection", this.notes.contains(note))
-            assertFalse("is note ${note._name} not in db", this.dao.notes.contains(dbNote(note)))
+            assertFalse("is note ${note._name} not in collection", notes.contains(note))
+            assertFalse("is note ${note._name} not in db", dao.notes.contains(dbNote(note)))
         }
     }
 
     @Test
     fun initializeTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
 
         // check if all samples are in collection and db
         for (note in sampleNotes) {
-            assertTrue("is note ${note._name} in collection", this.notes.contains(note))
-            assertTrue("is note ${note._name} in db", this.dao.notes.contains(dbNote(note)))
+            assertTrue("is note ${note._name} in collection", notes.contains(note))
+            assertTrue("is note ${note._name} in db", dao.notes.contains(dbNote(note)))
         }
     }
 
     @Test
     fun iteratorTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
 
         // check if all samples are in collection and db
         var count = 0
         for (note in notes) {
             assertTrue("is note ${note._name} in sample collection", this.sampleNotes.contains(note))
-            assertTrue("is note ${note._name} in db", this.dao.notes.contains(dbNote(note)))
+            assertTrue("is note ${note._name} in db", dao.notes.contains(dbNote(note)))
             count++
         }
         assertEquals("Did iterator iterate ${sampleNotes.size} times", sampleNotes.size, count)
@@ -157,7 +163,10 @@ class NoteCollectionTest {
 
     @Test
     fun removeTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         var count = sampleNotes.size
         for (note in sampleNotes) {
@@ -169,14 +178,17 @@ class NoteCollectionTest {
 
         // make sure all samples are removed from collection and db
         for (note in sampleNotes) {
-            assertFalse("is note ${note._name} not in collection", this.notes.contains(note))
-            assertFalse("is note ${note._name} not in db", this.dao.notes.contains(dbNote(note)))
+            assertFalse("is note ${note._name} not in collection", notes.contains(note))
+            assertFalse("is note ${note._name} not in db", dao.notes.contains(dbNote(note)))
         }
     }
 
     @Test
     fun removeAllTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         notes.removeAll(sampleNotes)
         assertTrue("notes is empty", notes.isEmpty())
@@ -184,14 +196,17 @@ class NoteCollectionTest {
 
         // make sure all samples are removed from collection and db
         for (note in sampleNotes) {
-            assertFalse("is note ${note._name} not in collection", this.notes.contains(note))
-            assertFalse("is note ${note._name} not in db", this.dao.notes.contains(dbNote(note)))
+            assertFalse("is note ${note._name} not in collection", notes.contains(note))
+            assertFalse("is note ${note._name} not in db", dao.notes.contains(dbNote(note)))
         }
     }
 
     @Test
     fun removeAllButOneTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         val allButOneSample = LinkedList<Note>(sampleNotes)
         val oneRemaining: Note = allButOneSample.pop()
@@ -201,16 +216,19 @@ class NoteCollectionTest {
 
         // make sure all samples are removed from collection and db, except for the one left
         for (note in allButOneSample) {
-            assertFalse("is note ${note._name} not in collection", this.notes.contains(note))
-            assertFalse("is note ${note._name} not in db", this.dao.notes.contains(dbNote(note)))
+            assertFalse("is note ${note._name} not in collection", notes.contains(note))
+            assertFalse("is note ${note._name} not in db", dao.notes.contains(dbNote(note)))
         }
-        assertTrue("is note ${oneRemaining._name} left in collection", this.notes.contains(oneRemaining))
-        assertTrue("is note ${oneRemaining._name} left in db", this.dao.notes.contains(dbNote(oneRemaining)))
+        assertTrue("is note ${oneRemaining._name} left in collection", notes.contains(oneRemaining))
+        assertTrue("is note ${oneRemaining._name} left in db", dao.notes.contains(dbNote(oneRemaining)))
     }
 
     @Test
     fun retainAllButOneTest() {
-        initWithNotes()
+
+        val dao = filledDAO
+        val notes = FirestoreNoteCollection(filledDAO)
+
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         val allButOneSample = LinkedList<Note>(sampleNotes)
         val oneRemoved: Note = allButOneSample.pop()
@@ -220,10 +238,10 @@ class NoteCollectionTest {
 
         // make sure all samples are in from collection and db, except for the one left
         for (note in allButOneSample) {
-            assertTrue("is note ${note._name} in collection", this.notes.contains(note))
-            assertTrue("is note ${note._name} in db", this.dao.notes.contains(dbNote(note)))
+            assertTrue("is note ${note._name} in collection", notes.contains(note))
+            assertTrue("is note ${note._name} in db", dao.notes.contains(dbNote(note)))
         }
-        assertFalse("is note ${oneRemoved._name} not in collection", this.notes.contains(oneRemoved))
-        assertFalse("is note ${oneRemoved._name} not in db", this.dao.notes.contains(dbNote(oneRemoved)))
+        assertFalse("is note ${oneRemoved._name} not in collection", notes.contains(oneRemoved))
+        assertFalse("is note ${oneRemoved._name} not in db", dao.notes.contains(dbNote(oneRemoved)))
     }
 }

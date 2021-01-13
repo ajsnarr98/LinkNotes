@@ -3,14 +3,14 @@ package com.github.ajsnarr98.linknotes.data.db
 import com.google.firebase.firestore.*
 import java.lang.Exception
 
+object DAO {
+    val instance: FirestoreDAO = FirestoreDAOImpl()
+}
+
 /**
  * Used for pulling notes and related info out of the DB.
  */
 interface FirestoreDAO {
-
-    companion object {
-        val instance: FirestoreDAO = FirestoreDAOImpl()
-    }
 
     /**
      * Gets all notes stored in the db.

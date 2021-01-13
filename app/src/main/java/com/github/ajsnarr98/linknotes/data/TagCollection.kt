@@ -5,6 +5,13 @@ import androidx.lifecycle.LiveData
 import com.github.ajsnarr98.linknotes.data.db.FirestoreTagCollection
 import timber.log.Timber
 
+object TagCollections {
+    /**
+     * Instance of the TagCollection
+     */
+    val instance = FirestoreTagCollection()
+}
+
 /**
  * Represents a collection of notes from the DB. Updates using livedata.
  *
@@ -21,10 +28,6 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
     }
 
     companion object {
-        /**
-         * Instance of the TagCollection
-         */
-         val instance = FirestoreTagCollection()
 
         /**
          * Separator between tags and sub-tags. Ex: "classes.jmu"

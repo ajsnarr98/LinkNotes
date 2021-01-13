@@ -5,6 +5,10 @@ import androidx.lifecycle.LiveData
 import com.github.ajsnarr98.linknotes.data.db.FirestoreNoteCollection
 import timber.log.Timber
 
+object NoteCollections {
+    val instance = FirestoreNoteCollection()
+}
+
 /**
  * Represents a collection of notes from the DB. Updates using livedata.
  *
@@ -18,10 +22,6 @@ abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note>, 
         }
 
         Timber.i("Created note collection")
-    }
-
-    companion object {
-        val instance = FirestoreNoteCollection()
     }
 
     /**

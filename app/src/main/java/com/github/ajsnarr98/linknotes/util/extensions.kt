@@ -1,11 +1,7 @@
 package com.github.ajsnarr98.linknotes.util
 
-import android.content.Context
-import android.content.ContextWrapper
-import com.github.ajsnarr98.linknotes.BaseActivity
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
-
 
 /**
  * Checks if this object is not null

@@ -18,15 +18,81 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/top_border"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center" >
+
+        <ImageButton
+            android:id="@+id/bullet_list"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/bullet_list_content_desc"
+            android:src="@drawable/ic_format_list_bulleted_24px" />
+
+        <ImageButton
+            android:id="@+id/numbered_list"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/numbered_list_content_desc"
+            android:src="@drawable/ic_format_list_numbered_24px" />
 
         <ImageButton
             android:id="@+id/bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
             android:scaleType="fitCenter"
             android:contentDescription="@string/bold_content_desc"
             android:src="@drawable/ic_format_bold_24px" />
+
+        <ImageButton
+            android:id="@+id/italic"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/italic_content_desc"
+            android:src="@drawable/ic_format_italic_24px" />
+
+        <ImageButton
+            android:id="@+id/underline"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/underlined_content_desc"
+            android:src="@drawable/ic_format_underlined_24px" />
+
+        <ImageButton
+            android:id="@+id/strikethrough"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/strikethrough_content_desc"
+            android:src="@drawable/ic_format_strikethrough_24px" />
+
+        <ImageButton
+            android:id="@+id/text_size"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/text_size_content_desc"
+            android:src="@drawable/ic_format_size_24px" />
+
+        <ImageButton
+            android:id="@+id/add_link"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/add_link_content_desc"
+            android:src="@drawable/ic_insert_link_24px" />
+
+        <ImageButton
+            android:id="@+id/add_photo"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/add_photo_content_desc"
+            android:src="@drawable/ic_insert_photo_24px" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

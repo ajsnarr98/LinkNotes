@@ -19,6 +19,8 @@
 - make viewnote screen look nicer
 - prompt to save in edit mode on back button hit, if changes were made
 - add images to entries
+- add default special entry types, like a value bar
+- add ability to add custom templates for new notes to start out with?
 - add back navigation in toolbar
 - add real editnote screen/boxes
 - add confirmation on save editnote when you try to add new notetype

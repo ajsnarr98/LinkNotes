@@ -11,7 +11,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
  * GONE to INVISIBLE through the constructor.
  */
 open class SoftKeyboardBehavior<V : View> : CoordinatorLayout.Behavior<V> {
-    constructor() : super()
+    constructor() : super() { this.defaultVisibility = View.GONE }
     constructor(defaultVisibility: Int) : super() { this.defaultVisibility = defaultVisibility }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 

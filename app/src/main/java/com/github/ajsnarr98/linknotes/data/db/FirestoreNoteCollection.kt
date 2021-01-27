@@ -91,8 +91,9 @@ class FirestoreNoteCollection(private val dao: FirestoreDAO = DAO.instance) : No
         }
     }
     override fun clear() {
+        val toDelete = this.map { note -> Note.fromAppObject(note) }
         super.clear()
-        dao.deleteNotes(this.map { note -> Note.fromAppObject(note) })
+        dao.deleteNotes(toDelete)
     }
     override fun remove(element: com.github.ajsnarr98.linknotes.data.Note): Boolean {
         return super.remove(element).also {

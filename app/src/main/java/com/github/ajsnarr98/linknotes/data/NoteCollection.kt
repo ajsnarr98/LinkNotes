@@ -1,6 +1,7 @@
 package com.github.ajsnarr98.linknotes.data
 
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LiveData
 import com.github.ajsnarr98.linknotes.data.db.FirestoreNoteCollection
 import timber.log.Timber
 
@@ -13,11 +14,10 @@ object NoteCollections {
  *
  * DO NOT modify the value field of this class.
  */
-abstract class NoteCollection: MutableSet<Note>, DefaultLifecycleObserver {
-
-    var value = mutableSetOf<Note>()
+abstract class NoteCollection: LiveData<MutableSet<Note>>(), MutableSet<Note>, DefaultLifecycleObserver {
 
     init {
+        value = mutableSetOf<Note>()
         Timber.i("Created note collection")
     }
 

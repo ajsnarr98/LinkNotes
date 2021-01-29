@@ -1,19 +1,10 @@
 package com.github.ajsnarr98.linknotes.data.db.firestore
 
-import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
-import com.github.ajsnarr98.linknotes.data.db.TagsDAO
-import java.lang.IllegalStateException
-
-class FirestoreTagsDAO : AbstractFirestoreDAO<com.github.ajsnarr98.linknotes.data.TagTree>(
-    TAGS_COLLECTION
-), TagsDAO {
+class FirestoreTagsDAO : AbstractFirestoreDAO<TagTree>(TAGS_COLLECTION) {
 
     companion object {
         const val TAGS_COLLECTION: String = "tags"
     }
 
-    override fun <T : DBCollectionObject<com.github.ajsnarr98.linknotes.data.TagTree>> getConversionClass(): Class<T> {
-        // we need a DBCollectionObject<TagTree>
-        return TagTree::class.java as? Class<T> ?: throw IllegalStateException("This should not happen")
-    }
+    override val tClass: Class<TagTree> = TagTree::class.java
 }

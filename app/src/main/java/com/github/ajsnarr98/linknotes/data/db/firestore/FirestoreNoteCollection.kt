@@ -3,8 +3,8 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 import androidx.lifecycle.LifecycleOwner
 import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.UUID
+import com.github.ajsnarr98.linknotes.data.db.DAO
 import com.github.ajsnarr98.linknotes.data.db.DBInstances
-import com.github.ajsnarr98.linknotes.data.db.NotesDAO
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 
@@ -13,7 +13,7 @@ import timber.log.Timber
  *
  * MUST clear listeners via call to onActivityEnd.
  */
-class FirestoreNoteCollection(private val dao: NotesDAO = DBInstances.notesDAO) : NoteCollection() {
+class FirestoreNoteCollection(private val dao: DAO<Note> = DBInstances.notesDAO) : NoteCollection() {
 
     init {
         // get notes from db

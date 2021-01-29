@@ -12,9 +12,9 @@ import java.lang.Exception
  *
  * @property collectionName Firestore collection name.
  */
-abstract class AbstractFirestoreDAO<A : AppDataObject>(
+abstract class AbstractFirestoreDAO<T : DBCollectionObject<out AppDataObject>>(
     private val collectionName: String,
-) : DAO<A>, FirestoreChangeListenerHolder {
+) : DAO<T>, FirestoreChangeListenerHolder {
 
     private val db = FirebaseFirestore.getInstance()
     private var listenerRegistration: ListenerRegistration? = null
@@ -22,7 +22,7 @@ abstract class AbstractFirestoreDAO<A : AppDataObject>(
     /**
      * Returns the T::class.java stored in this collection.
      */
-    protected abstract fun <T : DBCollectionObject<A>> getConversionClass(): Class<T>
+    protected abstract val tClass: Class<T>
 
     override fun setChangeListener(listener: (QuerySnapshot?, FirebaseFirestoreException?) -> Unit) {
         removeChangeListener() // remove if exists
@@ -37,7 +37,7 @@ abstract class AbstractFirestoreDAO<A : AppDataObject>(
         return removed
     }
 
-    override fun <T : DBCollectionObject<A>> getAll(
+    override fun getAll(
         onSuccess: (T) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
@@ -45,13 +45,13 @@ abstract class AbstractFirestoreDAO<A : AppDataObject>(
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    onSuccess(document.toObject(getConversionClass()))
+                    onSuccess(document.toObject(tClass))
                 }
             }
             .addOnFailureListener(onFailure)
     }
 
-    override fun <T : DBCollectionObject<A>> upsert(document: T): String {
+    override fun upsert(document: T): String {
         Timber.d("upserting to $collectionName...")
 
         // generate a new document if neccesary
@@ -65,7 +65,7 @@ abstract class AbstractFirestoreDAO<A : AppDataObject>(
                 .document()
         }
 
-        val savedDocument: DBCollectionObject<A>
+        val savedDocument
                 = if (document.hasID()) {
             document
         } else {
@@ -83,7 +83,7 @@ abstract class AbstractFirestoreDAO<A : AppDataObject>(
         return savedDocument.id ?: throw IllegalStateException("Document id should not be null (${document.readableLogName})")
     }
 
-    override fun <T : DBCollectionObject<A>> delete(document: T) {
+    override fun delete(document: T) {
         Timber.d("deleting document in $collectionName...")
 
         if (document.hasID()) {
@@ -97,7 +97,7 @@ abstract class AbstractFirestoreDAO<A : AppDataObject>(
         }
     }
 
-    override fun <T : DBCollectionObject<A>> deleteAll(documents: Collection<T>) {
+    override fun deleteAll(documents: Collection<T>) {
         for (doc in documents) {
             delete(doc)
         }

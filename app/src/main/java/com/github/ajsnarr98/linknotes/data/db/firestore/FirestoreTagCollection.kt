@@ -1,7 +1,9 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import androidx.lifecycle.LifecycleOwner
 import com.github.ajsnarr98.linknotes.data.TagCollection
+import com.github.ajsnarr98.linknotes.data.db.DBInstances
+import com.github.ajsnarr98.linknotes.data.db.TagsDAO
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
@@ -130,7 +132,13 @@ class FirestoreTagCollection(private val dao: TagsDAO = DBInstances.tagsDAO) : T
                         dao.upsert(TagTree.fromAppObject(matchingRoot))
                     } else {
                         // last part of tree was just removed entirely
-                        dao.delete(TagTree.fromAppObject(com.github.ajsnarr98.linknotes.data.TagTree.newTreeFrom(element)))
+                        dao.delete(
+                            TagTree.fromAppObject(
+                                com.github.ajsnarr98.linknotes.data.TagTree.newTreeFrom(
+                                    element
+                                )
+                            )
+                        )
                     }
                 }
             else

@@ -1,8 +1,12 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
+import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
+import com.github.ajsnarr98.linknotes.data.db.TagsDAO
 import java.lang.IllegalStateException
 
-class FirestoreTagsDAO : AbstractFirestoreDAO<com.github.ajsnarr98.linknotes.data.TagTree>(TAGS_COLLECTION), TagsDAO {
+class FirestoreTagsDAO : AbstractFirestoreDAO<com.github.ajsnarr98.linknotes.data.TagTree>(
+    TAGS_COLLECTION
+), TagsDAO {
 
     companion object {
         const val TAGS_COLLECTION: String = "tags"

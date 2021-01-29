@@ -2,18 +2,20 @@ package com.github.ajsnarr98.linknotes
 
 import com.github.ajsnarr98.linknotes.data.EntryList
 import com.github.ajsnarr98.linknotes.data.Note
-import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.db.FirestoreDAO
 import com.github.ajsnarr98.linknotes.data.db.FirestoreNoteCollection
 import com.github.ajsnarr98.linknotes.fake.FirestoreDAOFake
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import java.time.Instant
 import java.util.*
 
 /**
  * Test for using the note collection.
  */
+@RunWith(RobolectricTestRunner::class)
 class NoteCollectionTest {
 
     private val sampleNotes = listOf<Note>(

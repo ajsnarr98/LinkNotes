@@ -2,13 +2,13 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import androidx.lifecycle.LifecycleOwner
 import com.github.ajsnarr98.linknotes.data.TagCollection
+import com.github.ajsnarr98.linknotes.data.db.DAO
 import com.github.ajsnarr98.linknotes.data.db.DBInstances
-import com.github.ajsnarr98.linknotes.data.db.TagsDAO
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 
-class FirestoreTagCollection(private val dao: TagsDAO = DBInstances.tagsDAO) : TagCollection() {
+class FirestoreTagCollection(private val dao: DAO<TagTree> = DBInstances.tagsDAO) : TagCollection() {
 
     init {
         // get tags from db

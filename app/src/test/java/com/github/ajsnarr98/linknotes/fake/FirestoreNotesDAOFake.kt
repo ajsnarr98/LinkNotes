@@ -1,6 +1,5 @@
 package com.github.ajsnarr98.linknotes.fake
 
-import com.github.ajsnarr98.linknotes.data.Note
-import com.github.ajsnarr98.linknotes.data.db.NotesDAO
+import com.github.ajsnarr98.linknotes.data.db.firestore.Note
 
-class FirestoreNotesDAOFake : AbstractFirestoreDAOFake<Note, com.github.ajsnarr98.linknotes.data.db.firestore.Note>(), NotesDAO
+class FirestoreNotesDAOFake : AbstractFirestoreDAOFake<Note>()

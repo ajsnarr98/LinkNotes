@@ -4,7 +4,7 @@ import java.util.*
 
 
 data class Note(
-    val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
+    override val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
     val type: String? = null,
     val name: String? = null,
     val dateCreated: Date? = null,
@@ -15,7 +15,7 @@ data class Note(
     val tags: MutableList<Tag>? = null,
     val entries: MutableList<Entry>? = null,
     val notes: MutableList<Note>? = null
-) : DBObject<com.github.ajsnarr98.linknotes.data.Note> {
+) : DBCollectionObject<com.github.ajsnarr98.linknotes.data.Note> {
 
     companion object {
         fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Note) : Note {
@@ -45,19 +45,21 @@ data class Note(
         }
     }
 
+    override val readableLogName: String = "Note '$id' -> name: $name"
+
     /**
      * A note is marked as a new note, when it has no valid ID.
      *
      * An invalid ID will either be null or blank (at most whitespace chars).
      */
-    fun hasID(): Boolean {
+    override fun hasID(): Boolean {
         return this.id == null || this.id.isBlank()
     }
 
     /**
      * Returns a new note with the given ID.
      */
-    fun withId(id: String): Note {
+    override fun withID(id: String): Note {
         return this.copy(id=id)
     }
 

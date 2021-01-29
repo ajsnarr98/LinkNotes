@@ -2,7 +2,7 @@ package com.github.ajsnarr98.linknotes
 
 import com.github.ajsnarr98.linknotes.data.EntryList
 import com.github.ajsnarr98.linknotes.data.Note
-import com.github.ajsnarr98.linknotes.data.db.FirestoreNoteCollection
+import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNoteCollection
 import com.github.ajsnarr98.linknotes.data.db.NotesDAO
 import com.github.ajsnarr98.linknotes.fake.FirestoreNotesDAOFake
 import org.junit.Assert.*
@@ -63,8 +63,8 @@ class NoteCollectionTest {
     /**
      * Gets a note in db format.
      */
-    private fun dbNote(note: Note): com.github.ajsnarr98.linknotes.data.db.Note
-        = com.github.ajsnarr98.linknotes.data.db.Note.fromAppObject(note)
+    private fun dbNote(note: Note): com.github.ajsnarr98.linknotes.data.db.firestore.Note
+        = com.github.ajsnarr98.linknotes.data.db.firestore.Note.fromAppObject(note)
 
     private fun upsertSampleNotes(dao: NotesDAO) {
         sampleNotes

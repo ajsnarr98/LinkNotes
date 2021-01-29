@@ -1,6 +1,8 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.github.ajsnarr98.linknotes.data.AppDataObject
+import com.github.ajsnarr98.linknotes.data.db.DAO
+import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
 import com.google.firebase.firestore.*
 import timber.log.Timber
 import java.lang.Exception

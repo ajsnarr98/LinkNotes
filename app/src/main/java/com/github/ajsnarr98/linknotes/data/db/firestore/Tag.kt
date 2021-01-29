@@ -1,4 +1,6 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
+
+import com.github.ajsnarr98.linknotes.data.db.DBObject
 
 data class Tag(
     val text: String? = null,

@@ -1,8 +1,10 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import androidx.lifecycle.LifecycleOwner
 import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.UUID
+import com.github.ajsnarr98.linknotes.data.db.DBInstances
+import com.github.ajsnarr98.linknotes.data.db.NotesDAO
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 

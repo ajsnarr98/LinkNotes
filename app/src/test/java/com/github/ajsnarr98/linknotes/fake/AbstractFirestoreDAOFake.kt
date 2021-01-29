@@ -3,7 +3,7 @@ package com.github.ajsnarr98.linknotes.fake
 import com.github.ajsnarr98.linknotes.data.AppDataObject
 import com.github.ajsnarr98.linknotes.data.db.DAO
 import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
-import com.github.ajsnarr98.linknotes.data.db.FirestoreChangeListenerHolder
+import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreChangeListenerHolder
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import java.lang.Exception

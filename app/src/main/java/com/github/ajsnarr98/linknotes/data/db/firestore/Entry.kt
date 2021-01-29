@@ -1,5 +1,6 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
+import com.github.ajsnarr98.linknotes.data.db.DBObject
 import java.util.*
 
 data class Entry(

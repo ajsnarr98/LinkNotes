@@ -1,4 +1,4 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.google.firebase.firestore.*
 

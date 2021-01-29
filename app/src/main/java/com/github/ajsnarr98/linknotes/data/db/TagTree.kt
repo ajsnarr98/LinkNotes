@@ -1,10 +1,20 @@
 package com.github.ajsnarr98.linknotes.data.db
 
+import com.github.ajsnarr98.linknotes.data.TagCollection
+
 data class TagTree(
     val topValue: String? = null,
     val color: Color? = null,
     val children: MutableList<TagTree>? = null,
-) : DBObject<com.github.ajsnarr98.linknotes.data.TagTree> {
+) : DBCollectionObject<com.github.ajsnarr98.linknotes.data.TagTree> {
+
+    override val id: String? = topValue
+    override val readableLogName: String = "Tags $topValue${TagCollection.SEPARATOR}*"
+
+    override fun withID(id: String): DBCollectionObject<com.github.ajsnarr98.linknotes.data.TagTree> {
+        return this // topValue should never be changed here
+    }
+
     companion object {
         /**
          * Returns an entry from the database.

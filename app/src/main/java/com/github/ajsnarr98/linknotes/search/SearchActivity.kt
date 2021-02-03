@@ -71,10 +71,10 @@ class SearchActivity : BaseActivity() {
         setupSearchBar()
 
         // load notes
-//        viewModel.notesCollection.observe(this, {
-//            // update notes based on live data changes
-//            onNotesUpdate()
-//        })
+        viewModel.notesCollection.observe(this, {
+            // update notes based on live data changes
+            onNotesUpdate()
+        })
 
         // setup add note button
         binding.addNoteButton.setOnClickListener {

@@ -27,6 +27,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         const val ENTRY_TYPE = 0
         const val NOTE_DETAILS_TYPE = 1
         const val ADD_ENTRY_BUTTON_TYPE = 2
+        const val BOTTOM_SPACING_TYPE = 3
     }
 
     /**
@@ -104,6 +105,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                     .inflate(R.layout.item_editnote_add_btn, parent, false),
                 viewModel, actionListener
             )
+            BOTTOM_SPACING_TYPE -> BasicViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_editnote_empty_spacing_bottom, parent, false),
+            )
             else -> throw IllegalArgumentException("Unhandled viewType: $viewType")
         }
     }
@@ -111,18 +116,20 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> NOTE_DETAILS_TYPE
-            itemCount - 1 -> ADD_ENTRY_BUTTON_TYPE
+            itemCount - 2 -> ADD_ENTRY_BUTTON_TYPE
+            itemCount - 1 -> BOTTOM_SPACING_TYPE
             else -> ENTRY_TYPE
         }
     }
 
-    override fun getItemCount(): Int = viewModel.note.entries.size + 2
+    override fun getItemCount(): Int = viewModel.note.entries.size + 3
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return when (holder) {
             is EntryViewHolder      -> holder.onBind(viewModel.note.entries[position - 1])
             is NoteDetailViewHolder -> holder.onBind()
             is AddButtonViewHolder  -> holder.onBind()
+            is BasicViewHolder      -> { /* no-op */ }
             else -> throw IllegalArgumentException("Unhandled viewType: ${holder::class.qualifiedName}")
         }
     }
@@ -132,9 +139,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
     }
 
     abstract class ViewHolder(
-        protected val view: View,
-        protected val viewModel: EditNoteViewModel,
-        protected val actionListener: ActionListener
+        view: View,
     ) : RecyclerView.ViewHolder(view) {
 
         /**
@@ -152,9 +157,11 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         open fun onDetach() {}
     }
 
+    class BasicViewHolder(view: View) : ViewHolder(view)
 
-    class EntryViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
-        ViewHolder(view, viewModel, actionListener) {
+
+    class EntryViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+        ViewHolder(view) {
 
         private lateinit var binding: ItemEditnoteEntryBinding
 
@@ -164,7 +171,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
         fun onBind(entry: Entry) {
             Timber.d("onBindEntry")
-            binding = ItemEditnoteEntryBinding.bind(view)
+            binding = ItemEditnoteEntryBinding.bind(itemView)
             this.entry = entry
 
             if (entryTypeListener != null) return
@@ -203,8 +210,8 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    class NoteDetailViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
-        ViewHolder(view, viewModel, actionListener) {
+    class NoteDetailViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+        ViewHolder(view) {
 
         private lateinit var binding: ItemEditnoteDetailsBinding
 
@@ -214,7 +221,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
         fun onBind() {
             Timber.d("onBindNoteDetails")
-            binding = ItemEditnoteDetailsBinding.bind(view)
+            binding = ItemEditnoteDetailsBinding.bind(itemView)
 
             // remove old update listeners before refreshing views
             removeListeners()
@@ -259,7 +266,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
             // update num entries text
             binding.numEntriesText.text =
-                view.context.getString(R.string.editnote_num_entries, viewModel.note.entries.size)
+                itemView.context.getString(R.string.editnote_num_entries, viewModel.note.entries.size)
 
             // setup update listeners
             titleWatcher = AfterTextChangedWatcher {
@@ -284,14 +291,14 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    class AddButtonViewHolder(view: View, viewModel: EditNoteViewModel, actionListener: ActionListener) :
-            ViewHolder(view, viewModel, actionListener) {
+    class AddButtonViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+            ViewHolder(view) {
 
         private lateinit var binding: ItemEditnoteAddBtnBinding
 
         fun onBind() {
             Timber.d("OnBindAddButton")
-            binding = ItemEditnoteAddBtnBinding.bind(view)
+            binding = ItemEditnoteAddBtnBinding.bind(itemView)
 
             // set up add entry button
             binding.addEntryButton.setOnClickListener {

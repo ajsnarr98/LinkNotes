@@ -170,7 +170,12 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
             }
             return success
         }
-        override fun removeAll(elements: Collection<Tag>): Boolean = elements.map { remove(it) }.all { it }
+        override fun removeAll(elements: Collection<Tag>): Boolean {
+            // need to remove the elements in the correct order
+            val elementsToKeep = this.filter { it !in elements }
+            clear()
+            return addAll(elementsToKeep)
+        }
         override fun retainAll(elements: Collection<Tag>): Boolean {
             // cannot retail all if they aren't all here
             if (!containsAll(elements)) return false

@@ -313,24 +313,23 @@ class TagCollectionTest {
             assertFalse("is tag ${tag.text} not in collection", tags.contains(tag))
         }
     }
-//
-//    @Test
-//    fun removeAllTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//        notes.removeAll(sampleNotes)
-//        assertTrue("notes is empty", notes.isEmpty())
-//        assertTrue("db is empty", dao.collection.isEmpty())
-//
-//        // make sure all samples are removed from collection and db
-//        for (note in sampleNotes) {
-//            assertFalse("is note ${note._name} not in collection", notes.contains(note))
-//            assertFalse("is note ${note._name} not in db", dao.collection.contains(dbNote(note)))
-//        }
-//    }
+
+    @Test
+    fun removeAllTest() {
+
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
+        tags.removeAll(fullAddedTags)
+
+        // make sure all samples are removed from collection
+        assertTrue("tags is empty", tags.isEmpty())
+        assertTrue("db is empty", dao.collection.isEmpty())
+        for (tag in fullAddedTags) {
+            assertFalse("is tag ${tag.text} not in collection", tags.contains(tag))
+        }
+    }
 //
 //    @Test
 //    fun removeAllButOneTest() {

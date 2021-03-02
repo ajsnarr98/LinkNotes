@@ -36,7 +36,7 @@ class TagCollectionTest {
     /**
      * All tags, including tags created when adding the list of sampleTags.
      */
-    private val fullAddedTags = setOf<Tag>(
+    private val fullAddedTags = listOf<Tag>(
         Tag("places"),
         Tag("places.charlottesville", BLUE),
         Tag("places.harrisonburg", BLUE),
@@ -80,6 +80,27 @@ class TagCollectionTest {
         2,
         3,
         4,
+        5,
+        5,
+        5,
+        5,
+    )
+
+    /**
+     * A list parallel to fullAddedTags where each value represents what unique
+     * tag tree that sample tag is part of.
+     */
+    private val fullAddedTagsTagTreeIds = listOf<Int>(
+        1,
+        1,
+        1,
+        2,
+        3,
+        4,
+        5,
+        5,
+        5,
+        5,
         5,
         5,
         5,
@@ -149,15 +170,15 @@ class TagCollectionTest {
     fun addTest() {
 
         val dao = emptyDAO
-        val tags = FirestoreTagCollection(emptyDAO)
+        val tags = FirestoreTagCollection(dao)
 
         assertTrue("tags is empty", tags.isEmpty())
         val treeCount = mutableSetOf<Int>()
         for (i in 0.until(sampleTags.size)) {
             tags.add(sampleTags[i])
             treeCount.add(tagTreeIds[i])
-            assertEquals("tags has ${tagCounts[i]} elements", tagCounts[i], tags.size)
-            assertEquals("db has ${treeCount.size} elements", treeCount.size, dao.collection.size)
+            assertEquals("tags has ${tagCounts[i]} elements (iter $i)", tagCounts[i], tags.size)
+            assertEquals("db has ${treeCount.size} elements (iter $i)", treeCount.size, dao.collection.size)
         }
 
         // check if all samples are in collection and db
@@ -190,96 +211,108 @@ class TagCollectionTest {
         }
     }
 
-//    @Test
-//    fun addAllTest() {
-//
-//        val dao = emptyDAO
-//        val notes = FirestoreNoteCollection(emptyDAO)
-//
-//        assertTrue("notes is empty", notes.isEmpty())
-//        notes.addAll(sampleNotes)
-//        assertEquals("notes has ${sampleNotes.size} elements", sampleNotes.size, notes.size)
-//        assertEquals("db has ${sampleNotes.size} elements", sampleNotes.size, dao.collection.size)
-//
-//        // check if all samples are in collection and db
-//        for (note in sampleNotes) {
-//            assertTrue("is note ${note._name} in collection", notes.contains(note))
-//            assertTrue("is note ${note._name} in db", dao.collection.contains(dbNote(note)))
-//        }
-//    }
-//
-//    @Test
-//    fun clearTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//        notes.clear()
-//        assertTrue("notes is empty", notes.isEmpty())
-//        assertTrue("db is empty", dao.collection.isEmpty())
-//
-//        // make sure all samples are removed from collection and db
-//        for (note in sampleNotes) {
-//            assertFalse("is note ${note._name} not in collection", notes.contains(note))
-//            assertFalse("is note ${note._name} not in db", dao.collection.contains(dbNote(note)))
-//        }
-//    }
-//
-//    @Test
-//    fun initializeTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//
-//        // check if all samples are in collection and db
-//        for (note in sampleNotes) {
-//            assertTrue("is note ${note._name} in collection", notes.contains(note))
-//            assertTrue("is note ${note._name} in db", dao.collection.contains(dbNote(note)))
-//        }
-//    }
-//
-//    @Test
-//    fun iteratorTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//
-//        // check if all samples are in collection and db
-//        var count = 0
-//        for (note in notes) {
-//            assertTrue("is note ${note._name} in sample collection", this.sampleNotes.contains(note))
-//            assertTrue("is note ${note._name} in db", dao.collection.contains(dbNote(note)))
-//            count++
-//        }
-//        assertEquals("Did iterator iterate ${sampleNotes.size} times", sampleNotes.size, count)
-//    }
-//
-//    @Test
-//    fun removeTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//        var count = sampleNotes.size
-//        for (note in sampleNotes) {
-//            notes.remove(note)
-//            count--
-//            assertEquals("notes has $count elements", count, notes.size)
-//            assertEquals("db has $count elements", count, dao.collection.size)
-//        }
-//
-//        // make sure all samples are removed from collection and db
-//        for (note in sampleNotes) {
-//            assertFalse("is note ${note._name} not in collection", notes.contains(note))
-//            assertFalse("is note ${note._name} not in db", dao.collection.contains(dbNote(note)))
-//        }
-//    }
+    @Test
+    fun addAllTest() {
+
+        val dao = emptyDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertTrue("tags is empty", tags.isEmpty())
+        tags.addAll(sampleTags)
+
+        // check if all samples are in collection and db
+        assertEquals("is tag collection same size as expected list", fullAddedTags.size, tags.size)
+        assertEquals("is dao same size as expected list", sampleTagTrees.size, dao.collection.size)
+        for (tag in fullAddedTags) {
+            assertTrue("is tag ${tag.text} in collection", tags.contains(tag))
+        }
+        for (tagTree in sampleTagTrees) {
+            assertTrue(
+                "is tag tree ${tagTree.value} in db",
+                dao.collection.contains(dbTagTree(tagTree))
+            )
+            checkRecursive(tagTree, dao.collection.find { it.toAppObject().value == tagTree.value }?.toAppObject())
+        }
+    }
+
+    @Test
+    fun initializeFullTest() {
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        // check if all samples are already added in collection and db
+        assertEquals("is tag collection same size as expected list", fullAddedTags.size, tags.size)
+        assertEquals("is dao same size as expected list", sampleTagTrees.size, dao.collection.size)
+        for (tag in fullAddedTags) {
+            assertTrue("is tag ${tag.text} in collection", tags.contains(tag))
+        }
+        for (tagTree in sampleTagTrees) {
+            assertTrue(
+                "is tag tree ${tagTree.value} in db",
+                dao.collection.contains(dbTagTree(tagTree))
+            )
+            checkRecursive(tagTree, dao.collection.find { it.toAppObject().value == tagTree.value }?.toAppObject())
+        }
+    }
+
+    @Test
+    fun clearTest() {
+
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
+        tags.clear()
+        assertTrue("tags is empty", tags.isEmpty())
+        assertTrue("db is empty", dao.collection.isEmpty())
+
+        // make sure all samples are removed from collection
+        for (tag in fullAddedTags) {
+            assertFalse("is tag ${tag.text} not in collection", tags.contains(tag))
+        }
+    }
+
+    @Test
+    fun iteratorTest() {
+
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
+
+        // check if all samples are in collection and db
+        var count = 0
+        for (tag in tags) {
+            count++
+        }
+        assertEquals("Did iterator iterate ${fullAddedTags.size} times", fullAddedTags.size, count)
+    }
+
+    @Test
+    fun removeTest() {
+
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
+        var count = fullAddedTags.size
+        val treeCount = mutableSetOf<Int>()
+        for (i in (fullAddedTags.size - 1) downTo 0) {
+            tags.remove(fullAddedTags[i])
+            count--
+            treeCount.clear()
+            repeat(i) { k -> treeCount.add(fullAddedTagsTagTreeIds[k]) }
+            assertEquals("tags has $count elements (iter $i)", count, tags.size)
+            assertEquals("db has ${treeCount.size} elements (iter $i)", treeCount.size, dao.collection.size)
+        }
+
+        // make sure all samples are removed from collection
+        assertTrue("tags is empty", tags.isEmpty())
+        assertTrue("db is empty", dao.collection.isEmpty())
+        for (tag in fullAddedTags) {
+            assertFalse("is tag ${tag.text} not in collection", tags.contains(tag))
+        }
+    }
 //
 //    @Test
 //    fun removeAllTest() {

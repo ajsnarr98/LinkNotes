@@ -25,6 +25,7 @@ abstract class AbstractFirestoreDAOFake<T : DBCollectionObject<out AppDataObject
     }
 
     override fun upsert(document: T): String {
+        this.collection.remove(document)
         this.collection.add(document)
         return document.id ?: "0" // some UUID
     }

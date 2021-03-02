@@ -12,6 +12,15 @@ data class TagTree(
     override val id: String? = topValue
     override val readableLogName: String = "Tags $topValue${TagCollection.SEPARATOR}*"
 
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is TagTree
+                && this.topValue == other.topValue
+    }
+
+    override fun hashCode(): Int {
+        return topValue.hashCode()
+    }
+
     override fun withID(id: String): DBCollectionObject<com.github.ajsnarr98.linknotes.data.TagTree> {
         return this // topValue should never be changed here
     }

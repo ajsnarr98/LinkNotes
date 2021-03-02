@@ -182,6 +182,8 @@ class TagCollectionTest {
         val title = expected.value
         assertNotNull("check recursive not null ($title)", actual)
         assertEquals("recursive check ($title):", expected.value, actual?.value)
+        val e = expected.children
+        val a = actual?.children
         assertEquals("recursive check children size ($title):", expected.size, actual?.size)
         for (expChild in expected.children) {
             checkRecursive(expChild, actual?.children?.find { it.value == expChild.value })

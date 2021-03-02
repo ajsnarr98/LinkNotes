@@ -2,6 +2,7 @@ package com.github.ajsnarr98.linknotes
 
 import com.github.ajsnarr98.linknotes.data.Color
 import com.github.ajsnarr98.linknotes.data.Tag
+import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.TagTree
 import com.github.ajsnarr98.linknotes.data.db.DAO
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
@@ -11,7 +12,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.util.*
-import kotlin.math.exp
 
 /**
  * Test for using the note collection.
@@ -330,48 +330,50 @@ class TagCollectionTest {
             assertFalse("is tag ${tag.text} not in collection", tags.contains(tag))
         }
     }
-//
-//    @Test
-//    fun removeAllButOneTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//        val allButOneSample = LinkedList<Note>(sampleNotes)
-//        val oneRemaining: Note = allButOneSample.pop()
-//        notes.removeAll(allButOneSample)
-//        assertEquals("notes has one note", 1, notes.size)
-//        assertEquals("db has one note", 1, dao.collection.size)
-//
-//        // make sure all samples are removed from collection and db, except for the one left
-//        for (note in allButOneSample) {
-//            assertFalse("is note ${note._name} not in collection", notes.contains(note))
-//            assertFalse("is note ${note._name} not in db", dao.collection.contains(dbNote(note)))
-//        }
-//        assertTrue("is note ${oneRemaining._name} left in collection", notes.contains(oneRemaining))
-//        assertTrue("is note ${oneRemaining._name} left in db", dao.collection.contains(dbNote(oneRemaining)))
-//    }
-//
-//    @Test
-//    fun retainAllButOneTest() {
-//
-//        val dao = filledDAO
-//        val notes = FirestoreNoteCollection(filledDAO)
-//
-//        assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
-//        val allButOneSample = LinkedList<Note>(sampleNotes)
-//        val oneRemoved: Note = allButOneSample.pop()
-//        notes.retainAll(allButOneSample)
-//        assertEquals("notes has ${allButOneSample.size} notes", allButOneSample.size, notes.size)
-//        assertEquals("db has ${allButOneSample.size} notes", allButOneSample.size, dao.collection.size)
-//
-//        // make sure all samples are in from collection and db, except for the one left
-//        for (note in allButOneSample) {
-//            assertTrue("is note ${note._name} in collection", notes.contains(note))
-//            assertTrue("is note ${note._name} in db", dao.collection.contains(dbNote(note)))
-//        }
-//        assertFalse("is note ${oneRemoved._name} not in collection", notes.contains(oneRemoved))
-//        assertFalse("is note ${oneRemoved._name} not in db", dao.collection.contains(dbNote(oneRemoved)))
-//    }
+
+    @Test
+    fun removeAllButOneTest() {
+
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
+        val allButOne = LinkedList<Tag>(fullAddedTags)
+        val oneRemaining: Tag = allButOne.pop()
+        tags.removeAll(allButOne)
+        assertEquals("collection has correct number of tags left", 1, oneRemaining.text.split(TagCollection.SEPARATOR).size)
+        assertEquals("db has one tag tree", 1, dao.collection.size)
+
+        // make sure all samples are removed from collection and db, except for the one left
+        for (tag in allButOne) {
+            assertFalse("is tag ${tag.text} not in collection", tags.contains(tag))
+        }
+        assertTrue("is note ${oneRemaining.text} left in collection", tags.contains(oneRemaining))
+    }
+
+    @Test
+    fun retainAllEverythingTest() {
+        
+        val dao = filledDAO
+        val tags = FirestoreTagCollection(dao)
+
+        assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
+        tags.retainAll(fullAddedTags)
+        assertEquals("collection has correct number of tags left", fullAddedTags.size, tags.size)
+        assertEquals("db correct number of tag trees left", fullAddedTagsTagTreeIds.last(), dao.collection.size)
+
+        // check if all samples are in collection and db
+        assertEquals("is tag collection same size as expected list", fullAddedTags.size, tags.size)
+        assertEquals("is dao same size as expected list", sampleTagTrees.size, dao.collection.size)
+        for (tag in fullAddedTags) {
+            assertTrue("is tag ${tag.text} in collection", tags.contains(tag))
+        }
+        for (tagTree in sampleTagTrees) {
+            assertTrue(
+                "is tag tree ${tagTree.value} in db",
+                dao.collection.contains(dbTagTree(tagTree))
+            )
+            checkRecursive(tagTree, dao.collection.find { it.toAppObject().value == tagTree.value }?.toAppObject())
+        }
+    }
 }

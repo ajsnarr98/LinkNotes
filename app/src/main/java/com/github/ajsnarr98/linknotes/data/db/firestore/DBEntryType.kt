@@ -2,12 +2,12 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.github.ajsnarr98.linknotes.data.db.DBObject
 
-data class EntryType(var type: String? = null):
+data class DBEntryType(var type: String? = null):
     DBObject<com.github.ajsnarr98.linknotes.data.EntryType> {
 
     companion object {
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.EntryType) : EntryType {
-            return EntryType(type = other.value)
+        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.EntryType) : DBEntryType {
+            return DBEntryType(type = other.value)
         }
     }
 

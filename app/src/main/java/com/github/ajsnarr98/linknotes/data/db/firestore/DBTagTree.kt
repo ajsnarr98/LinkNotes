@@ -3,17 +3,17 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
 
-data class TagTree(
+data class DBTagTree(
     val topValue: String? = null,
-    val color: Color? = null,
-    val children: MutableList<TagTree>? = null,
+    val color: DBColor? = null,
+    val children: MutableList<DBTagTree>? = null,
 ) : DBCollectionObject<com.github.ajsnarr98.linknotes.data.TagTree> {
 
     override val id: String? = topValue
     override val readableLogName: String = "Tags $topValue${TagCollection.SEPARATOR}*"
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is TagTree
+        return this === other || other is DBTagTree
                 && this.topValue == other.topValue
     }
 
@@ -29,10 +29,10 @@ data class TagTree(
         /**
          * Returns an entry from the database.
          */
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.TagTree): TagTree {
-            return TagTree(
+        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.TagTree): DBTagTree {
+            return DBTagTree(
                 topValue = other.value,
-                color = Color.fromAppObject(other.color),
+                color = DBColor.fromAppObject(other.color),
                 children = other.children.map { subTag -> fromAppObject(subTag) }.toMutableList(),
             )
         }

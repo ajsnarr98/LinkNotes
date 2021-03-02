@@ -2,12 +2,12 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.github.ajsnarr98.linknotes.data.db.DBObject
 
-data class EntryContent(var content: String? = null)
+data class DBEntryContent(var content: String? = null)
     : DBObject<com.github.ajsnarr98.linknotes.data.EntryContent> {
 
     companion object {
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.EntryContent) : EntryContent {
-            return EntryContent(content = other.value)
+        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.EntryContent) : DBEntryContent {
+            return DBEntryContent(content = other.value)
         }
     }
 

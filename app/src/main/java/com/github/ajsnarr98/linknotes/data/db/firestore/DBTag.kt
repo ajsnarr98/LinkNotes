@@ -2,15 +2,15 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.github.ajsnarr98.linknotes.data.db.DBObject
 
-data class Tag(
+data class DBTag(
     val text: String? = null,
-    val color: Color? = null
+    val color: DBColor? = null
 ) : DBObject<com.github.ajsnarr98.linknotes.data.Tag> {
     companion object {
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Tag) : Tag {
-            return Tag(
+        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Tag) : DBTag {
+            return DBTag(
                 text = other.text,
-                color = Color.fromAppObject(other.color)
+                color = DBColor.fromAppObject(other.color)
             )
         }
     }

@@ -5,6 +5,7 @@ import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.TagTree
 import com.github.ajsnarr98.linknotes.data.db.DAO
+import com.github.ajsnarr98.linknotes.data.db.firestore.DBTagTree
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
 import com.github.ajsnarr98.linknotes.fake.FirestoreTagsDAOFake
 import org.junit.Assert.*
@@ -157,10 +158,10 @@ class TagCollectionTest {
     /**
      * Gets a tag tree in db format.
      */
-    private fun dbTagTree(tagTree: TagTree): com.github.ajsnarr98.linknotes.data.db.firestore.TagTree
-        = com.github.ajsnarr98.linknotes.data.db.firestore.TagTree.fromAppObject(tagTree)
+    private fun dbTagTree(tagTree: TagTree): DBTagTree
+        = DBTagTree.fromAppObject(tagTree)
 
-    private fun upsertSampleTagTrees(dao: DAO<com.github.ajsnarr98.linknotes.data.db.firestore.TagTree>) {
+    private fun upsertSampleTagTrees(dao: DAO<DBTagTree>) {
         sampleTagTrees
             .map { tagTree -> dbTagTree(tagTree) }
             .forEach { tagTree -> dao.upsert(tagTree) }

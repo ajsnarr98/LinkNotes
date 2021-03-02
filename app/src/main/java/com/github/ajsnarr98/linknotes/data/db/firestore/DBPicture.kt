@@ -2,11 +2,11 @@ package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.github.ajsnarr98.linknotes.data.db.DBObject
 
-data class Picture(val url: String? = null): DBObject<String> {
+data class DBPicture(val url: String? = null): DBObject<String> {
 
     companion object {
-        fun fromAppObject(other: String) : Picture {
-            return Picture(url = other)
+        fun fromAppObject(other: String) : DBPicture {
+            return DBPicture(url = other)
         }
     }
 

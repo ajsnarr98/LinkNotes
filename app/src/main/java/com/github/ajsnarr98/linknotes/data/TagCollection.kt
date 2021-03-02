@@ -2,8 +2,15 @@ package com.github.ajsnarr98.linknotes.data
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
-import com.github.ajsnarr98.linknotes.data.db.FirestoreTagCollection
+import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
 import timber.log.Timber
+
+object TagCollections {
+    /**
+     * Instance of the TagCollection
+     */
+    val instance = FirestoreTagCollection()
+}
 
 /**
  * Represents a collection of notes from the DB. Updates using livedata.
@@ -21,10 +28,6 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
     }
 
     companion object {
-        /**
-         * Instance of the TagCollection
-         */
-         val instance = FirestoreTagCollection()
 
         /**
          * Separator between tags and sub-tags. Ex: "classes.jmu"
@@ -157,8 +160,22 @@ abstract class TagCollection : LiveData<MutableSet<Tag>>(), MutableSet<Tag>, Def
         override fun add(element: Tag): Boolean = getMatchingRoot(element)?.add(element) ?: tagTrees.add(TagTree.newTreeFrom(element))
         override fun addAll(elements: Collection<Tag>): Boolean = elements.map { add(it) }.all { it } // add all and return true if any were added
         override fun clear() { tagTrees.clear() }
-        override fun remove(element: Tag): Boolean = getMatchingRoot(element)?.remove(element) ?: false
-        override fun removeAll(elements: Collection<Tag>): Boolean = elements.map { remove(it) }.all { it }
+        override fun remove(element: Tag): Boolean {
+            // return false if no root is found
+            val root = getMatchingRoot(element) ?: return false
+            // either remove an element from the root or remove the root itself (only if it has no children)
+            val success = root.remove(element)
+            if (!success && root.children.isEmpty()) {
+                return tagTrees.remove(root)
+            }
+            return success
+        }
+        override fun removeAll(elements: Collection<Tag>): Boolean {
+            // need to remove the elements in the correct order
+            val elementsToKeep = this.filter { it !in elements }
+            clear()
+            return addAll(elementsToKeep)
+        }
         override fun retainAll(elements: Collection<Tag>): Boolean {
             // cannot retail all if they aren't all here
             if (!containsAll(elements)) return false

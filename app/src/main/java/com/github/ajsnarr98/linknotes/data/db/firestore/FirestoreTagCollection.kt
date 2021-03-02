@@ -1,19 +1,20 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import androidx.lifecycle.LifecycleOwner
+import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
+import com.github.ajsnarr98.linknotes.data.db.DAO
+import com.github.ajsnarr98.linknotes.data.db.DBInstances
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 
-class FirestoreTagCollection : TagCollection() {
-
-    private val dao = FirestoreDAO.instance
+class FirestoreTagCollection(private val dao: DAO<DBTagTree> = DBInstances.tagsDAO) : TagCollection() {
 
     init {
         // get tags from db
-        dao.getAllTags(
-            onSuccess = {tagTree -> this.safeAdd(tagTree); Timber.v("Received tagTree ${tagTree.topValue} from database")},
+        dao.getAll(
+            onSuccess = {tagTree: DBTagTree -> this.safeAdd(tagTree); Timber.v("Received tagTree ${tagTree.topValue} from database")},
             onFailure = {err  -> Timber.e("Error getting note from db: $err")}
         )
     }
@@ -22,22 +23,26 @@ class FirestoreTagCollection : TagCollection() {
      * Add a listener for updating tags based on remote changes.
      */
     override fun onStart(owner: LifecycleOwner) {
-        dao.addTagsChangeListener { snapshots, firebaseFirestoreException ->
-            if (snapshots?.documentChanges == null) return@addTagsChangeListener
+        if (dao is FirestoreChangeListenerHolder) {
+            dao.setChangeListener { snapshots, firebaseFirestoreException ->
+                if (snapshots?.documentChanges == null) return@setChangeListener
 
-            Timber.i("Remote changes received in note collection")
+                Timber.i("Remote changes received in note collection")
 
-            for (dc in snapshots.documentChanges) {
-                val tagTree = dc.document.toObject(TagTree::class.java)
-                when (dc.type) {
-                    DocumentChange.Type.ADDED    -> this.safeAdd(tagTree)
-                    DocumentChange.Type.REMOVED  -> this.safeRemove(tagTree)
-                    DocumentChange.Type.MODIFIED -> this.safeAdd(tagTree)
-                    else                         -> return@addTagsChangeListener
+                for (dc in snapshots.documentChanges) {
+                    val tagTree = dc.document.toObject(DBTagTree::class.java)
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED    -> this.safeAdd(tagTree)
+                        DocumentChange.Type.REMOVED  -> this.safeRemove(tagTree)
+                        DocumentChange.Type.MODIFIED -> this.safeAdd(tagTree)
+                        else                         -> return@setChangeListener
+                    }
                 }
+                // update based on current changes
+                update()
             }
-            // update based on current changes
-            update()
+        } else {
+            Timber.e("Unexpected behavior encountered. DAO should be a FirestoreChangeListenerHolder")
         }
     }
 
@@ -45,13 +50,17 @@ class FirestoreTagCollection : TagCollection() {
      * Remove listener at end of activity.
      */
     override fun onStop(owner: LifecycleOwner) {
-        dao.removeTagsChangeListener()
+        if (dao is FirestoreChangeListenerHolder) {
+            dao.removeChangeListener()
+        } else {
+            Timber.e("Unexpected behavior encountered. DAO should be a FirestoreChangeListenerHolder")
+        }
     }
 
     /**
      * Add all the tags in a tag tree without updating the database.
      */
-    private fun safeAdd(elements: TagTree) {
+    private fun safeAdd(elements: DBTagTree) {
         this.value.let { masterSet ->
             if (masterSet is TagTreesSet)
                 masterSet.addTree(elements.toAppObject())
@@ -63,7 +72,7 @@ class FirestoreTagCollection : TagCollection() {
     /**
      * Removes all the tags in the given tag tree without updating the database.
      */
-    private fun safeRemove(elements: TagTree) {
+    private fun safeRemove(elements: DBTagTree) {
         this.value.let { masterSet ->
             if (masterSet is TagTreesSet)
                 masterSet.removeTree(elements.toAppObject())
@@ -72,31 +81,31 @@ class FirestoreTagCollection : TagCollection() {
         }
     }
 
-    override fun add(element: com.github.ajsnarr98.linknotes.data.Tag): Boolean {
+    override fun add(element: Tag): Boolean {
         return this.value.let { masterSet ->
             if (masterSet is TagTreesSet)
                 super.add(element).also {
                     val matchingRoot = masterSet.getMatchingRoot(element) ?: throw IllegalStateException("This should never get thrown")
-                    dao.upsertTagTree(TagTree.fromAppObject(matchingRoot))
+                    dao.upsert(DBTagTree.fromAppObject(matchingRoot))
                 }
             else
                 throw UnsupportedOperationException("Unknown set type")
         }
     }
 
-    override fun addAll(elements: Collection<com.github.ajsnarr98.linknotes.data.Tag>): Boolean {
+    override fun addAll(elements: Collection<Tag>): Boolean {
         return this.value.let { masterSet ->
             if (masterSet is TagTreesSet)
                 super.addAll(elements).also {
                     // get all roots in a set, in case some elements are from the same tree
-                    val matchingRoots = mutableSetOf<TagTree>()
+                    val matchingRoots = mutableSetOf<DBTagTree>()
                     for (element in elements) {
                         val matchingRoot = masterSet.getMatchingRoot(element)
                             ?: throw IllegalStateException("This should never get thrown")
-                        matchingRoots.add(TagTree.fromAppObject(matchingRoot))
+                        matchingRoots.add(DBTagTree.fromAppObject(matchingRoot))
                     }
                     for (root in matchingRoots) {
-                        dao.upsertTagTree(root)
+                        dao.upsert(root)
                     }
                 }
             else
@@ -107,24 +116,30 @@ class FirestoreTagCollection : TagCollection() {
     override fun clear() {
         this.value.let { masterSet ->
             if (masterSet is TagTreesSet)
-                dao.deleteTagTrees(masterSet.allTreeRoots().map { TagTree.fromAppObject(it) })
+                dao.deleteAll(masterSet.allTreeRoots().map { DBTagTree.fromAppObject(it) })
             else
                 throw UnsupportedOperationException("Unknown set type")
         }
         super.clear()
     }
 
-    override fun remove(element: com.github.ajsnarr98.linknotes.data.Tag): Boolean {
+    override fun remove(element: Tag): Boolean {
         return this.value.let { masterSet ->
             if (masterSet is TagTreesSet)
                 super.remove(element).also {
                     val matchingRoot = masterSet.getMatchingRoot(element)
                     if (matchingRoot != null) {
                         // update existing tree
-                        dao.upsertTagTree(TagTree.fromAppObject(matchingRoot))
+                        dao.upsert(DBTagTree.fromAppObject(matchingRoot))
                     } else {
                         // last part of tree was just removed entirely
-                        dao.deleteTagTree(TagTree.fromAppObject(com.github.ajsnarr98.linknotes.data.TagTree.newTreeFrom(element)))
+                        dao.delete(
+                            DBTagTree.fromAppObject(
+                                com.github.ajsnarr98.linknotes.data.TagTree.newTreeFrom(
+                                    element
+                                )
+                            )
+                        )
                     }
                 }
             else
@@ -132,18 +147,18 @@ class FirestoreTagCollection : TagCollection() {
         }
     }
 
-    override fun removeAll(elements: Collection<com.github.ajsnarr98.linknotes.data.Tag>): Boolean {
+    override fun removeAll(elements: Collection<Tag>): Boolean {
         return this.value.let { masterSet ->
             if (masterSet is TagTreesSet) {
                 val matchingRoots = elements.mapNotNull { masterSet.getMatchingRoot(it) }.toSet()
                 super.removeAll(elements).also {
                     val newMatchingRoots = elements.mapNotNull { masterSet.getMatchingRoot(it) }.toSet()
                     // update trees that still exist
-                    newMatchingRoots.forEach { tree -> dao.upsertTagTree(TagTree.fromAppObject(tree)) }
+                    newMatchingRoots.forEach { tree -> dao.upsert(DBTagTree.fromAppObject(tree)) }
                     // delete trees that no longer exist
                     val deletedTrees = matchingRoots.filter { it !in newMatchingRoots }
-                        .map { tree -> TagTree.fromAppObject(tree) }
-                    dao.deleteTagTrees(deletedTrees)
+                        .map { tree -> DBTagTree.fromAppObject(tree) }
+                    dao.deleteAll(deletedTrees)
                 }
             } else {
                 throw UnsupportedOperationException("Unknown set type")
@@ -151,7 +166,7 @@ class FirestoreTagCollection : TagCollection() {
         }
     }
 
-    override fun retainAll(elements: Collection<com.github.ajsnarr98.linknotes.data.Tag>): Boolean {
+    override fun retainAll(elements: Collection<Tag>): Boolean {
         return this.value.let { masterSet ->
             val removeSet = this.filter { tag -> !elements.contains(tag) }
             if (masterSet is TagTreesSet) {
@@ -163,12 +178,12 @@ class FirestoreTagCollection : TagCollection() {
                             elements.mapNotNull { masterSet.getMatchingRoot(it) }.toSet()
                         // update trees that still exist
                         newMatchingRoots.forEach { tree ->
-                            dao.upsertTagTree(TagTree.fromAppObject(tree))
+                            dao.upsert(DBTagTree.fromAppObject(tree))
                         }
                         // delete trees that no longer exist
                         val deletedTrees = matchingRoots.filter { it !in newMatchingRoots }
-                            .map { tree -> TagTree.fromAppObject(tree) }
-                        dao.deleteTagTrees(deletedTrees)
+                            .map { tree -> DBTagTree.fromAppObject(tree) }
+                        dao.deleteAll(deletedTrees)
                     }
                 }
             } else {

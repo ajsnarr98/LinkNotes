@@ -1,42 +1,43 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
+import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
 import java.util.*
 
 
-data class Note(
-    val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
+data class DBNote(
+    override val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
     val type: String? = null,
     val name: String? = null,
     val dateCreated: Date? = null,
     val lastDateEdited: Date? = null,
     val nicknames: MutableList<String>? = null,
-    val mainPicture: Picture? = null,
-    val pictures: MutableList<Picture>? = null,
-    val tags: MutableList<Tag>? = null,
-    val entries: MutableList<Entry>? = null,
-    val notes: MutableList<Note>? = null
-) : DBObject<com.github.ajsnarr98.linknotes.data.Note> {
+    val mainPicture: DBPicture? = null,
+    val pictures: MutableList<DBPicture>? = null,
+    val tags: MutableList<DBTag>? = null,
+    val entries: MutableList<DBEntry>? = null,
+    val notes: MutableList<DBNote>? = null
+) : DBCollectionObject<com.github.ajsnarr98.linknotes.data.Note> {
 
     companion object {
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Note) : Note {
-            return Note(
+        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Note) : DBNote {
+            return DBNote(
                 id = other.id,
                 type = other.type,
                 name = other.name,
                 dateCreated = other.dateCreated,
                 lastDateEdited = other.lastDateEdited,
                 nicknames = other.nicknames,
-                mainPicture = if (other.mainPicture != null) Picture.fromAppObject(
+                mainPicture = if (other.mainPicture != null) DBPicture.fromAppObject(
                     other.mainPicture!!
                 ) else null,
                 pictures = other.pictures.map { url ->
-                    Picture.fromAppObject(
+                    DBPicture.fromAppObject(
                         url
                     )
                 }.toMutableList(),
-                tags = other.tags.map { tag -> Tag.fromAppObject(tag) }.toMutableList(),
+                tags = other.tags.map { tag -> DBTag.fromAppObject(tag) }.toMutableList(),
                 entries = other.entries.map { entry ->
-                    Entry.fromAppObject(
+                    DBEntry.fromAppObject(
                         entry
                     )
                 }.toMutableList(),
@@ -45,19 +46,21 @@ data class Note(
         }
     }
 
+    override val readableLogName: String = "Note '$id' -> name: $name"
+
     /**
      * A note is marked as a new note, when it has no valid ID.
      *
      * An invalid ID will either be null or blank (at most whitespace chars).
      */
-    fun hasID(): Boolean {
+    override fun hasID(): Boolean {
         return this.id == null || this.id.isBlank()
     }
 
     /**
      * Returns a new note with the given ID.
      */
-    fun withId(id: String): Note {
+    override fun withID(id: String): DBNote {
         return this.copy(id=id)
     }
 
@@ -90,7 +93,7 @@ data class Note(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Note
+        other as DBNote
 
         if (id != other.id) return false
 

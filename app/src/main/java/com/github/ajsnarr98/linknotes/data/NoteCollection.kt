@@ -2,26 +2,23 @@ package com.github.ajsnarr98.linknotes.data
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
-import com.github.ajsnarr98.linknotes.data.db.FirestoreNoteCollection
+import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNoteCollection
 import timber.log.Timber
+
+object NoteCollections {
+    val instance = FirestoreNoteCollection()
+}
 
 /**
  * Represents a collection of notes from the DB. Updates using livedata.
  *
  * DO NOT modify the value field of this class.
  */
-abstract class NoteCollection : LiveData<MutableSet<Note>>(), MutableSet<Note>, DefaultLifecycleObserver {
+abstract class NoteCollection: LiveData<MutableSet<Note>>(), MutableSet<Note>, DefaultLifecycleObserver {
 
     init {
-        if (this.value == null) {
-            this.value = mutableSetOf<Note>()
-        }
-
+        value = mutableSetOf<Note>()
         Timber.i("Created note collection")
-    }
-
-    companion object {
-        val instance = FirestoreNoteCollection()
     }
 
     /**

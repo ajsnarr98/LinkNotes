@@ -7,6 +7,7 @@
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
+- allow swipe to top of notes activity to refresh notes shown (in case of remote changes to collection)
 - advanced searches
 - add search functionality to add tags screen
 - add cool animation for moving tags back and forth in add tags dialog

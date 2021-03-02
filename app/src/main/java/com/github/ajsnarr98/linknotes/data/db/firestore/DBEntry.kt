@@ -1,26 +1,27 @@
-package com.github.ajsnarr98.linknotes.data.db
+package com.github.ajsnarr98.linknotes.data.db.firestore
 
+import com.github.ajsnarr98.linknotes.data.db.DBObject
 import java.util.*
 
-data class Entry(
+data class DBEntry(
     val id: String? = null,
-    val type: EntryType? = null,
-    val content: EntryContent? = null,
+    val type: DBEntryType? = null,
+    val contentDB: DBEntryContent? = null,
     val dateCreated: Date? = null,
     val lastDateEdited: Date? = null,
     val isDeletable: Boolean? = null,
-    val subEntries: MutableList<Entry>? = null
+    val subEntries: MutableList<DBEntry>? = null
 ): DBObject<com.github.ajsnarr98.linknotes.data.Entry> {
 
     companion object {
         /**
          * Returns an entry from the database.
          */
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Entry): Entry {
-            return Entry(
+        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Entry): DBEntry {
+            return DBEntry(
                 id = other.id,
-                type = EntryType.fromAppObject(other.type),
-                content = EntryContent.fromAppObject(other.content),
+                type = DBEntryType.fromAppObject(other.type),
+                contentDB = DBEntryContent.fromAppObject(other.content),
                 dateCreated = other.dateCreated,
                 lastDateEdited = other.lastDateEdited,
                 isDeletable = other.isDeletable,
@@ -33,7 +34,7 @@ data class Entry(
         return com.github.ajsnarr98.linknotes.data.Entry(
             id = this.id!!,
             type = this.type!!.toAppObject(),
-            mContent = this.content!!.toAppObject(),
+            mContent = this.contentDB!!.toAppObject(),
             dateCreated = this.dateCreated!!,
             lastDateEdited = this.lastDateEdited!!,
             isDeletable = this.isDeletable ?: true,

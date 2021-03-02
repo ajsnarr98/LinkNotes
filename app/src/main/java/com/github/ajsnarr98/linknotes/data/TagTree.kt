@@ -70,7 +70,7 @@ data class TagTree(val value: String, val color: Color, val children: MutableSet
     // --- Collection methods ---
 
     override val size: Int
-        get() = if (isLeaf) 1 else children.size + 1
+        get() = if (isLeaf) 1 else children.map { tree -> tree.size }.sum() + 1
 
     /**
      * Whether or not this tree contains the given element.

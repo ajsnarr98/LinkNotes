@@ -9,4 +9,10 @@
         <attr name="showCloseIcons" format="boolean" />
         <attr name="chipStyle" format="reference" />
     </declare-styleable>
+
+    <!-- attributes for Keyboard Sensitive Coordinator Layout -->
+    <declare-styleable name="KeyboardSensitiveCoordinatorLayout">
+        <!-- recyclerView used for scrolling on -->
+        <attr name="recyclerView" format="reference" />
+    </declare-styleable>
 </resources>

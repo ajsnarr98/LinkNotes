@@ -8,6 +8,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.databinding.ViewMarkdownEditHelperBinding
 import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardBehavior
+import kotlin.math.roundToInt
 
 class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehavior {
     constructor(context: Context) : super(context)
@@ -28,5 +29,8 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
     }
 
     override fun getBehavior(): CoordinatorLayout.Behavior<*>
-        = SoftKeyboardBehavior<MarkdownEditHelperView>(defaultVisibility = View.INVISIBLE)
+        = SoftKeyboardBehavior<MarkdownEditHelperView>(
+            defaultVisibility = View.INVISIBLE,
+            scrollAmount = context.resources.getDimension(R.dimen.markdown_edit_helper_height).roundToInt(),
+        )
 }

@@ -6,6 +6,7 @@
     android:id="@+id/coord_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:recyclerView="@id/recycler_view"
     android:fitsSystemWindows="false">
 
     <com.google.android.material.appbar.AppBarLayout

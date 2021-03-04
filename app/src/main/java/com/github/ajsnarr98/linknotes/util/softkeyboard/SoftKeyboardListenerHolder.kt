@@ -16,4 +16,10 @@ interface SoftKeyboardListenerHolder {
      * @return whether operation was successful or not
      */
     fun removeSoftKeyboardListener(listener: (isKeyboardShown: Boolean) -> Unit): Boolean
+
+    /**
+     * Amount to scroll (based on height of a new view above keyboard, for example).
+     * Positive values go up, negative values go down.
+     */
+    fun scrollVerticallyBy(dy: Int)
 }

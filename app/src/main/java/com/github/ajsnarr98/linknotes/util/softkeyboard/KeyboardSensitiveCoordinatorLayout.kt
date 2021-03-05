@@ -3,7 +3,6 @@ package com.github.ajsnarr98.linknotes.util.softkeyboard
 import android.content.Context
 import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ajsnarr.linknotes.R
 

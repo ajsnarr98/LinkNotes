@@ -71,7 +71,7 @@
             android:src="@drawable/ic_format_strikethrough_24px" />
 
         <ImageButton
-            android:id="@+id/text_size"
+            android:id="@+id/header"
             android:layout_width="@dimen/markdown_edit_button_width"
             android:layout_height="@dimen/markdown_edit_button_height"
             android:scaleType="fitCenter"

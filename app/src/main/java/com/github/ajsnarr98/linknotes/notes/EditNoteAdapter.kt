@@ -180,10 +180,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             removeListeners()
 
             // add stored content
-            binding.content.text.clear()
-            binding.content.text.append(this.entry.content.value)
-            binding.entryType.text.clear()
-            binding.entryType.text.append(this.entry.type.value)
+            binding.content.text?.clear()
+            binding.content.text?.append(this.entry.content.value)
+            binding.entryType.text?.clear()
+            binding.entryType.text?.append(this.entry.type.value)
 
             // add listeners
             entryTypeListener = AfterTextChangedWatcher {
@@ -254,11 +254,11 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                 binding.deleteButton.setOnClickListener { actionListener.onDeletePress() }
             }
 
-            binding.titleInput.text.clear()
-            binding.titleInput.text.append(viewModel.note.name)
+            binding.titleInput.text?.clear()
+            binding.titleInput.text?.append(viewModel.note.name)
 
-            binding.noteTypeInput.text.clear()
-            binding.noteTypeInput.text.append(viewModel.note.type)
+            binding.noteTypeInput.text?.clear()
+            binding.noteTypeInput.text?.append(viewModel.note.type)
 
             // TODO nicknames
 

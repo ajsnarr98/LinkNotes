@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="@+id/entry_type"
             app:layout_constraintBottom_toBottomOf="@id/entry_type" />
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/entry_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:srcCompat="@android:drawable/btn_dialog"
             android:contentDescription="@string/editnote_delete_entry_button_desc" />
 
-        <EditText
+        <com.github.ajsnarr98.linknotes.util.MarkdownEditText
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

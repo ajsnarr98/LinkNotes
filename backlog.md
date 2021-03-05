@@ -36,3 +36,6 @@
 - deleting an entry does not visibly update the list of entries
 - editnote saving does not always update entry type?
 - cannot click tag in add tag dialog
+- editing a note can cause duplicate notes to be created...
+- unable to remove tags in ui
+- deleting notes does not work

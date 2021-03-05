@@ -14,8 +14,9 @@ class MarkdownEditText : AppCompatEditText {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     companion object {
-        const val BOLD_MARKER = "*"
-        const val ITALICS_MARKER = "**"
+        const val ITALICS_MARKER = "*"
+        const val BOLD_MARKER = "**"
+        const val BOLD_ITALICS_MARKER = "***"
     }
 
     /**

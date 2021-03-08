@@ -1,11 +1,9 @@
-package com.github.ajsnarr98.linknotes
+package com.github.ajsnarr98.linknotes.data
 
-import com.github.ajsnarr98.linknotes.data.EntryList
-import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.db.DAO
 import com.github.ajsnarr98.linknotes.data.db.firestore.DBNote
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNoteCollection
-import com.github.ajsnarr98.linknotes.fake.FirestoreNotesDAOFake
+import com.github.ajsnarr98.linknotes.data.fake.FirestoreNotesDAOFake
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith

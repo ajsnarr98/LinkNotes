@@ -46,7 +46,7 @@
             app:srcCompat="@android:drawable/btn_dialog"
             android:contentDescription="@string/editnote_delete_entry_button_desc" />
 
-        <com.github.ajsnarr98.linknotes.util.MarkdownEditText
+        <com.github.ajsnarr98.linknotes.util.markdown.MarkdownEditText
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

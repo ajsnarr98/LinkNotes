@@ -58,7 +58,7 @@
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <com.github.ajsnarr98.linknotes.notes.MarkdownEditHelperView
+    <com.github.ajsnarr98.linknotes.util.markdown.MarkdownEditHelperView
         android:id="@+id/md_edit_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

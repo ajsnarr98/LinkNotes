@@ -1,4 +1,4 @@
-package com.github.ajsnarr98.linknotes.notes
+package com.github.ajsnarr98.linknotes.util.markdown
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.ajsnarr.linknotes.R
 import com.ajsnarr.linknotes.databinding.ViewMarkdownEditHelperBinding
-import com.github.ajsnarr98.linknotes.util.MarkdownEditText
 import com.github.ajsnarr98.linknotes.util.getActivity
 import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardBehavior
 import kotlin.math.roundToInt

@@ -230,7 +230,8 @@ object Markdown {
                 if (isFirstRemoved) {
                     actualEnd - (sortedIndices.size - 1) * marker.length
                 } else {
-                    actualEnd - (sortedIndices.size - 2) * marker.length
+                    // also need to account for adding the extra marker before start
+                    actualEnd - (sortedIndices.size - 2) * marker.length + marker.length
                 }
             } else {
                 val diff = actualEnd - sortedIndices.last()

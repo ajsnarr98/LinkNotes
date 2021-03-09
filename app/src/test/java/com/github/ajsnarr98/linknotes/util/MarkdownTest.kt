@@ -285,5 +285,18 @@ class MarkdownTest {
         assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
         assertEquals("test $testName", expected, actual)
         assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "bold partial selection 5"
+        given = "**word word word**"
+        selection = Pair(7, 11)
+        expected = "**word **word** word**"
+        expectedSelection = Pair(9,13)
+        expectedMarkersToRemove = listOf(0, 16)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        actualSelection = Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
     }
 }

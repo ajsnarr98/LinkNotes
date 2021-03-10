@@ -17,10 +17,6 @@ class MarkdownEditText : AppCompatEditText {
         defStyleAttr
     )
 
-    private fun hasBulletList() {
-
-    }
-
     /**
      * Adds a bullet list, removes the existing bullet list, or replaces an
      * existing numbered list with a bullet list.
@@ -54,7 +50,9 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     fun toggleStrikethrough() {
-
+        val modifiedText = Markdown.toggleMarker(this.text.toString(), Markdown.STRIKE_THROUGH_MARKER, selectionStart, selectionEnd)
+        this.setText(modifiedText.newText)
+        Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
 
     fun addHeader() {

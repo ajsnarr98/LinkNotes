@@ -6,14 +6,16 @@ package com.github.ajsnarr98.linknotes.util.markdown
 object Markdown {
     const val ITALICS_MARKER = "_"
     const val BOLD_MARKER = "**"
+    const val STRIKE_THROUGH_MARKER = "~~"
 
     /**
      * Mapping of markers (value) that must be accounted for when checking
      * for a given marker (key).
      */
     val relevantMarkersMap = mapOf<String, List<String>>(
-        ITALICS_MARKER to listOf(BOLD_MARKER),
-        BOLD_MARKER    to listOf(ITALICS_MARKER),
+        ITALICS_MARKER to listOf(BOLD_MARKER, STRIKE_THROUGH_MARKER),
+        BOLD_MARKER    to listOf(ITALICS_MARKER, STRIKE_THROUGH_MARKER),
+        STRIKE_THROUGH_MARKER to listOf(BOLD_MARKER, ITALICS_MARKER),
     ).withDefault { listOf() }
 
     data class MarkdownResult(

@@ -7,7 +7,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.math.exp
 
-@RunWith(JUnit4::class)
 class MarkdownTest {
     @Test
     fun basicMarkBoldTest() {

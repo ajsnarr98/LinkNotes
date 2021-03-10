@@ -42,7 +42,7 @@ open class SoftKeyboardBehavior<V : View> : CoordinatorLayout.Behavior<V> {
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
         if (!hasCreatedKeyboardListener) {
-            if (parent is SoftKeyboardListenerHolder) {
+            if (parent is SoftKeyboardAware) {
                 parent.addSoftKeyboardListener { isKeyboardShown ->
                     if (shouldMakeVisible()) {
                         // only show if extra conditions for visibility are met

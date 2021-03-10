@@ -16,6 +16,29 @@ object Markdown {
         BOLD_MARKER    to listOf(ITALICS_MARKER),
     ).withDefault { listOf() }
 
+    data class MarkdownResult(
+        val newText: String,
+        val newSelectionStart: Int,
+        val newSelectionEnd: Int,
+    ) {
+
+    }
+
+    fun toggleMarker(text: String, marker: String, start: Int, end: Int): MarkdownResult {
+        val markersToRemove = markersToRemove(text, marker, start, end)
+        val newText = if (markersToRemove.isEmpty()) {
+            getMarkedText(text, marker, start, end)
+        } else {
+            getUnMarkedText(text, marker, start, end, markersToRemove)
+        }
+        var newSelection = if (markersToRemove.isEmpty()) {
+            getNewSelectionOnMark(marker, start, end)
+        } else {
+            getNewSelectionOnUnMark(text, marker, start, end, markersToRemove)
+        }
+        return MarkdownResult(newText, newSelection.first, newSelection.second)
+    }
+
     /**
      * First finds whether or not the selection between start and end
      * is exactly between two (paired) instances of the given marker, or

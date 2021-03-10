@@ -1,6 +1,6 @@
 package com.github.ajsnarr98.linknotes.util.softkeyboard
 
-interface SoftKeyboardListenerHolder {
+interface SoftKeyboardAware {
     /**
      * Add a listener that will be called when the soft keybaord is shown or
      * hidden.

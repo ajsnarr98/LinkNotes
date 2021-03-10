@@ -9,7 +9,7 @@ import com.ajsnarr.linknotes.R
 /**
  * NOTE: this layout must exist in an activity where softInputMode is "adjustResize"
  */
-class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardListenerHolder {
+class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware {
     constructor(context: Context) : super(context) { recyclerViewId = null }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         recyclerViewId = getRecyclerViewId(attrs)

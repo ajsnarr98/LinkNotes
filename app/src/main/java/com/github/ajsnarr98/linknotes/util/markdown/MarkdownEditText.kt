@@ -38,17 +38,15 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     fun toggleBold() {
-        val start = selectionStart
-        val end = selectionEnd
-        var text = this.text.toString()
-        text = Markdown.getMarkedText(text, Markdown.BOLD_MARKER, start, end)
-        val newSelection = Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, start, end)
-        setText(text)
-        Selection.setSelection(this.text, newSelection.first, newSelection.second)
+        val modifiedText = Markdown.toggleMarker(this.text.toString(), Markdown.BOLD_MARKER, selectionStart, selectionEnd)
+        this.setText(modifiedText.newText)
+        Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
 
     fun toggleItalic() {
-
+        val modifiedText = Markdown.toggleMarker(this.text.toString(), Markdown.ITALICS_MARKER, selectionStart, selectionEnd)
+        this.setText(modifiedText.newText)
+        Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
 
     fun toggleUnderline() {

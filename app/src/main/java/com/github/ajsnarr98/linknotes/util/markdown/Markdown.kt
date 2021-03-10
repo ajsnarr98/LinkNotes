@@ -4,9 +4,8 @@ package com.github.ajsnarr98.linknotes.util.markdown
  * A collection of helper functions for markdown editing.
  */
 object Markdown {
-    const val ITALICS_MARKER = "*"
+    const val ITALICS_MARKER = "_"
     const val BOLD_MARKER = "**"
-    const val BOLD_ITALICS_MARKER = "***"
 
     /**
      * First finds whether or not the selection between start and end
@@ -25,7 +24,7 @@ object Markdown {
         val markersAfterEnd = mutableListOf<Int>()
         var i: Int = text.indexOf(marker)
         while (i >= 0) {
-            if (i <= actualStart) {
+            if (if (start == end) i < actualStart else i <= actualStart) {
                 markersBeforeStart.add(i)
             } else if (i >= actualEnd) {
                 markersAfterEnd.add(i)
@@ -34,13 +33,13 @@ object Markdown {
                 markersInSelection.add(i)
             }
             allMarkers.add(i)
-            i = text.indexOf(marker, i + 1)
+            i = text.indexOf(marker, i + marker.length)
         }
 
-        val evenOrNoneBeforeStart = markersBeforeStart.size % 2 == 1 || markersBeforeStart.isEmpty()
-        val evenOrNoneAfterEnd = markersAfterEnd.size % 2 == 1 || markersAfterEnd.isEmpty()
+        val oddOrNoneBeforeStart = markersBeforeStart.size % 2 == 1 || markersBeforeStart.isEmpty()
+        val oddOrNoneAfterEnd = markersAfterEnd.size % 2 == 1 || markersAfterEnd.isEmpty()
         val isSelectionInMarker =
-            (evenOrNoneBeforeStart && evenOrNoneAfterEnd && !(markersBeforeStart.isEmpty() && markersAfterEnd.isEmpty()))
+            (oddOrNoneBeforeStart && oddOrNoneAfterEnd && !(markersBeforeStart.isEmpty() && markersAfterEnd.isEmpty()))
                     || (markersInSelection.size % 2 == 0)
         if (!isSelectionInMarker) {
             return emptyList()
@@ -116,16 +115,10 @@ object Markdown {
                     i = actualStart
                 }
             } else if (j > actualEnd) {
-                if (j - actualEnd <= toRemove.length) {
-                    // j is touching actual start, so include it with removal
-                    result += text.substring(i, j)
-                    i = j + toRemove.length
-                } else {
-                    // when not removing all, and there is the start of a pair
-                    // outside the selection, we must complete that pair
-                    result += text.substring(i, actualEnd) + toRemove
-                    i = actualEnd
-                }
+                // when not removing all, and there is the start of a pair
+                // outside the selection, we must complete that pair
+                result += text.substring(i, actualEnd) + toRemove
+                i = actualEnd
             }
         }
         if (i < text.length) {

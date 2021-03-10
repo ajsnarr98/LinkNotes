@@ -298,5 +298,397 @@ class MarkdownTest {
         assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
         assertEquals("test $testName", expected, actual)
         assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "bold multi selection 1"
+        given = "**word** word **word**"
+        selection = Pair(0, 22)
+        expected = "word word word"
+        expectedSelection = Pair(0,14)
+        expectedMarkersToRemove = listOf(0, 6, 14, 20)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        actualSelection = Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "bold multi selection 2"
+        given = "**word** word **word**"
+        selection = Pair(2, 22)
+        expected = "word word word"
+        expectedSelection = Pair(0,14)
+        expectedMarkersToRemove = listOf(0, 6, 14, 20)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        actualSelection = Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "bold multi selection 3"
+        given = "**word** word **word**"
+        selection = Pair(2, 20)
+        expected = "word word word"
+        expectedSelection = Pair(0,14)
+        expectedMarkersToRemove = listOf(0, 6, 14, 20)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        actualSelection = Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "bold inverted selection 1"
+        given = "**word** word **word**"
+        selection = Pair(9, 13)
+        expected = "**word** word **word**"
+        expectedSelection = Pair(9,13)
+        expectedMarkersToRemove = listOf()
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        actualSelection = Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "bold inverted selection 2"
+        given = "**word** word **word**"
+        selection = Pair(8, 14)
+        expected = "**word** word **word**"
+        expectedSelection = Pair(8,14)
+        expectedMarkersToRemove = listOf()
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        actualSelection = Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+    }
+
+    /**
+     * Test to see if the end result is expected.
+     */
+    @Test
+    fun basicToggleBoldTest() {
+        var testName: String
+        var given: String
+        var expected: String
+        var actual: String
+        var selection: Pair<Int, Int>
+        var expectedSelection: Pair<Int, Int>
+        var actualSelection: Pair<Int, Int>
+        var markersToRemove: List<Int>
+
+        testName = "toggle 1"
+        given = "**word** **word** **word**"
+        selection = Pair(0, 26)
+        expected = "word word word"
+        expectedSelection = Pair(0, 14)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "toggle 2"
+        given = "word"
+        selection = Pair(0, 4)
+        expected = "**word**"
+        expectedSelection = Pair(2, 6)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "toggle 3"
+        given = "**word**"
+        selection = Pair(3, 5)
+        expected = "**w**or**d**"
+        expectedSelection = Pair(5, 7)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "toggle 4"
+        given = "word"
+        selection = Pair(2, 2)
+        expected = "wo****rd"
+        expectedSelection = Pair(4, 4)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "toggle 5"
+        given = "word"
+        selection = Pair(2, 2)
+        expected = "wo****rd"
+        expectedSelection = Pair(4, 4)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "toggle 5"
+        given = "wo****rd"
+        selection = Pair(4, 4)
+        expected = "word"
+        expectedSelection = Pair(2, 2)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "toggle 6"
+        given = "****"
+        selection = Pair(2, 2)
+        expected = ""
+        expectedSelection = Pair(0, 0)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        // this case's behavior is subject to change
+        testName = "unbold odd 1"
+        given = "**word** word **word**"
+        selection = Pair(6, 16)
+        expected = "**word word word**"
+        expectedSelection = Pair(6, 12)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        // this case's behavior is subject to change
+        testName = "unbold odd 2"
+        given = "**word** word **word**"
+        selection = Pair(9, 13)
+        expected = "**word** **word** **word**"
+        expectedSelection = Pair(11, 15)
+        markersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (markersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        actualSelection = if (markersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, markersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+    }
+
+    @Test
+    fun toggleItalicInBoldTest() {
+        var testName: String
+        var given: String
+        var expected: String
+        var actual: String
+        var selection: Pair<Int, Int>
+        var expectedSelection: Pair<Int, Int>
+        var actualSelection: Pair<Int, Int>
+        var expectedMarkersToRemove: List<Int>
+        var actualMarkersToRemove: List<Int>
+
+        testName = "italic in bold 1"
+        given = "**word**"
+        selection = Pair(2, 6)
+        expected = "**_word_**"
+        expectedSelection = Pair(3, 7)
+        expectedMarkersToRemove = listOf()
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        actual = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        actualSelection = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "italic in bold 2"
+        given = "**word word**"
+        selection = Pair(2, 6)
+        expected = "**_word_ word**"
+        expectedSelection = Pair(3, 7)
+        expectedMarkersToRemove = listOf()
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        actual = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        actualSelection = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "italic in bold 3"
+        given = "**_word_ word**"
+        selection = Pair(2, 8)
+        expected = "**word word**"
+        expectedSelection = Pair(2, 6)
+        expectedMarkersToRemove = listOf(2, 7)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        actual = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        actualSelection = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "italic in bold 4"
+        given = "**_word_ word**"
+        selection = Pair(4, 4)
+        expected = "**word word**"
+        expectedSelection = Pair(2, 6)
+        expectedMarkersToRemove = listOf(2, 7)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        actual = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        actualSelection = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.ITALICS_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.ITALICS_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "unbold 1"
+        given = "**_word_**"
+        selection = Pair(4, 4)
+        expected = "_word_"
+        expectedSelection = Pair(0, 6)
+        expectedMarkersToRemove = listOf(0, 8)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        actualSelection = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
+
+        testName = "unbold 2"
+        given = "**_word_**"
+        selection = Pair(3, 7)
+        expected = "_word_"
+        expectedSelection = Pair(0, 6)
+        expectedMarkersToRemove = listOf(0, 8)
+        actualMarkersToRemove = Markdown.markersToRemove(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        actual = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getUnMarkedText(given, Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        actualSelection = if (actualMarkersToRemove.isEmpty()) {
+            Markdown.getNewSelectionOnMark(Markdown.BOLD_MARKER, selection.first, selection.second)
+        } else {
+            Markdown.getNewSelectionOnUnMark(Markdown.BOLD_MARKER, selection.first, selection.second, actualMarkersToRemove)
+        }
+        assertEquals("test $testName", expected, actual)
+        assertEquals("test toRemove $testName", expectedMarkersToRemove, actualMarkersToRemove)
+        assertEquals("test selection $testName", expectedSelection, actualSelection)
     }
 }

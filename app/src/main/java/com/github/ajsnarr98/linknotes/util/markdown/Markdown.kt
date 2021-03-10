@@ -8,6 +8,15 @@ object Markdown {
     const val BOLD_MARKER = "**"
 
     /**
+     * Mapping of markers (value) that must be accounted for when checking
+     * for a given marker (key).
+     */
+    val relevantMarkersMap = mapOf<String, List<String>>(
+        ITALICS_MARKER to listOf(BOLD_MARKER),
+        BOLD_MARKER    to listOf(ITALICS_MARKER),
+    ).withDefault { listOf() }
+
+    /**
      * First finds whether or not the selection between start and end
      * is exactly between two (paired) instances of the given marker, or
      * has instances of the given marker on exactly either end, or if there
@@ -54,6 +63,28 @@ object Markdown {
             toRemove.add(markersAfterEnd.first())
         }
         return toRemove.sorted()
+    }
+
+    /**
+     * Unless the range is invalid, returns true if the given range (start inclusive, end exclusive) has
+     * exactly 0 or 1 instances of each of the given markers, and no
+     * other strings. A range is invalid if rangeEnd <= rangeStart
+     */
+    fun rangeContainsOnlyMarkers(text: String, rangeStart: Int, rangeEnd: Int, markers: Collection<String>): Boolean {
+        if (rangeEnd <= rangeStart) {
+            return false
+        }
+        var shrunkText = text.substring(rangeStart, rangeEnd)
+        var i: Int
+        for (marker in markers) {
+            i = shrunkText.indexOf(marker)
+            if (i >= 0) {
+                // if found, remove that marker from shrunkText
+                shrunkText = shrunkText.substring(0, i) + shrunkText.substring(i + marker.length)
+            }
+        }
+
+        return shrunkText.isEmpty()
     }
 
     /**
@@ -109,16 +140,32 @@ object Markdown {
                     result += text.substring(i, j)
                     i = j + toRemove.length
                 } else {
-                    // when not removing all, and there is the start of a pair
-                    // outside the selection, we must complete that pair
-                    result += text.substring(i, actualStart) + toRemove
-                    i = actualStart
+                    val isTouchingThroughOtherMarkers
+                        = rangeContainsOnlyMarkers(text, j + toRemove.length, actualStart, relevantMarkersMap[toRemove] ?: listOf())
+                    if (isTouchingThroughOtherMarkers) {
+                        // j is touching start through other markers, so include with removal
+                        result += text.substring(i, j)
+                        i = j + toRemove.length
+                    } else {
+                        // when not removing all, and there is the start of a pair
+                        // outside the selection, we must complete that pair
+                        result += text.substring(i, actualStart) + toRemove
+                        i = actualStart
+                    }
                 }
             } else if (j > actualEnd) {
-                // when not removing all, and there is the start of a pair
-                // outside the selection, we must complete that pair
-                result += text.substring(i, actualEnd) + toRemove
-                i = actualEnd
+                val isTouchingThroughOtherMarkers
+                        = rangeContainsOnlyMarkers(text, actualEnd, j, relevantMarkersMap[toRemove] ?: listOf())
+                if (isTouchingThroughOtherMarkers) {
+                    // j is touching end through other markers, so include with removal
+                    result += text.substring(i, j)
+                    i = j + toRemove.length
+                } else {
+                    // when not removing all, and there is the end of a pair
+                    // outside the selection, we must complete that pair
+                    result += text.substring(i, actualEnd) + toRemove
+                    i = actualEnd
+                }
             }
         }
         if (i < text.length) {
@@ -182,6 +229,7 @@ object Markdown {
      * @return pair of (newStart, newEnd) for selection
      */
     fun getNewSelectionOnUnMark(
+        oldText: String,
         marker: String,
         oldStart: Int,
         oldEnd: Int,
@@ -211,8 +259,21 @@ object Markdown {
                     isFirstRemoved = true
                     actualStart - diff
                 } else {
-                    isFirstRemoved = false
-                    actualStart + marker.length
+                    val isFirstTouchingThroughOtherMarkers
+                            = rangeContainsOnlyMarkers(
+                        oldText,
+                        sortedIndices.first() + marker.length,
+                        actualStart,
+                        relevantMarkersMap[marker] ?: listOf()
+                    )
+                    if (isFirstTouchingThroughOtherMarkers) {
+                        isFirstRemoved = true
+                        actualStart - marker.length
+                    } else {
+                        isFirstRemoved = false
+                        // need to account for adding the extra marker before start
+                        actualStart + marker.length
+                    }
                 }
             } else {
                 isFirstRemoved = true
@@ -223,7 +284,7 @@ object Markdown {
                 if (isFirstRemoved) {
                     actualEnd - (sortedIndices.size - 1) * marker.length
                 } else {
-                    // also need to account for adding the extra marker before start
+                    // also need to account for adding the extra marker after end
                     actualEnd - (sortedIndices.size - 2) * marker.length + marker.length
                 }
             } else {

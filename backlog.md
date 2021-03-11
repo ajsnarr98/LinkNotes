@@ -35,7 +35,6 @@
 - add separate account support in firestore
 
 ## Bugs
-- deleting an entry does not visibly update the list of entries
 - changing focus between views while soft keyboard is up does not update softkeyboard listener
 - editnote saving does not always update entry type?
 - cannot click tag in add tag dialog

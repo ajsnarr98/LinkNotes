@@ -8,6 +8,9 @@ object Markdown {
     const val BOLD_MARKER = "**"
     const val STRIKE_THROUGH_MARKER = "~~"
 
+    const val BULLET_LIST_MARKER = "- "
+    const val NUMBERED_LIST_MARKER = "1. "
+
     /**
      * Mapping of markers (value) that must be accounted for when checking
      * for a given marker (key).

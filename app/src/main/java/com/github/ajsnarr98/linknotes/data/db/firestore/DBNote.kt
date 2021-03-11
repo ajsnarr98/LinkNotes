@@ -1,6 +1,7 @@
 package com.github.ajsnarr98.linknotes.data.db.firestore
 
 import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
+import com.github.ajsnarr98.linknotes.util.isNotNullOrBlank
 import java.util.*
 
 
@@ -47,15 +48,6 @@ data class DBNote(
     }
 
     override val readableLogName: String = "Note '$id' -> name: $name"
-
-    /**
-     * A note is marked as a new note, when it has no valid ID.
-     *
-     * An invalid ID will either be null or blank (at most whitespace chars).
-     */
-    override fun hasID(): Boolean {
-        return this.id == null || this.id.isBlank()
-    }
 
     /**
      * Returns a new note with the given ID.

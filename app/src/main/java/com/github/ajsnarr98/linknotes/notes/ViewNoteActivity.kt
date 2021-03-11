@@ -74,6 +74,9 @@ class ViewNoteActivity : BaseActivity() {
         }
         viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
+        // add up navigation button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
         recyclerAdapter = ViewNoteAdapter(viewModel, mRecyclerActionListener, markwon)
@@ -97,6 +100,7 @@ class ViewNoteActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             R.id.action_settings -> return true // TODO
+            android.R.id.home -> onBackPressed()
         }
         return super.onOptionsItemSelected(item)
     }

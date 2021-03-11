@@ -24,7 +24,6 @@
 - add images to entries
 - add default special entry types, like a value bar
 - add ability to add custom templates for new notes to start out with?
-- add back navigation in toolbar
 - add real editnote screen/boxes
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like

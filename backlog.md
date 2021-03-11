@@ -15,6 +15,7 @@
 - when adding tags, have confirmation dialog that gives suggestions if it looks like there was a typo
 - link to note/entry
 - add markdown editing helpers for lists / links / images / headers
+- update bold / italic / strike-through markers to unbold/bold with respect to whitespace
 - remove markdown helper button for underline (will not support)
 - link entries based on note/entry type (ex. tag <-> classes <-> people)
 - set default values for a new note on save

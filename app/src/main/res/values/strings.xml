@@ -21,6 +21,7 @@
     <string name="editnote_note_image_desc">Note Image</string>
     <string name="editnote_delete_button_desc">Delete Button</string>
     <string name="editnote_delete_entry_button_desc">Delete Entry Button</string>
+    <string name="editnote_cancel_edit_button_desc">Cancel Edit Note</string>
     <string name="editnote_add_tag_button_desc">Add Tag</string>
     <string name="editnote_note_type_text">Note Type: </string>
     <string name="editnote_entry_type_text">Entry Type: </string>
@@ -29,7 +30,18 @@
     <string name="editnote_delete_note_confirmation">Are you sure you want to delete the note \"%s\"? This cannot be undone</string>
     <string name="editnote_remove_tag_confirmation">Are you sure you want to remove the %s tag from this note?</string>
     <string name="editnote_create_new_tag_confirmation">The tag \"%s\" does not yet exist. Are you sure you want to create it?</string>
-    
+
+    <!-- Text editing -->
+    <string name="bold_content_desc">Bold</string>
+    <string name="italic_content_desc">Italics</string>
+    <string name="bullet_list_content_desc">Bulleted List</string>
+    <string name="numbered_list_content_desc">Numbered List</string>
+    <string name="text_size_content_desc">Text Size</string>
+    <string name="strikethrough_content_desc">Strikethrough</string>
+    <string name="underlined_content_desc">Underlined</string>
+    <string name="add_link_content_desc">Add Link</string>
+    <string name="add_photo_content_desc">Add Photo</string>
+
     <!-- Viewnote Activity -->
     <string name="viewnote_num_entries">Showing %1$d entries</string>
     <string name="viewnote_edit_btn">EDIT</string>

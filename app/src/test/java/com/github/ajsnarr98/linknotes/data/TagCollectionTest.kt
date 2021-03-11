@@ -1,13 +1,9 @@
-package com.github.ajsnarr98.linknotes
+package com.github.ajsnarr98.linknotes.data
 
-import com.github.ajsnarr98.linknotes.data.Color
-import com.github.ajsnarr98.linknotes.data.Tag
-import com.github.ajsnarr98.linknotes.data.TagCollection
-import com.github.ajsnarr98.linknotes.data.TagTree
 import com.github.ajsnarr98.linknotes.data.db.DAO
 import com.github.ajsnarr98.linknotes.data.db.firestore.DBTagTree
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
-import com.github.ajsnarr98.linknotes.fake.FirestoreTagsDAOFake
+import com.github.ajsnarr98.linknotes.data.fake.FirestoreTagsDAOFake
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith

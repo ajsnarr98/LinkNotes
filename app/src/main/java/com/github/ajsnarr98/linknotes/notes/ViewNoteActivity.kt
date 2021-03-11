@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajsnarr98.linknotes.BaseActivity
@@ -41,6 +42,7 @@ class ViewNoteActivity : BaseActivity() {
     lateinit var viewModel: ViewNoteViewModel
 
     private lateinit var binding : ActivityViewnoteBinding
+    override val rootView: ViewGroup get() = binding.root
 
     private lateinit var recyclerAdapter: ViewNoteAdapter
     private val mRecyclerActionListener by lazy { RecyclerActionListener(this) }

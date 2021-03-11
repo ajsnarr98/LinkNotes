@@ -2,6 +2,7 @@ package com.github.ajsnarr98.linknotes.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Point
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -24,10 +25,17 @@ fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
     }
 }
 
-fun getScreenSize(activity: FragmentActivity) : Point {
-    val size = Point()
-    activity.windowManager.defaultDisplay.getSize(size) // size is an out parameter
-    return size
+/**
+ * Tries to get the activity from given context. This may fail.
+ *
+ * @return the parent activity or null
+ */
+fun getActivity(context: Context): Activity? {
+    return when (context) {
+        is Activity -> context
+        is ContextWrapper -> getActivity(context.baseContext)
+        else -> null
+    }
 }
 
 /**

@@ -15,7 +15,7 @@
 - when adding tags, have confirmation dialog that gives suggestions if it looks like there was a typo
 - link to note/entry
 - add markdown editing helpers for lists / links / images / headers
-- update bold / italic / strike-through markers to unbold/bold with respect to whitespace
+- update bold / italic / strike-through markers to unmark/mark with respect to whitespace
 - remove markdown helper button for underline (will not support)
 - link entries based on note/entry type (ex. tag <-> classes <-> people)
 - set default values for a new note on save
@@ -36,6 +36,8 @@
 
 ## Bugs
 - deleting an entry does not visibly update the list of entries
+- adding an entry duplicates an entry and does not create an empty one
+- changing focus between views while soft keyboard is up does not update softkeyboard listener
 - editnote saving does not always update entry type?
 - cannot click tag in add tag dialog
 - editing a note can cause duplicate notes to be created...

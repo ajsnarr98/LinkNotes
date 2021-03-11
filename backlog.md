@@ -40,6 +40,4 @@
 - changing focus between views while soft keyboard is up does not update softkeyboard listener
 - editnote saving does not always update entry type?
 - cannot click tag in add tag dialog
-- editing a note can cause duplicate notes to be created...
 - unable to remove tags in ui
-- deleting notes does not work

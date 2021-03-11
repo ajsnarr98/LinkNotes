@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+def build_param = "${build}";
 
 android {
     compileSdkVersion 30
@@ -24,7 +25,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        dev {
+            // used for CI building
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -43,6 +49,22 @@ android {
         includeInBundle true
     }
     buildToolsVersion '30.0.1'
+}
+
+if (build_param != "dev") {
+    //exclude dev build variant
+    android.variantFilter { variant ->
+        if (variant.buildType.name == 'dev') {
+            variant.setIgnore(true);
+        }
+    }
+} else {
+    //exclude all except dev build variant
+    android.variantFilter { variant ->
+        if (!(variant.buildType.name == 'dev')) {
+            variant.setIgnore(true);
+        }
+    }
 }
 
 androidExtensions {

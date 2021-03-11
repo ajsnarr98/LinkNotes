@@ -24,6 +24,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      # Builds and tests with gradle
+      # Builds and tests with gradle (in CI mode)
       - name: Build/Test with Gradle
-        run: ./gradlew build test
+        run: ./gradlew clean build test -Pbuild=dev

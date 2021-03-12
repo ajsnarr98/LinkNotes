@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.ajsnarr.linknotes.R
-import com.ajsnarr.linknotes.databinding.ViewMarkdownEditHelperBinding
+import com.github.ajsnarr98.linknotes.R
+import com.github.ajsnarr98.linknotes.databinding.ViewMarkdownEditHelperBinding
 import com.github.ajsnarr98.linknotes.util.getActivity
 import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardBehavior
 import kotlin.math.roundToInt

@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 
 /**
  * NOTE: this layout must exist in an activity where softInputMode is "adjustResize"

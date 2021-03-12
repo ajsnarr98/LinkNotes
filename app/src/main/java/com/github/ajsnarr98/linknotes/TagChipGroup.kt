@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import com.ajsnarr.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup

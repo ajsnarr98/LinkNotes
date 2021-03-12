@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Tag
-import com.ajsnarr.linknotes.databinding.FragmentAddTagDialogBinding
+import com.github.ajsnarr98.linknotes.databinding.FragmentAddTagDialogBinding
 import java.io.Serializable
 import java.lang.IllegalStateException
 

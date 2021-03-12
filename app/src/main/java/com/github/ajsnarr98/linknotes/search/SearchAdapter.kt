@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
-import com.ajsnarr.linknotes.databinding.ItemSearchResultBinding
+import com.github.ajsnarr98.linknotes.databinding.ItemSearchResultBinding
 
 class SearchAdapter(val context: Context, val actionListener: ActionListener)
     : RecyclerView.Adapter<SearchAdapter.ResultViewHolder>() {

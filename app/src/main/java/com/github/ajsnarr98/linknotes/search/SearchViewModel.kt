@@ -1,7 +1,7 @@
 package com.github.ajsnarr98.linknotes.search
 
 import com.github.ajsnarr98.linknotes.BaseViewModel
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.util.fuzzyMatch

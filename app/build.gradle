@@ -9,7 +9,7 @@ def build_param = "${build}";
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.ajsnarr.linknotes"
+        applicationId "com.github.ajsnarr98.linknotes"
         minSdkVersion 23
         targetSdkVersion 30
         multiDexEnabled true

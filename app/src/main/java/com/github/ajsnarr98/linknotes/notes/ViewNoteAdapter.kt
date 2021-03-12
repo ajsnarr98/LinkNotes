@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Entry
-import com.ajsnarr.linknotes.databinding.ItemViewnoteDetailsBinding
-import com.ajsnarr.linknotes.databinding.ItemViewnoteEntryBinding
+import com.github.ajsnarr98.linknotes.databinding.ItemViewnoteDetailsBinding
+import com.github.ajsnarr98.linknotes.databinding.ItemViewnoteEntryBinding
 import io.noties.markwon.Markwon
 import timber.log.Timber
 import java.lang.IllegalArgumentException

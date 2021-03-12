@@ -10,13 +10,13 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajsnarr98.linknotes.BaseActivity
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.util.dialogs.ConfirmationDialogFragment
-import com.ajsnarr.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Entry
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.UUID
-import com.ajsnarr.linknotes.databinding.ActivityEditnoteBinding
+import com.github.ajsnarr98.linknotes.databinding.ActivityEditnoteBinding
 import com.github.ajsnarr98.linknotes.search.SearchActivity
 import com.github.ajsnarr98.linknotes.util.dialogs.AddTagDialog
 import com.github.ajsnarr98.linknotes.util.hideKeyboard

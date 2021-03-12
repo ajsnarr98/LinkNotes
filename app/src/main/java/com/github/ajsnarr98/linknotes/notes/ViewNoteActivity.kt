@@ -10,10 +10,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajsnarr98.linknotes.BaseActivity
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.UUID
-import com.ajsnarr.linknotes.databinding.ActivityViewnoteBinding
+import com.github.ajsnarr98.linknotes.databinding.ActivityViewnoteBinding
 import com.github.ajsnarr98.linknotes.util.createMarkwonInstance
 import io.noties.markwon.Markwon
 import java.lang.IllegalArgumentException

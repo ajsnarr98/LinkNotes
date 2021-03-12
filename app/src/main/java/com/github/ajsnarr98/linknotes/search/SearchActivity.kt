@@ -12,9 +12,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajsnarr98.linknotes.BaseActivity
-import com.ajsnarr.linknotes.R
+import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
-import com.ajsnarr.linknotes.databinding.ActivitySearchBinding
+import com.github.ajsnarr98.linknotes.databinding.ActivitySearchBinding
 import com.github.ajsnarr98.linknotes.notes.EditNoteActivity
 import com.github.ajsnarr98.linknotes.notes.ViewNoteActivity
 import com.github.ajsnarr98.linknotes.util.hideKeyboardFrom

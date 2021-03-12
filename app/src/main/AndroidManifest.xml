@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ajsnarr.linknotes">
+    package="com.github.ajsnarr98.linknotes">
 
     <application
         android:name="com.github.ajsnarr98.linknotes.App"

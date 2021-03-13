@@ -1,5 +1,6 @@
 package com.github.ajsnarr98.linknotes.data.db.firestore
 
+import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
 import com.github.ajsnarr98.linknotes.util.isNotNullOrBlank
 import java.util.*
@@ -17,10 +18,10 @@ data class DBNote(
     val tags: MutableList<DBTag>? = null,
     val entries: MutableList<DBEntry>? = null,
     val notes: MutableList<DBNote>? = null
-) : DBCollectionObject<com.github.ajsnarr98.linknotes.data.Note> {
+) : DBCollectionObject<Note> {
 
     companion object {
-        fun fromAppObject(other: com.github.ajsnarr98.linknotes.data.Note) : DBNote {
+        fun fromAppObject(other: Note) : DBNote {
             return DBNote(
                 id = other.id,
                 type = other.type,

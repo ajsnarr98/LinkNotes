@@ -1,9 +1,6 @@
 package com.github.ajsnarr98.linknotes.data.db
 
-import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNotesDAO
-import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagsDAO
-import com.github.ajsnarr98.linknotes.data.db.firestore.DBNote
-import com.github.ajsnarr98.linknotes.data.db.firestore.DBTagTree
+import com.github.ajsnarr98.linknotes.data.db.firestore.*
 
 
 /**
@@ -12,4 +9,5 @@ import com.github.ajsnarr98.linknotes.data.db.firestore.DBTagTree
 object DBInstances {
     val notesDAO: DAO<DBNote> = FirestoreNotesDAO()
     val tagsDAO: DAO<DBTagTree> = FirestoreTagsDAO()
+    val usersDAO: DAO<DBUser> = FirestoreUsersDAO()
 }

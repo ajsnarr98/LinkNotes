@@ -3,7 +3,7 @@
     package="com.github.ajsnarr98.linknotes">
 
     <application
-        android:name="com.github.ajsnarr98.linknotes.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,19 +11,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.github.ajsnarr98.linknotes.search.SearchActivity"
+            android:name=".router.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.github.ajsnarr98.linknotes.notes.EditNoteActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.github.ajsnarr98.linknotes.notes.ViewNoteActivity"/>
+            android:name=".search.SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".notes.EditNoteActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".notes.ViewNoteActivity" />
     </application>
 
 </manifest>

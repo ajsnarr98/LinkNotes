@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="colorIconPrimary" format="color"/>
+    <attr name="colorIconSecondary" format="color"/>
+
     <attr name="textAppearanceHeadline7" format="reference" />
     <attr name="textAppearanceSubtitle1Bold" format="reference" />
 

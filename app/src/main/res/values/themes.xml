@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorIconPrimary">@color/colorIconPrimary</item>
+        <item name="colorIconSecondary">@color/colorIconSecondary</item>
 
         <!--Typography-->
         <item name="textAppearanceHeadline4">@style/TextAppearance.LinkNotes.Headline4</item>

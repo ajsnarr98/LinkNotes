@@ -7,6 +7,9 @@
     <color name="colorOnPrimary">@android:color/white</color>
     <color name="colorOnPrimary2">@color/colorPrimaryDark</color>
 
+    <color name="colorIconPrimary">#FF6600</color>
+    <color name="colorIconSecondary">@color/colorOnPrimary2</color>
+
     <color name="black_87">#de000000</color>
     <color name="black_54">#8a000000</color>
 

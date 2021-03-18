@@ -88,6 +88,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
 
+    // google sign in
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
     // testing
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.robolectric:robolectric:4.4'

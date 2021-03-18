@@ -8,12 +8,12 @@
     <color name="colorOnPrimary2">@color/colorPrimaryDark</color>
 
     <color name="colorIconPrimary">#FF6600</color>
-    <color name="colorIconSecondary">@color/colorOnPrimary2</color>
+    <color name="colorIconSecondary">#D45500</color>
 
     <color name="black_87">#de000000</color>
     <color name="black_54">#8a000000</color>
 
-    <color name="transparent">#00FFFFFF</color>
+    <color name="transparent">#00000000</color>
 
 <!--    <color name="tag_button_blue">#00a9b5</color>-->
     <color name="tag_button_blue">#1f8fb4</color>

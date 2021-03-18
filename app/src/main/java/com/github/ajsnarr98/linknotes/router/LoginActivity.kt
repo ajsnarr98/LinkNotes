@@ -47,6 +47,7 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account == null) {
+            // if not signed in, prepare to sign in
             binding.googleSignIn.visibility = View.VISIBLE
         }
     }

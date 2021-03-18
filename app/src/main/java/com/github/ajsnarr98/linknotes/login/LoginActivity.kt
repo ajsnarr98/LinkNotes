@@ -1,14 +1,14 @@
-package com.github.ajsnarr98.linknotes.router
+package com.github.ajsnarr98.linknotes.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.github.ajsnarr98.linknotes.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -19,34 +19,34 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         // this can be any value
         private const val RC_SIGN_IN = 42
+
+        fun getLoginIntent(context: Context): Intent {
+            return Intent(context, LoginActivity::class.java)
+        }
     }
 
-    // Configure sign-in to request the user's ID, email address, and basic
-    // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-    private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .build()
-    private lateinit var googleSignInClient: GoogleSignInClient
-
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        viewModel = ViewModelProvider(this, LoginViewModel.Factory(this))
+            .get(LoginViewModel::class.java)
 
         binding.googleSignIn.setSize(SignInButton.SIZE_STANDARD);
         binding.googleSignIn.setOnClickListener {
-            val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            startActivityForResult(viewModel.googleSignInClient.signInIntent, RC_SIGN_IN)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if (account == null) {
+        if (viewModel.isSignedIn) {
+            startActivity(Router.postLoginIntent(this))
+        } else {
             // if not signed in, prepare to sign in
             binding.googleSignIn.visibility = View.VISIBLE
         }
@@ -67,8 +67,12 @@ class LoginActivity : AppCompatActivity() {
         try {
             val account: GoogleSignInAccount? = completedTask.getResult(ApiException::class.java)
 
-            // Signed in successfully, show authenticated UI.
-            // TODO - go to next screen
+            if (account != null) {
+                // Signed in successfully, show authenticated UI.
+                viewModel.signInWithGoogleAccount(account)
+                // TODO - observe and wait for sign in to finish before continuing
+                startActivity(Router.postLoginIntent(this))
+            }
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.

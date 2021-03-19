@@ -4,7 +4,8 @@ import android.app.Activity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.github.ajsnarr98.linknotes.Provider
+import com.github.ajsnarr98.linknotes.Providers
+import com.github.ajsnarr98.linknotes.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -15,11 +16,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
  */
 class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application) {
 
-    private val accountStore = Provider.accountStore
+    private val accountStore = Providers.accountStore
 
     // Configure sign-in to request the user's ID, email address, and basic
     // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
     private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(activity.getString(R.string.server_client_id))
         .build()
     val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
 
@@ -27,7 +29,7 @@ class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application
         get() {
             val account = GoogleSignIn.getLastSignedInAccount(getApplication())
             return account != null
-                    && accountStore.userId != null
+                    && accountStore?.userId != null
                     && account.id != null
                     && account.id == accountStore.googleUserId
         }

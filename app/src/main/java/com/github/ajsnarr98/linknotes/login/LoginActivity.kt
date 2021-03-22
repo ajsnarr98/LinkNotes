@@ -36,6 +36,9 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, LoginViewModel.Factory(this))
             .get(LoginViewModel::class.java)
 
+        binding.loadingIndicator.visibility = View.VISIBLE
+        binding.googleSignIn.visibility = View.GONE
+
         binding.googleSignIn.setSize(SignInButton.SIZE_STANDARD);
         binding.googleSignIn.setOnClickListener {
             startActivityForResult(viewModel.googleSignInClient.signInIntent, RC_SIGN_IN)
@@ -88,12 +91,13 @@ class LoginActivity : AppCompatActivity() {
                         Timber.e("sign in to firebase with google failed")
                         // make sure sign in button is now visible
                         binding.googleSignIn.visibility = View.VISIBLE
-                        // TODO - show error
+                        binding.loadingIndicator.visibility = View.GONE
                     }
                 }
             } else {
                 // make sure sign in button is now visible
                 binding.googleSignIn.visibility = View.VISIBLE
+                binding.loadingIndicator.visibility = View.GONE
             }
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
@@ -101,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
             Timber.e("signInResult:failed code=${e.statusCode}")
             // make sure sign in button is now visible
             binding.googleSignIn.visibility = View.VISIBLE
-            // TODO - show error
+            binding.loadingIndicator.visibility = View.GONE
         }
     }
 }

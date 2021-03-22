@@ -15,6 +15,9 @@
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
+- add sign out button
+- update collections and daos to be user specific
+- add dev/debug user
 - display loading indicator in note screen when loading notes from firebase
 - allow swipe to top of notes activity to refresh notes shown (in case of remote changes to collection)
 - advanced searches

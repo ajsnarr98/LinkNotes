@@ -2,7 +2,10 @@ package com.github.ajsnarr98.linknotes.data.db
 
 import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.data.UUID
-import com.github.ajsnarr98.linknotes.data.db.firestore.*
+import com.github.ajsnarr98.linknotes.data.db.firestore.DBNote
+import com.github.ajsnarr98.linknotes.data.db.firestore.DBTagTree
+import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNotesDAO
+import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagsDAO
 
 /**
  * A group of providers for default instances of DAO objects.

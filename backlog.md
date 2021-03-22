@@ -12,10 +12,10 @@
 - Update firestore permissions
 
 ## Features
-- display loading indicator in note screen when loading notes from firebase
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
+- display loading indicator in note screen when loading notes from firebase
 - allow swipe to top of notes activity to refresh notes shown (in case of remote changes to collection)
 - advanced searches
 - add search functionality to add tags screen

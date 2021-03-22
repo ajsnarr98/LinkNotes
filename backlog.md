@@ -15,9 +15,6 @@
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
-- add sign out button
-- update collections and daos to be user specific
-- add dev/debug user
 - display loading indicator in note screen when loading notes from firebase
 - allow swipe to top of notes activity to refresh notes shown (in case of remote changes to collection)
 - advanced searches
@@ -41,9 +38,11 @@
 - add default entries for pictures and the like
 - implement undo button when editing notes
 - add custom recyclerview-like chipgroup
-- add code obfuscation
 - add security in firestore
 - add separate account support in firestore
+  - update collections and daos to be user specific
+- add sign out button
+- add dev/debug user
 
 ## Bugs
 - changing focus between views while soft keyboard is up does not update softkeyboard listener

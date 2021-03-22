@@ -5,7 +5,7 @@ import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.UUID
 import com.github.ajsnarr98.linknotes.data.db.DAO
-import com.github.ajsnarr98.linknotes.data.db.DBInstances
+import com.github.ajsnarr98.linknotes.data.db.DBProviders
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 
@@ -14,7 +14,7 @@ import timber.log.Timber
  *
  * MUST clear listeners via call to onActivityEnd.
  */
-class FirestoreNoteCollection(private val dao: DAO<DBNote> = DBInstances.notesDAO) : NoteCollection() {
+class FirestoreNoteCollection(private val dao: DAO<DBNote> = DBProviders.notesDAO) : NoteCollection() {
 
     init {
         // get notes from db

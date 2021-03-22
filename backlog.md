@@ -39,8 +39,6 @@
 - implement undo button when editing notes
 - add custom recyclerview-like chipgroup
 - add security in firestore
-- add separate account support in firestore
-  - update collections and daos to be user specific
 - add sign out button
 - add dev/debug user
 
@@ -49,3 +47,4 @@
 - editnote saving does not always update entry type?
 - cannot click tag in add tag dialog
 - unable to remove tags in ui
+- unable to add new tags

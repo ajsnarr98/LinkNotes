@@ -8,6 +8,7 @@ import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
 import com.github.ajsnarr98.linknotes.data.local.AccountStore
 import com.github.ajsnarr98.linknotes.login.AuthHandler
 import com.github.ajsnarr98.linknotes.login.FirebaseAuthHandler
+import java.lang.IllegalStateException
 
 /**
  * An object that provides default implementations (global scope) during runtime.
@@ -31,9 +32,13 @@ object Providers {
     var authHandlerProvider: Provider<AuthHandler?>
         = RepeatProvider { FirebaseAuthHandler() }
     var noteCollectionProvider: Provider<NoteCollection?>
-        = UserDependantLazyProvider { userId -> FirestoreNoteCollection() }
+        = UserDependantLazyProvider { userId ->
+            FirestoreNoteCollection(userId = userId ?: throw IllegalStateException("Cannot access notes for null user"))
+        }
     var tagCollectionProvider: Provider<TagCollection?>
-        = UserDependantLazyProvider { userId -> FirestoreTagCollection() }
+        = UserDependantLazyProvider { userId ->
+            FirestoreTagCollection(userId = userId ?: throw IllegalStateException("Cannot access tags for null user"))
+        }
 
     /**
      * Provides an instance of something.

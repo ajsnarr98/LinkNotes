@@ -16,7 +16,10 @@ import java.util.*
 @RunWith(RobolectricTestRunner::class)
 class TagCollectionTest {
 
-    private val BLUE = Color(0,0,255)
+    companion object {
+        private const val USER = "usr"
+        private val BLUE = Color(0,0,255)
+    }
 
     private val sampleTags = listOf<Tag>(
         Tag("places.charlottesville", BLUE),
@@ -167,7 +170,7 @@ class TagCollectionTest {
     fun addTest() {
 
         val dao = emptyDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertTrue("tags is empty", tags.isEmpty())
         val treeCount = mutableSetOf<Int>()
@@ -212,7 +215,7 @@ class TagCollectionTest {
     fun addAllTest() {
 
         val dao = emptyDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertTrue("tags is empty", tags.isEmpty())
         tags.addAll(sampleTags)
@@ -235,7 +238,7 @@ class TagCollectionTest {
     @Test
     fun initializeFullTest() {
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         // check if all samples are already added in collection and db
         assertEquals("is tag collection same size as expected list", fullAddedTags.size, tags.size)
@@ -256,7 +259,7 @@ class TagCollectionTest {
     fun clearTest() {
 
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
         tags.clear()
@@ -273,7 +276,7 @@ class TagCollectionTest {
     fun iteratorTest() {
 
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
 
@@ -289,7 +292,7 @@ class TagCollectionTest {
     fun removeTest() {
 
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
         var count = fullAddedTags.size
@@ -315,7 +318,7 @@ class TagCollectionTest {
     fun removeAllTest() {
 
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
         tags.removeAll(fullAddedTags)
@@ -332,7 +335,7 @@ class TagCollectionTest {
     fun removeAllButOneTest() {
 
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
         val allButOne = LinkedList<Tag>(fullAddedTags)
@@ -352,7 +355,7 @@ class TagCollectionTest {
     fun retainAllEverythingTest() {
         
         val dao = filledDAO
-        val tags = FirestoreTagCollection(dao)
+        val tags = FirestoreTagCollection(USER, dao)
 
         assertEquals("tags starts with ${fullAddedTags.size} items in it", fullAddedTags.size, tags.size)
         tags.retainAll(fullAddedTags)

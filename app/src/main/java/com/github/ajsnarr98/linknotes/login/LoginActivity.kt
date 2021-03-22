@@ -45,29 +45,21 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (viewModel.isSignedIn) {
+            Timber.i("already signed in, continuing through login screen.")
             startActivity(Router.postLoginIntent(this))
-        } else if (viewModel.wasSignedInPreviously) {
-            viewModel.attemptSignIn { initialSuccess ->
-                // if succeeded signing in using existing credentials, start next activity
-                if (initialSuccess) {
-                    startActivity(Router.postLoginIntent(this))
-                } else {
-                    // try to do a silent sign in
-                    val silentSignInResult = viewModel.googleSignInClient.silentSignIn()
-                    if (silentSignInResult.isSuccessful) {
-                        // immediate result ready
-                        handleGoogleSignInResult(silentSignInResult)
-                    } else {
-                        // wait for result
-                        silentSignInResult.addOnCompleteListener { result ->
-                            handleGoogleSignInResult(result)
-                        }
-                    }
+        } else {
+            // try to do a silent sign in
+            Timber.i("attempting silent sign in")
+            val silentSignInResult = viewModel.googleSignInClient.silentSignIn()
+            if (silentSignInResult.isSuccessful) {
+                // immediate result ready
+                handleGoogleSignInResult(silentSignInResult)
+            } else {
+                // wait for result
+                silentSignInResult.addOnCompleteListener { result ->
+                    handleGoogleSignInResult(result)
                 }
             }
-        } else {
-            // if not signed in, prepare to sign in
-            binding.googleSignIn.visibility = View.VISIBLE
         }
     }
 
@@ -88,19 +80,27 @@ class LoginActivity : AppCompatActivity() {
 
             if (account != null) {
                 // Signed in successfully, show authenticated UI.
+                Timber.i("attempting to sign into firebase with google")
                 viewModel.signInWithGoogleAccount(account) { success ->
                     if (success) {
                         startActivity(Router.postLoginIntent(this))
                     } else {
                         Timber.e("sign in to firebase with google failed")
+                        // make sure sign in button is now visible
+                        binding.googleSignIn.visibility = View.VISIBLE
                         // TODO - show error
                     }
                 }
+            } else {
+                // make sure sign in button is now visible
+                binding.googleSignIn.visibility = View.VISIBLE
             }
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Timber.e("signInResult:failed code=${e.statusCode}")
+            // make sure sign in button is now visible
+            binding.googleSignIn.visibility = View.VISIBLE
             // TODO - show error
         }
     }

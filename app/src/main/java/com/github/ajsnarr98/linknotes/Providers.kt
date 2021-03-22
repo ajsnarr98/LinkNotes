@@ -73,15 +73,17 @@ object Providers {
      * once per user id.
      */
     class UserDependantLazyProvider<T>(val init: (userId: UUID?) -> T) : Provider<T> {
+        private var isInitialized: Boolean = false
         private var _instance: T? = null
         private var lastUserId: UUID? = null
 
         override val instance: T
             get() {
                 val userId = Providers.accountStore?.userId
-                if (userId != lastUserId) {
+                if (!isInitialized || userId != lastUserId) {
                     _instance = init(userId)
                     lastUserId = userId
+                    isInitialized = true
                 }
                 @Suppress("UNCHECKED_CAST")
                 return _instance as T

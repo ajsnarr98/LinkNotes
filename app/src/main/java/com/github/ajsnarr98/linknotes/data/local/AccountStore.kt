@@ -95,28 +95,28 @@ class AccountStore(app: Application) {
     }
 
     fun persistUserId(value: String) {
-        editor.putString(USER_ID_KEY, value)
+        editor.putString(USER_ID_KEY, value).apply()
     }
 
     fun clearUserId() {
-        editor.remove(USER_ID_KEY)
+        editor.remove(USER_ID_KEY).apply()
     }
 
     fun persistGoogleUserId(value: String) {
-        editor.putString(GOOGLE_ID_KEY, value)
+        editor.putString(GOOGLE_ID_KEY, value).apply()
     }
 
 
     fun clearGoogleUserId() {
-        editor.remove(GOOGLE_ID_KEY)
+        editor.remove(GOOGLE_ID_KEY).apply()
     }
 
     fun persistGoogleUserIdToken(value: String) {
-        editor.putString(GOOGLE_ID_TOKEN_KEY, value)
+        editor.putString(GOOGLE_ID_TOKEN_KEY, value).apply()
     }
 
     fun clearGoogleUserIdToken() {
-        editor.remove(GOOGLE_ID_TOKEN_KEY)
+        editor.remove(GOOGLE_ID_TOKEN_KEY).apply()
     }
 
     companion object {

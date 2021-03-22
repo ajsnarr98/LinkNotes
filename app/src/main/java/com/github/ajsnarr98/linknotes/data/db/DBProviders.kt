@@ -6,6 +6,7 @@ import com.github.ajsnarr98.linknotes.data.db.firestore.DBNote
 import com.github.ajsnarr98.linknotes.data.db.firestore.DBTagTree
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNotesDAO
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagsDAO
+import java.lang.IllegalStateException
 
 /**
  * A group of providers for default instances of DAO objects.
@@ -17,7 +18,11 @@ object DBProviders {
         get() = tagsDAOProvider.instance
 
     var notesDAOProvider: Providers.Provider<DAO<DBNote>>
-        = Providers.UserDependantLazyProvider { userId: UUID? -> FirestoreNotesDAO() }
+        = Providers.UserDependantLazyProvider { userId: UUID? ->
+            FirestoreNotesDAO(userId ?: throw IllegalStateException("Cannot access notes for null user"))
+        }
     var tagsDAOProvider: Providers.Provider<DAO<DBTagTree>>
-            = Providers.UserDependantLazyProvider { userId: UUID? -> FirestoreTagsDAO() }
+        = Providers.UserDependantLazyProvider { userId: UUID? ->
+            FirestoreTagsDAO(userId  ?: throw IllegalStateException("Cannot access tags for null user"))
+        }
 }

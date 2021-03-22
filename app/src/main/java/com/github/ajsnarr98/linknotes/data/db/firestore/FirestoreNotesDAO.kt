@@ -1,6 +1,6 @@
 package com.github.ajsnarr98.linknotes.data.db.firestore
 
-class FirestoreNotesDAO : AbstractFirestoreDAO<DBNote>(NOTES_COLLECTION) {
+class FirestoreNotesDAO(userId: String) : AbstractFirestoreDAO<DBNote>(NOTES_COLLECTION, userId) {
 
     companion object {
         const val NOTES_COLLECTION: String = "notes"

@@ -3,7 +3,16 @@
 ## Refactors
 -
 
+## Backend TODO
+- See/update google OAuth consent screen credentials at https://console.developers.google.com/apis/credentials
+- (done) enable google sign-in in firebase
+- (done) add sha1 fingerprint for signing certificate to project in firebase
+- (done) add web application OAuth 2 client id as a string (R.string.server_client_id in donottranslate.xml)
+         to the app (see https://developers.google.com/identity/sign-in/android/start-integrating?authuser=2#get_your_backend_servers_oauth_20_client_id)
+- Update firestore permissions
+
 ## Features
+- display loading indicator in sign in screen while logging in
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button

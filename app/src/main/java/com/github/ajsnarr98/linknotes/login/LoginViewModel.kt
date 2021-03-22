@@ -4,40 +4,70 @@ import android.app.Activity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.github.ajsnarr98.linknotes.Provider
+import com.github.ajsnarr98.linknotes.Providers
+import com.github.ajsnarr98.linknotes.R
+import com.github.ajsnarr98.linknotes.data.UUID
+import com.github.ajsnarr98.linknotes.data.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.GoogleApiClient
 
 /**
  * If passed in noteID is null, creates a new note.
  */
 class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application) {
 
-    private val accountStore = Provider.accountStore
+    private val accountStore = Providers.accountStore
+    private val authHandler: AuthHandler = Providers.authHandler ?: throw IllegalStateException("No auth handler instance")
 
     // Configure sign-in to request the user's ID, email address, and basic
     // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
     private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(activity.getString(R.string.server_client_id))
         .build()
     val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
 
+    val wasSignedInPreviously: Boolean
+        get() = authHandler.wasSignedInPreviously
+
     val isSignedIn: Boolean
-        get() {
-            val account = GoogleSignIn.getLastSignedInAccount(getApplication())
-            return account != null
-                    && accountStore.userId != null
-                    && account.id != null
-                    && account.id == accountStore.googleUserId
+        get() = authHandler.isSignedIn
+
+    /**
+     * Attempts to use previously signed in info to sign in.
+     */
+    fun attemptSignIn(signInResultListener: (success: Boolean) -> Unit) {
+        authHandler.attemptSignIn { userId: UUID? ->
+            if (userId != null) {
+                // save user info to account store
+                accountStore?.persistUserInfo(User(
+                    id = userId,
+                    googleID = accountStore.googleUserId,
+                    googleIDToken = accountStore.googleUserIdToken,
+                ))
+            }
+            signInResultListener(userId != null)
         }
+    }
 
     /**
      * Signs in using the given google account. Stores relevant info in the
      * accountStore.
      */
-    fun signInWithGoogleAccount(googleAccount: GoogleSignInAccount) {
-
+    fun signInWithGoogleAccount(googleAccount: GoogleSignInAccount, signInResultListener: (success: Boolean) -> Unit) {
+        authHandler.signInWithGoogle(googleAccount) { userId: UUID? ->
+            if (userId != null) {
+                // save user info to account store
+                accountStore?.persistUserInfo(User(
+                    id = userId,
+                    googleID = googleAccount.id,
+                    googleIDToken = googleAccount.idToken,
+                ))
+            }
+            signInResultListener(userId != null)
+        }
     }
 
     /**

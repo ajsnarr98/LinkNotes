@@ -12,8 +12,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(DebugTree())
-        Provider.apply {
-            accountStore = AccountStore(this@App)
+        Providers.apply {
+            accountStoreProvider = Providers.BasicProvider(
+                AccountStore(this@App)
+            )
         }
     }
 }

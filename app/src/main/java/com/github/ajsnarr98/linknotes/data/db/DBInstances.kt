@@ -9,5 +9,4 @@ import com.github.ajsnarr98.linknotes.data.db.firestore.*
 object DBInstances {
     val notesDAO: DAO<DBNote> = FirestoreNotesDAO()
     val tagsDAO: DAO<DBTagTree> = FirestoreTagsDAO()
-    val usersDAO: DAO<DBUser> = FirestoreUsersDAO()
 }

@@ -1,7 +1,7 @@
 package com.github.ajsnarr98.linknotes.data
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class EntryType(var value: String): AppDataObject, Parcelable {

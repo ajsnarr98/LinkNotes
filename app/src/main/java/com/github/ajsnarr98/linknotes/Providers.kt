@@ -3,11 +3,11 @@ package com.github.ajsnarr98.linknotes
 import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.UUID
-import com.github.ajsnarr98.linknotes.data.UserCollection
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNoteCollection
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
-import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreUserCollection
 import com.github.ajsnarr98.linknotes.data.local.AccountStore
+import com.github.ajsnarr98.linknotes.login.AuthHandler
+import com.github.ajsnarr98.linknotes.login.FirebaseAuthHandler
 
 /**
  * An object that provides default implementations (global scope) during runtime.
@@ -16,8 +16,8 @@ object Providers {
     val accountStore: AccountStore?
         get() = accountStoreProvider.instance
 
-    val userCollection: UserCollection?
-        get() = userCollectionProvider.instance
+    val authHandler: AuthHandler?
+        get() = authHandlerProvider.instance
 
     val noteCollection: NoteCollection?
         get() = noteCollectionProvider.instance
@@ -27,14 +27,13 @@ object Providers {
 
     // default provider implementations
     var accountStoreProvider: Provider<AccountStore?>
-            = BasicProvider(null)
-    var userCollectionProvider: Provider<UserCollection?>
-            = LazyProvider { FirestoreUserCollection() }
+        = BasicProvider(null)
+    var authHandlerProvider: Provider<AuthHandler?>
+        = RepeatProvider { FirebaseAuthHandler() }
     var noteCollectionProvider: Provider<NoteCollection?>
-            = UserDependantLazyProvider { userId -> FirestoreNoteCollection() }
+        = UserDependantLazyProvider { userId -> FirestoreNoteCollection() }
     var tagCollectionProvider: Provider<TagCollection?>
         = UserDependantLazyProvider { userId -> FirestoreTagCollection() }
-
 
     /**
      * Provides an instance of something.
@@ -47,6 +46,15 @@ object Providers {
      * Basic provider that stores an initialized instance off the bat.
      */
     class BasicProvider<T>(override val instance: T) : Provider<T>
+
+    /**
+     * Initializes a new instance using given initializer block whenever
+     * this provider is called.
+     */
+    class RepeatProvider<T>(val initializer: () -> T) : Provider<T> {
+        override val instance: T
+            get() = initializer()
+    }
 
     /**
      * A provider whose value is only initialized once.

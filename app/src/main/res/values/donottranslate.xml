@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- backend server's OAuth 2 client id -->
-    <string name="server_client_id"></string>
+    <string name="server_client_id">741033912931-or08illifc5o6ar02em70ko5mmras5tr.apps.googleusercontent.com</string>
+    <string name="android_client_id">741033912931-cah9pe1tvckee2ku7q05i8c8c0vkj0b9.apps.googleusercontent.com</string>
 </resources>

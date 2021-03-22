@@ -12,6 +12,7 @@
 - Update firestore permissions
 
 ## Features
+- display loading indicator in sign in screen while logging in
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button

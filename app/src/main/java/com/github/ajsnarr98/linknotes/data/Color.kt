@@ -1,7 +1,7 @@
 package com.github.ajsnarr98.linknotes.data
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
 import kotlin.random.Random
 

@@ -46,6 +46,25 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         if (viewModel.isSignedIn) {
             startActivity(Router.postLoginIntent(this))
+        } else if (viewModel.wasSignedInPreviously) {
+            viewModel.attemptSignIn { initialSuccess ->
+                // if succeeded signing in using existing credentials, start next activity
+                if (initialSuccess) {
+                    startActivity(Router.postLoginIntent(this))
+                } else {
+                    // try to do a silent sign in
+                    val silentSignInResult = viewModel.googleSignInClient.silentSignIn()
+                    if (silentSignInResult.isSuccessful) {
+                        // immediate result ready
+                        handleGoogleSignInResult(silentSignInResult)
+                    } else {
+                        // wait for result
+                        silentSignInResult.addOnCompleteListener { result ->
+                            handleGoogleSignInResult(result)
+                        }
+                    }
+                }
+            }
         } else {
             // if not signed in, prepare to sign in
             binding.googleSignIn.visibility = View.VISIBLE
@@ -69,9 +88,14 @@ class LoginActivity : AppCompatActivity() {
 
             if (account != null) {
                 // Signed in successfully, show authenticated UI.
-                viewModel.signInWithGoogleAccount(account)
-                // TODO - observe and wait for sign in to finish before continuing
-                startActivity(Router.postLoginIntent(this))
+                viewModel.signInWithGoogleAccount(account) { success ->
+                    if (success) {
+                        startActivity(Router.postLoginIntent(this))
+                    } else {
+                        Timber.e("sign in to firebase with google failed")
+                        // TODO - show error
+                    }
+                }
             }
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.

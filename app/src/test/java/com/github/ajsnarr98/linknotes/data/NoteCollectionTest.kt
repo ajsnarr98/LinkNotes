@@ -17,6 +17,10 @@ import java.util.*
 @RunWith(RobolectricTestRunner::class)
 class NoteCollectionTest {
 
+    companion object {
+        private const val USER = "usr"
+    }
+
     private val sampleNotes = listOf<Note>(
         Note(
             id = "1",
@@ -75,7 +79,7 @@ class NoteCollectionTest {
     fun addTest() {
 
         val dao = emptyDAO
-        val notes = FirestoreNoteCollection(emptyDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertTrue("notes is empty", notes.isEmpty())
         var count = 0
@@ -97,7 +101,7 @@ class NoteCollectionTest {
     fun addAllTest() {
 
         val dao = emptyDAO
-        val notes = FirestoreNoteCollection(emptyDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertTrue("notes is empty", notes.isEmpty())
         notes.addAll(sampleNotes)
@@ -115,7 +119,7 @@ class NoteCollectionTest {
     fun clearTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         notes.clear()
@@ -133,7 +137,7 @@ class NoteCollectionTest {
     fun initializeTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
 
@@ -148,7 +152,7 @@ class NoteCollectionTest {
     fun iteratorTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
 
@@ -166,7 +170,7 @@ class NoteCollectionTest {
     fun removeTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         var count = sampleNotes.size
@@ -188,7 +192,7 @@ class NoteCollectionTest {
     fun removeAllTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         notes.removeAll(sampleNotes)
@@ -206,7 +210,7 @@ class NoteCollectionTest {
     fun removeAllButOneTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         val allButOneSample = LinkedList<Note>(sampleNotes)
@@ -228,7 +232,7 @@ class NoteCollectionTest {
     fun retainAllButOneTest() {
 
         val dao = filledDAO
-        val notes = FirestoreNoteCollection(filledDAO)
+        val notes = FirestoreNoteCollection(USER, dao)
 
         assertEquals("notes starts with ${sampleNotes.size} items in it", sampleNotes.size, notes.size)
         val allButOneSample = LinkedList<Note>(sampleNotes)

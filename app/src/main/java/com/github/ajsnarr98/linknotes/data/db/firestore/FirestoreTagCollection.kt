@@ -4,12 +4,15 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.db.DAO
-import com.github.ajsnarr98.linknotes.data.db.DBInstances
+import com.github.ajsnarr98.linknotes.data.db.DBProviders
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 
-class FirestoreTagCollection(private val dao: DAO<DBTagTree> = DBInstances.tagsDAO) : TagCollection() {
+class FirestoreTagCollection(
+    private val userId: String,
+    private val dao: DAO<DBTagTree> = DBProviders.tagsDAO,
+) : TagCollection() {
 
     init {
         // get tags from db
@@ -27,7 +30,7 @@ class FirestoreTagCollection(private val dao: DAO<DBTagTree> = DBInstances.tagsD
             dao.setChangeListener { snapshots, firebaseFirestoreException ->
                 if (snapshots?.documentChanges == null) return@setChangeListener
 
-                Timber.i("Remote changes received in note collection")
+                Timber.i("Remote changes received in tag collection (user: '$userId')")
 
                 for (dc in snapshots.documentChanges) {
                     val tagTree = dc.document.toObject(DBTagTree::class.java)

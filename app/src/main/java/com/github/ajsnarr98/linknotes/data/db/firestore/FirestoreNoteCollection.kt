@@ -5,7 +5,7 @@ import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.UUID
 import com.github.ajsnarr98.linknotes.data.db.DAO
-import com.github.ajsnarr98.linknotes.data.db.DBInstances
+import com.github.ajsnarr98.linknotes.data.db.DBProviders
 import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 
@@ -14,7 +14,10 @@ import timber.log.Timber
  *
  * MUST clear listeners via call to onActivityEnd.
  */
-class FirestoreNoteCollection(private val dao: DAO<DBNote> = DBInstances.notesDAO) : NoteCollection() {
+class FirestoreNoteCollection(
+    private val userId: String,
+    private val dao: DAO<DBNote> = DBProviders.notesDAO,
+) : NoteCollection() {
 
     init {
         // get notes from db
@@ -32,7 +35,7 @@ class FirestoreNoteCollection(private val dao: DAO<DBNote> = DBInstances.notesDA
             dao.setChangeListener { snapshots, firebaseFirestoreException ->
                 if (snapshots?.documentChanges == null) return@setChangeListener
 
-                Timber.i("Remote changes received in note collection")
+                Timber.i("Remote changes received in note collection (user: '$userId'")
 
                 for (dc in snapshots.documentChanges) {
                     val note = dc.document.toObject(DBNote::class.java)
@@ -68,7 +71,7 @@ class FirestoreNoteCollection(private val dao: DAO<DBNote> = DBInstances.notesDA
     }
 
 
-    override fun generateNewUUID(newNote: com.github.ajsnarr98.linknotes.data.Note): UUID {
+    override fun generateNewUUID(newNote: Note): UUID {
         // this method runs right before add is called on this Note, so
         // upsert note here
         return dao.upsert(DBNote.fromAppObject(newNote))

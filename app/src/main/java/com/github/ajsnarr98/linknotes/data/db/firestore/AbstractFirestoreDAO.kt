@@ -8,15 +8,25 @@ import timber.log.Timber
 import java.lang.Exception
 
 /**
- * Abstract Firestore DAO that uses given collectionName to do operations.
+ * Abstract Firestore DAO that uses given collectionName and a userId to do operations.
  *
  * @property collectionName Firestore collection name.
  */
 abstract class AbstractFirestoreDAO<T : DBCollectionObject<out AppDataObject>>(
     private val collectionName: String,
+    private val userId: String,
 ) : DAO<T>, FirestoreChangeListenerHolder {
 
+    companion object {
+        private const val USER_COLLECTION_NAME = "users"
+    }
+
+    init {
+        Timber.i("Making connection to DB for user '$userId'")
+    }
+
     private val db = FirebaseFirestore.getInstance()
+    private val user = db.collection(USER_COLLECTION_NAME).document(userId)
     private var listenerRegistration: ListenerRegistration? = null
 
     /**
@@ -26,7 +36,7 @@ abstract class AbstractFirestoreDAO<T : DBCollectionObject<out AppDataObject>>(
 
     override fun setChangeListener(listener: (QuerySnapshot?, FirebaseFirestoreException?) -> Unit) {
         removeChangeListener() // remove if exists
-        listenerRegistration = db.collection(collectionName).addSnapshotListener(listener)
+        listenerRegistration = user.collection(collectionName).addSnapshotListener(listener)
     }
 
     override fun removeChangeListener(): Boolean {
@@ -41,7 +51,7 @@ abstract class AbstractFirestoreDAO<T : DBCollectionObject<out AppDataObject>>(
         onSuccess: (T) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        db.collection(collectionName)
+        user.collection(collectionName)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
@@ -57,11 +67,11 @@ abstract class AbstractFirestoreDAO<T : DBCollectionObject<out AppDataObject>>(
         // generate a new document if neccesary
         val documentRef: DocumentReference
                 = if (document.hasID()) {
-            db.collection(collectionName)
+            user.collection(collectionName)
                 .document(document.id!!)
         } else {
             // new document without id; generate this doc an id
-            db.collection(collectionName)
+            user.collection(collectionName)
                 .document()
         }
 
@@ -87,7 +97,7 @@ abstract class AbstractFirestoreDAO<T : DBCollectionObject<out AppDataObject>>(
         Timber.d("deleting document in $collectionName...")
 
         if (document.hasID()) {
-            db.collection(collectionName)
+            user.collection(collectionName)
                 .document(document.id!!)
                 .delete()
                 .addOnSuccessListener { Timber.i("$collectionName document ${document.readableLogName} successfully deleted") }

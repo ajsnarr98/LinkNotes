@@ -57,6 +57,7 @@
     <string name="nav_sort_order_alpha">Alphabetical</string>
     <string name="nav_search_filter_titles">Titles</string>
     <string name="nav_search_filter_tags">Tags</string>
+    <string name="nav_sign_out_title">Sign Out</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

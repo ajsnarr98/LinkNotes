@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.github.ajsnarr98.linknotes.databinding.ActivityLoginBinding
+import com.github.ajsnarr98.linknotes.notes.ViewNoteActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
@@ -20,18 +21,28 @@ class LoginActivity : AppCompatActivity() {
         // this can be any value
         private const val RC_SIGN_IN = 42
 
-        fun getLoginIntent(context: Context): Intent {
-            return Intent(context, LoginActivity::class.java)
+        private const val SHOULD_LOG_IN_INTENT_KEY = "shouldLogin"
+
+        /**
+         * @param shouldSignIn whether or not should try to sign in automatically
+         */
+        fun getLoginIntent(context: Context, shouldSignIn: Boolean = true): Intent {
+            return Intent(context, LoginActivity::class.java).apply {
+                putExtra(SHOULD_LOG_IN_INTENT_KEY, shouldSignIn)
+            }
         }
     }
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var viewModel: LoginViewModel
+    private var shouldAutoSignIn: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        shouldAutoSignIn = intent.getBooleanExtra(SHOULD_LOG_IN_INTENT_KEY, true)
 
         viewModel = ViewModelProvider(this, LoginViewModel.Factory(this))
             .get(LoginViewModel::class.java)
@@ -50,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
         if (viewModel.isSignedIn) {
             Timber.i("already signed in, continuing through login screen.")
             startActivity(Router.postLoginIntent(this))
-        } else {
+        } else if (shouldAutoSignIn) {
             // try to do a silent sign in
             Timber.i("attempting silent sign in")
             val silentSignInResult = viewModel.googleSignInClient.silentSignIn()
@@ -63,6 +74,10 @@ class LoginActivity : AppCompatActivity() {
                     handleGoogleSignInResult(result)
                 }
             }
+        } else {
+            // We do not want to auto-sign-in, make sure sign in button is now visible
+            binding.googleSignIn.visibility = View.VISIBLE
+            binding.loadingIndicator.visibility = View.GONE
         }
     }
 

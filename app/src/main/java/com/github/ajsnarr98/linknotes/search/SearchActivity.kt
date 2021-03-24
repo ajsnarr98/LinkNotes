@@ -15,6 +15,7 @@ import com.github.ajsnarr98.linknotes.BaseActivity
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.databinding.ActivitySearchBinding
+import com.github.ajsnarr98.linknotes.login.LoginActivity
 import com.github.ajsnarr98.linknotes.notes.EditNoteActivity
 import com.github.ajsnarr98.linknotes.notes.ViewNoteActivity
 import com.github.ajsnarr98.linknotes.util.hideKeyboardFrom
@@ -138,6 +139,16 @@ class SearchActivity : BaseActivity() {
             val selectedType = ResultOrderType.values().find { it.resId == selection } ?: throw IllegalStateException("Invalid resource ID")
             viewModel.onResultOrderSelected(selectedType)
             onNotesUpdate() // load changes in recycler view if order has changed
+        }
+
+        // setup sign-out button
+        binding.navView.menu.findItem(R.id.sign_out).setOnMenuItemClickListener {
+            viewModel.signOut { success ->
+                if (success) {
+                    startActivity(LoginActivity.getLoginIntent(this, shouldSignIn=false))
+                }
+            }
+            true
         }
     }
 

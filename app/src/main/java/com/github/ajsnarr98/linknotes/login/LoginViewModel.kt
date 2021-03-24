@@ -27,13 +27,14 @@ class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application
     private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(activity.getString(R.string.server_client_id))
         .build()
-    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
 
     val wasSignedInPreviously: Boolean
         get() = authHandler.wasSignedInPreviously
 
     val isSignedIn: Boolean
         get() = authHandler.isSignedIn
+
+    fun googleSignInClient(activity: Activity): GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
 
     /**
      * Attempts to use previously signed in info to sign in.
@@ -57,7 +58,10 @@ class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application
      * accountStore.
      */
     fun signInWithGoogleAccount(googleAccount: GoogleSignInAccount, signInResultListener: (success: Boolean) -> Unit) {
-        authHandler.signInWithGoogle(googleAccount) { userId: UUID? ->
+        // expect id token because we called requestIdToken when
+        // creating our GoogleSignInOptions
+        requireNotNull(googleAccount.idToken, { "Invalid (missing) google id token" })
+        authHandler.signInWithGoogle(googleAccount.idToken!!) { userId: UUID? ->
             if (userId != null) {
                 // save user info to account store
                 accountStore?.persistUserInfo(User(

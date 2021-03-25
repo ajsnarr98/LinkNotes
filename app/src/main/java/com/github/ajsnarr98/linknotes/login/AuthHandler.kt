@@ -21,14 +21,6 @@ interface AuthHandler {
         signInResult(null)
     }
 
-    fun signInWithGoogle(googleAccount: GoogleSignInAccount, signInResult: (userId: UUID?) -> Unit) {
-        try {
-            signInWithGoogle(googleAccount.idToken!!, signInResult)
-        } catch (e: NullPointerException) {
-            throw IllegalArgumentException("Invalid google (user id, id token): (${googleAccount.id}, ${googleAccount.idToken}")
-        }
-    }
-
     /**
      * Sign in with google given a googleUserId and a googleIdToken.
      *
@@ -36,4 +28,9 @@ interface AuthHandler {
      * if unsuccessful.
      */
     fun signInWithGoogle(googleIdToken: String, signInResult: (userId: UUID?) -> Unit)
+
+    /**
+     * Sign out from firebase.
+     */
+    fun signOut(onCompleteListener: (success: Boolean) -> Unit)
 }

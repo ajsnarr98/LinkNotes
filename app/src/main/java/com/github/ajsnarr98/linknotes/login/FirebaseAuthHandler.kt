@@ -55,4 +55,10 @@ class FirebaseAuthHandler(
                 }
             }
     }
+
+    override fun signOut(onCompleteListener: (success: Boolean) -> Unit) {
+        auth.signOut()
+        accountStore.clearUserInfo()
+        onCompleteListener(true)
+    }
 }

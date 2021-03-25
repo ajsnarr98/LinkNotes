@@ -39,4 +39,8 @@
     <item
         android:id="@+id/advanced_search"
         android:title="@string/nav_advanced_search_title" />
+
+    <item
+        android:id="@+id/sign_out"
+        android:title="@string/nav_sign_out_title" />
 </menu>

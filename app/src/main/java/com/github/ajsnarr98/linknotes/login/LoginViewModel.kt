@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.GoogleApiClient
 
 /**
  * If passed in noteID is null, creates a new note.
@@ -27,37 +26,21 @@ class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application
     private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(activity.getString(R.string.server_client_id))
         .build()
-    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
-
-    val wasSignedInPreviously: Boolean
-        get() = authHandler.wasSignedInPreviously
 
     val isSignedIn: Boolean
         get() = authHandler.isSignedIn
 
-    /**
-     * Attempts to use previously signed in info to sign in.
-     */
-    fun attemptSignIn(signInResultListener: (success: Boolean) -> Unit) {
-        authHandler.attemptSignIn { userId: UUID? ->
-            if (userId != null) {
-                // save user info to account store
-                accountStore?.persistUserInfo(User(
-                    id = userId,
-                    googleID = accountStore.googleUserId,
-                    googleIDToken = accountStore.googleUserIdToken,
-                ))
-            }
-            signInResultListener(userId != null)
-        }
-    }
+    fun googleSignInClient(activity: Activity): GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
 
     /**
      * Signs in using the given google account. Stores relevant info in the
      * accountStore.
      */
     fun signInWithGoogleAccount(googleAccount: GoogleSignInAccount, signInResultListener: (success: Boolean) -> Unit) {
-        authHandler.signInWithGoogle(googleAccount) { userId: UUID? ->
+        // expect id token because we called requestIdToken when
+        // creating our GoogleSignInOptions
+        requireNotNull(googleAccount.idToken, { "Invalid (missing) google id token" })
+        authHandler.signInWithGoogle(googleAccount.idToken!!) { userId: UUID? ->
             if (userId != null) {
                 // save user info to account store
                 accountStore?.persistUserInfo(User(

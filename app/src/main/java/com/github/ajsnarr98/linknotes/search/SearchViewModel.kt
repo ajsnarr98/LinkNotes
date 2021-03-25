@@ -1,9 +1,11 @@
 package com.github.ajsnarr98.linknotes.search
 
 import com.github.ajsnarr98.linknotes.BaseViewModel
+import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.Tag
+import com.github.ajsnarr98.linknotes.login.AuthHandler
 import com.github.ajsnarr98.linknotes.util.fuzzyMatch
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.util.*
@@ -27,6 +29,8 @@ const val MIN_SEARCH_LENGTH = 3
 class SearchViewModel : BaseViewModel() {
 
     var searchStr: String = ""
+
+    private val authHandler: AuthHandler = Providers.authHandler ?: throw IllegalStateException("No auth handler instance")
 
     private val searchTypesSelected: MutableMap<SearchType, Boolean> = LinkedHashMap<SearchType, Boolean>().also { map ->
         SearchType.values().forEach { searchType ->  map[searchType] = false }
@@ -82,7 +86,7 @@ class SearchViewModel : BaseViewModel() {
                 SearchType.TAG -> {
                     note.tags.map<Tag, Int> { tag ->
                         FuzzySearch.ratio(searchStr, tag.text)
-                    }.max() ?: Int.MIN_VALUE
+                    }.maxOrNull() ?: Int.MIN_VALUE
                 }
             }
         }
@@ -91,7 +95,7 @@ class SearchViewModel : BaseViewModel() {
             SearchType.values().map { type ->
                 if (searchTypesSelected[type] == true) sortRatingMethods(type, note)
                 else Int.MIN_VALUE
-            }.max()
+            }.maxOrNull()
         }
     }
 
@@ -102,5 +106,12 @@ class SearchViewModel : BaseViewModel() {
                 ResultOrderType.ALPHABETICAL -> note.name.toUpperCase(Locale.ROOT)
             }
         }
+    }
+
+    /**
+     * Signs out.
+     */
+    fun signOut(onCompleteListener: (success: Boolean) -> Unit) {
+        authHandler.signOut(onCompleteListener)
     }
 }

@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.GoogleApiClient
 
 /**
  * If passed in noteID is null, creates a new note.
@@ -28,30 +27,10 @@ class LoginViewModel(activity: Activity) : AndroidViewModel(activity.application
         .requestIdToken(activity.getString(R.string.server_client_id))
         .build()
 
-    val wasSignedInPreviously: Boolean
-        get() = authHandler.wasSignedInPreviously
-
     val isSignedIn: Boolean
         get() = authHandler.isSignedIn
 
     fun googleSignInClient(activity: Activity): GoogleSignInClient = GoogleSignIn.getClient(activity, gso)
-
-    /**
-     * Attempts to use previously signed in info to sign in.
-     */
-    fun attemptSignIn(signInResultListener: (success: Boolean) -> Unit) {
-        authHandler.attemptSignIn { userId: UUID? ->
-            if (userId != null) {
-                // save user info to account store
-                accountStore?.persistUserInfo(User(
-                    id = userId,
-                    googleID = accountStore.googleUserId,
-                    googleIDToken = accountStore.googleUserIdToken,
-                ))
-            }
-            signInResultListener(userId != null)
-        }
-    }
 
     /**
      * Signs in using the given google account. Stores relevant info in the

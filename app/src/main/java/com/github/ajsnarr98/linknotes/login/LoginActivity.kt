@@ -52,7 +52,10 @@ class LoginActivity : AppCompatActivity() {
 
         binding.googleSignIn.setSize(SignInButton.SIZE_STANDARD);
         binding.googleSignIn.setOnClickListener {
-            startActivityForResult(viewModel.googleSignInClient.signInIntent, RC_SIGN_IN)
+            // show progress bar
+            binding.googleSignIn.visibility = View.GONE
+            binding.loadingIndicator.visibility = View.VISIBLE
+            startActivityForResult(viewModel.googleSignInClient(this).signInIntent, RC_SIGN_IN)
         }
     }
 
@@ -64,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
         } else if (shouldAutoSignIn) {
             // try to do a silent sign in
             Timber.i("attempting silent sign in")
-            val silentSignInResult = viewModel.googleSignInClient.silentSignIn()
+            val silentSignInResult = viewModel.googleSignInClient(this).silentSignIn()
             if (silentSignInResult.isSuccessful) {
                 // immediate result ready
                 handleGoogleSignInResult(silentSignInResult)
@@ -76,8 +79,11 @@ class LoginActivity : AppCompatActivity() {
             }
         } else {
             // We do not want to auto-sign-in, make sure sign in button is now visible
+            Timber.i("attempting sign out")
             binding.googleSignIn.visibility = View.VISIBLE
             binding.loadingIndicator.visibility = View.GONE
+            // attempt sign out of current google account
+            viewModel.googleSignInClient(this).signOut()
         }
     }
 

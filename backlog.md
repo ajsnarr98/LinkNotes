@@ -38,9 +38,6 @@
 - add default entries for pictures and the like
 - implement undo button when editing notes
 - add custom recyclerview-like chipgroup
-- add security in firestore
-- add sign out button
-- add dev/debug user
 
 ## Bugs
 - changing focus between views while soft keyboard is up does not update softkeyboard listener

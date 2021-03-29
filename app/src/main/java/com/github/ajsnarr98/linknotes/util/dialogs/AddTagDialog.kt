@@ -19,7 +19,7 @@ import java.lang.IllegalStateException
  *
  * @property viewModel the viewmodel to use for accessing the tag collection
  */
-class AddTagDialog(note: Note? = null) : DialogFragment() {
+class AddTagDialog : DialogFragment() {
 
     companion object {
 

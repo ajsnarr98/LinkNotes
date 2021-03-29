@@ -42,6 +42,3 @@
 ## Bugs
 - changing focus between views while soft keyboard is up does not update softkeyboard listener
 - editnote saving does not always update entry type?
-- cannot click tag in add tag dialog
-- unable to remove tags in ui
-- unable to add new tags

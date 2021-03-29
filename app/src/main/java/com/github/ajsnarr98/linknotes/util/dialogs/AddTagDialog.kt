@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.ajsnarr98.linknotes.R
+import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.databinding.FragmentAddTagDialogBinding
 import java.io.Serializable
@@ -23,11 +24,16 @@ class AddTagDialog : DialogFragment() {
     companion object {
 
         private const val ON_POSITIVE_KEY = "onPositive"
+        private const val NOTE_KEY = "note"
 
         fun newInstance(onConfirmListener: (tags: Set<Tag>) -> Unit) =
+            newInstance(null, onConfirmListener)
+
+        fun newInstance(note: Note?, onConfirmListener: (tags: Set<Tag>) -> Unit) =
             AddTagDialog().apply {
                 arguments = Bundle().apply {
                     putSerializable(ON_POSITIVE_KEY, onConfirmListener as Serializable)
+                    putParcelable(NOTE_KEY, note)
                 }
             }
     }
@@ -35,7 +41,7 @@ class AddTagDialog : DialogFragment() {
     private lateinit var binding: FragmentAddTagDialogBinding
     private lateinit var viewModel: AddTagDialogViewModel
 
-    private fun onAddTag() {
+    private fun onEnterTag() {
         val tagText = binding.textBar.text.toString()
         val tag = viewModel.tagCollection.getMatch(tagText)
         if (tag == null) {
@@ -72,12 +78,12 @@ class AddTagDialog : DialogFragment() {
         binding.tagsToAdd.setOnTagClickListener { tag -> viewModel.removeTagFromQueue(tag) }
         binding.tagsToAdd.visibility = View.GONE
 
-        binding.addButton.setOnClickListener { onAddTag() }
+        binding.addButton.setOnClickListener { onEnterTag() }
 
         binding.textBar.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when(actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
-                    onAddTag()
+                    onEnterTag()
                     true
                 }
                 else -> false
@@ -97,6 +103,22 @@ class AddTagDialog : DialogFragment() {
                 else -> View.VISIBLE
             }
         })
+
+        viewModel.selectableTagsLiveData.observe(this, { tags ->
+            binding.tagsGroup.setTags(tags)
+            binding.tagsGroup.visibility = if (tags.isEmpty()) View.GONE else View.VISIBLE
+            binding.divider.visibility = when {
+                tags.isEmpty() -> View.GONE
+                binding.tagsToAdd.tags.isEmpty() -> View.GONE
+                else -> View.VISIBLE
+            }
+        })
+
+        // add in all existing tags for this note, if a valid note was given
+        val note: Note? = arguments?.getParcelable(NOTE_KEY)
+        if (note != null) {
+            viewModel.addTagsToQueue(note.tags)
+        }
 
         return AlertDialog.Builder(activity).apply {
             setView(binding.root)

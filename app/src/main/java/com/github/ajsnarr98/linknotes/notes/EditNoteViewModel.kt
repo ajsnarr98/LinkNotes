@@ -13,7 +13,7 @@ import com.github.ajsnarr98.linknotes.data.UUID
 class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
 
     // grab a copy of the existing note (to modify) or create a new empty note
-    var note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
+    val note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
 
     val entries: MutableList<Entry>
         get() = note.entries
@@ -32,6 +32,14 @@ class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
      * Adds tags only if there isn't a matching tag in the note.
      */
     fun addTags(tags: Collection<Tag>) {
+        note.tags.addAll(tags)
+    }
+
+    /**
+     * Sets this notes tags to contain only the tags given.
+     */
+    fun setTags(tags: Collection<Tag>) {
+        note.tags.clear()
         note.tags.addAll(tags)
     }
 

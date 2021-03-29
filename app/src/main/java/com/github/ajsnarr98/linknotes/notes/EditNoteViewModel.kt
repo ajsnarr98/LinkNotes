@@ -36,6 +36,14 @@ class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
     }
 
     /**
+     * Sets this notes tags to contain only the tags given.
+     */
+    fun setTags(tags: Collection<Tag>) {
+        note.tags.clear()
+        note.tags.addAll(tags)
+    }
+
+    /**
      * Tries to remove a tag from this note.
      */
     fun removeTag(tag: Tag) {

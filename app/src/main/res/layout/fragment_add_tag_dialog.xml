@@ -24,7 +24,7 @@
             style="@style/RoundedEditText.Bordered"
             android:layout_width="match_parent"
             android:layout_height="48sp"
-            android:imeOptions="actionSearch"
+            android:imeOptions="actionSend"
             android:inputType="text"
             android:paddingLeft="16dp"
             android:paddingRight="16dp" />

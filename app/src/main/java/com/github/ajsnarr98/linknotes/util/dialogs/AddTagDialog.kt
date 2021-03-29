@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.ajsnarr98.linknotes.R
@@ -34,6 +35,24 @@ class AddTagDialog : DialogFragment() {
     private lateinit var binding: FragmentAddTagDialogBinding
     private lateinit var viewModel: AddTagDialogViewModel
 
+    private fun onAddTag() {
+        val tagText = binding.textBar.text.toString()
+        val tag = viewModel.tagCollection.getMatch(tagText)
+        if (tag == null) {
+            // confirm when creating a completely new tag (in case of typo)
+            ConfirmationDialogFragment.newInstance(
+                onConfirm = {
+                    val t = Tag(tagText)
+                    viewModel.addTagToQueue(t, isNewTag = true)
+                },
+                onCancel = {},
+                message = requireContext().getString(R.string.editnote_create_new_tag_confirmation, tagText),
+            ).show(parentFragmentManager, "confirm_tag_create_dialog")
+        } else {
+            viewModel.addTagToQueue(tag)
+        }
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val activity = requireActivity()
         binding = FragmentAddTagDialogBinding.inflate(activity.layoutInflater)
@@ -53,21 +72,15 @@ class AddTagDialog : DialogFragment() {
         binding.tagsToAdd.setOnTagClickListener { tag -> viewModel.removeTagFromQueue(tag) }
         binding.tagsToAdd.visibility = View.GONE
 
-        binding.addButton.setOnClickListener {
-            val tagText = binding.textBar.text.toString()
-            val tag = viewModel.tagCollection.getMatch(tagText)
-            if (tag == null) {
-                // confirm when creating a completely new tag (in case of typo)
-                ConfirmationDialogFragment.newInstance(
-                    onConfirm = {
-                        val t = Tag(tagText)
-                        viewModel.addTagToQueue(t, isNewTag = true)
-                    },
-                    onCancel = {},
-                    message = requireContext().getString(R.string.editnote_create_new_tag_confirmation, tagText),
-                ).show(parentFragmentManager, "confirm_tag_create_dialog")
-            } else {
-                viewModel.addTagToQueue(tag)
+        binding.addButton.setOnClickListener { onAddTag() }
+
+        binding.textBar.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when(actionId) {
+                EditorInfo.IME_ACTION_SEND -> {
+                    onAddTag()
+                    true
+                }
+                else -> false
             }
         }
 

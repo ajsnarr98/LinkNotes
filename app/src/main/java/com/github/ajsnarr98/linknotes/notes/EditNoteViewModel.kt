@@ -13,7 +13,7 @@ import com.github.ajsnarr98.linknotes.data.UUID
 class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
 
     // grab a copy of the existing note (to modify) or create a new empty note
-    var note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
+    val note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
 
     val entries: MutableList<Entry>
         get() = note.entries

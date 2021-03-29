@@ -66,7 +66,7 @@ open class EditNoteActivity : BaseActivity() {
         }
 
         override fun onAddTags() {
-            AddTagDialog.newInstance { tags ->
+            AddTagDialog.newInstance(activity.viewModel.note) { tags ->
                 // this is called when new tag(s) are going to be added to this note
                 activity.viewModel.addTags(tags)
                 activity.recyclerAdapter.notifyDataSetChanged()

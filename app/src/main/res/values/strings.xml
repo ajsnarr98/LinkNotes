@@ -3,8 +3,11 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <!-- Editnote Tags Popup -->
-    <string name="editnote_tagspopup_closebtn">CLOSE</string>
+    <!-- Confirmation Dialog Text -->
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="discard">Discard</string>
+
 
     <!-- Editnote Activity -->
     <string name="editnote_activity_title">Add New Note</string>
@@ -30,6 +33,7 @@
     <string name="editnote_delete_note_confirmation">Are you sure you want to delete the note \"%s\"? This cannot be undone</string>
     <string name="editnote_remove_tag_confirmation">Are you sure you want to remove the %s tag from this note?</string>
     <string name="editnote_create_new_tag_confirmation">The tag \"%s\" does not yet exist. Are you sure you want to create it?</string>
+    <string name="editnote_cancel_edit_confirmation">Are you sure you want to discard these changes?</string>
 
     <!-- Text editing -->
     <string name="bold_content_desc">Bold</string>

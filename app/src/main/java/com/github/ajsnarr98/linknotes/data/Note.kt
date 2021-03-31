@@ -142,6 +142,25 @@ data class Note(
     }
 
     /**
+     * Returns true if this note not only has the same id as other, but also
+     * has the same entries, tags, etc.
+     */
+    fun exactEquals(other: Any?): Boolean {
+        return this === other || other is Note
+                && this.id == other.id
+                && this._type == other._type
+                && this._name == other._name
+                && this.dateCreated == other.dateCreated
+                && this.lastDateEdited == other.lastDateEdited
+                && this.nicknames == other.nicknames
+                && this.mainPicture == other.mainPicture
+                && this.pictures == other.pictures
+                && this.tags == other.tags
+                && this.entries == other.entries
+                && this.notes == other.notes
+    }
+
+    /**
      *  Two notes are equal if they have the same id.
      */
     override fun equals(other: Any?): Boolean {

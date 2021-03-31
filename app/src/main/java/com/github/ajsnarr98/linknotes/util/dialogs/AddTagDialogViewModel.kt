@@ -1,10 +1,14 @@
 package com.github.ajsnarr98.linknotes.util.dialogs
 
 import androidx.lifecycle.MutableLiveData
-import com.github.ajsnarr98.linknotes.BaseViewModel
+import androidx.lifecycle.ViewModel
+import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.data.Tag
+import com.github.ajsnarr98.linknotes.data.TagCollection
 
-class AddTagDialogViewModel : BaseViewModel() {
+class AddTagDialogViewModel : ViewModel() {
+
+    val tagCollection: TagCollection = Providers.tagCollection!!
 
     /**
      * Tags to return from the dialog when finished.

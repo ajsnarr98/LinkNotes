@@ -1,16 +1,27 @@
 package com.github.ajsnarr98.linknotes.notes
 
 import androidx.lifecycle.*
-import com.github.ajsnarr98.linknotes.BaseViewModel
+import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.data.Entry
 import com.github.ajsnarr98.linknotes.data.Note
+import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.Tag
+import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.UUID
 
 /**
  * If passed in noteID is null, creates a new note.
  */
-class EditNoteViewModel(noteID: UUID?) : BaseViewModel() {
+class EditNoteViewModel(noteID: UUID?): ViewModel() {
+
+    val notesCollection: NoteCollection = Providers.noteCollection!!
+    private val tagCollection: TagCollection = Providers.tagCollection!!
+
+    /**
+     * All lifecycle observers known by this ViewModel.
+     */
+    val lifecycleObservers: MutableCollection<LifecycleObserver>
+        get() = arrayListOf(notesCollection, tagCollection)
 
     // grab a copy of the existing note (to modify) or create a new empty note
     val note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()

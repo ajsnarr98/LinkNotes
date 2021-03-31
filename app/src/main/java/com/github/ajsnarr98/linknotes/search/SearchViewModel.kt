@@ -1,10 +1,13 @@
 package com.github.ajsnarr98.linknotes.search
 
-import com.github.ajsnarr98.linknotes.BaseViewModel
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModel
 import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
+import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.Tag
+import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.login.AuthHandler
 import com.github.ajsnarr98.linknotes.util.fuzzyMatch
 import me.xdrop.fuzzywuzzy.FuzzySearch
@@ -26,7 +29,16 @@ enum class ResultOrderType(val resId: Int) {
  */
 const val MIN_SEARCH_LENGTH = 3
 
-class SearchViewModel : BaseViewModel() {
+class SearchViewModel: ViewModel() {
+
+    val notesCollection: NoteCollection = Providers.noteCollection!!
+    private val tagCollection: TagCollection = Providers.tagCollection!!
+
+    /**
+     * All lifecycle observers known by this ViewModel.
+     */
+    val lifecycleObservers: MutableCollection<LifecycleObserver>
+        get() = arrayListOf(notesCollection, tagCollection)
 
     var searchStr: String = ""
 

@@ -5,17 +5,25 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.github.ajsnarr98.linknotes.BaseViewModel
+import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.data.Note
+import com.github.ajsnarr98.linknotes.data.NoteCollection
+import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.UUID
 import java.lang.IllegalStateException
 
-class ViewNoteViewModel(private val noteId: UUID): BaseViewModel(), DefaultLifecycleObserver {
+class ViewNoteViewModel(private val noteId: UUID): ViewModel(), DefaultLifecycleObserver {
+
+    private val notesCollection: NoteCollection = Providers.noteCollection!!
+    private val tagCollection: TagCollection = Providers.tagCollection!!
+
+    /**
+     * All lifecycle observers known by this ViewModel.
+     */
+    val lifecycleObservers: MutableCollection<LifecycleObserver>
+        get() = arrayListOf(notesCollection, tagCollection, this)
 
     var note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
-
-    override val lifecycleObservers: MutableCollection<LifecycleObserver>
-        get() = super.lifecycleObservers.also { it.add(this) } // add this as a LifecycleObserver
 
     override fun onStart(owner: LifecycleOwner) {
         // update note when lifecycleOwner loads

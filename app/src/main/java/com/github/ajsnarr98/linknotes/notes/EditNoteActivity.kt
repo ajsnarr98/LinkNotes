@@ -139,7 +139,7 @@ open class EditNoteActivity : BaseActivity() {
                 Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
 
                 // navigate back
-                activity.onBackPressed()
+                activity.onBackPressed(skipConfirmation = true)
             } else {
                 Toast.makeText(activity, "Note needs to have a title", Toast.LENGTH_LONG).show()
             }
@@ -173,7 +173,7 @@ open class EditNoteActivity : BaseActivity() {
         viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // set up close button
-        binding.closeButton.setOnClickListener { onBackPressed() }
+        binding.closeButton.setOnClickListener { onBackPressed(skipConfirmation = true) }
 
         // set up save button
         binding.saveButton.setOnClickListener { mRecyclerActionListener.onSaveButtonPress() }
@@ -185,6 +185,27 @@ open class EditNoteActivity : BaseActivity() {
         binding.recyclerView.apply {
             layoutManager = recyclerManager
             adapter = recyclerAdapter
+        }
+    }
+
+    override fun onBackPressed() {
+        onBackPressed(skipConfirmation = !viewModel.hasMadeChanges)
+    }
+
+    /**
+     * Calls onBackPressed, but presents a confirmation dialog if you made any
+     * changes and skipConfirmation is false.
+     */
+    private fun onBackPressed(skipConfirmation: Boolean) {
+        if (skipConfirmation || !viewModel.hasMadeChanges) {
+            super.onBackPressed()
+        } else {
+            ConfirmationDialogFragment.newInstance(
+                message = this.getString(R.string.editnote_cancel_edit_confirmation),
+                confirmButtonMessage = this.getString(R.string.discard),
+                onConfirm = { super.onBackPressed() },
+                onCancel = {},
+            ).show(supportFragmentManager, "fragment_alert_cancel_confirmation")
         }
     }
 }

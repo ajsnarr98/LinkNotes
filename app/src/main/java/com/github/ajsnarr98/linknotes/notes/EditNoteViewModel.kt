@@ -35,6 +35,9 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         get() = note.type
         set(value) { note.type = value }
 
+    val hasMadeChanges: Boolean
+        get() = !note.exactEquals(notesCollection.findByID(note.id))
+
     fun addNewEntry() {
         note.addNewEntry()
     }

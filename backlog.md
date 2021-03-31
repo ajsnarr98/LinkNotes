@@ -21,11 +21,10 @@
 - add search functionality to add tags screen
 - add cool animation for moving tags back and forth in add tags dialog
 - add ability to delete/rename tags in general somehow
-- when adding tags, have confirmation dialog that gives suggestions if it looks like there was a typo
 - link to note/entry
 - add markdown editing helpers for lists / links / images / headers
 - update bold / italic / strike-through markers to unmark/mark with respect to whitespace
-- remove markdown helper button for underline (will not support)
+- add underline functionality to markdown helper
 - link entries based on note/entry type (ex. tag <-> classes <-> people)
 - set default values for a new note on save
 - make viewnote screen look nicer
@@ -42,3 +41,4 @@
 ## Bugs
 - changing focus between views while soft keyboard is up does not update softkeyboard listener
 - editnote saving does not always update entry type?
+- empty entries get saved

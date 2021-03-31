@@ -15,7 +15,7 @@ object Markdown {
      * Mapping of markers (value) that must be accounted for when checking
      * for a given marker (key).
      */
-    val relevantMarkersMap = mapOf<String, List<String>>(
+    private val relevantMarkersMap = mapOf<String, List<String>>(
         ITALICS_MARKER to listOf(BOLD_MARKER, STRIKE_THROUGH_MARKER),
         BOLD_MARKER    to listOf(ITALICS_MARKER, STRIKE_THROUGH_MARKER),
         STRIKE_THROUGH_MARKER to listOf(BOLD_MARKER, ITALICS_MARKER),
@@ -25,21 +25,19 @@ object Markdown {
         val newText: String,
         val newSelectionStart: Int,
         val newSelectionEnd: Int,
-    ) {
+    )
 
-    }
-
-    fun toggleMarker(text: String, marker: String, start: Int, end: Int): MarkdownResult {
-        val markersToRemove = markersToRemove(text, marker, start, end)
+    fun toggleSurroundingMarker(text: String, marker: String, start: Int, end: Int): MarkdownResult {
+        val markersToRemove = surroundingMarkersToRemove(text, marker, start, end)
         val newText = if (markersToRemove.isEmpty()) {
-            getMarkedText(text, marker, start, end)
+            getSurroundingMarkedText(text, marker, start, end)
         } else {
-            getUnMarkedText(text, marker, start, end, markersToRemove)
+            getSurroundingUnMarkedText(text, marker, start, end, markersToRemove)
         }
         var newSelection = if (markersToRemove.isEmpty()) {
-            getNewSelectionOnMark(marker, start, end)
+            getNewSelectionOnSurroundingMark(marker, start, end)
         } else {
-            getNewSelectionOnUnMark(text, marker, start, end, markersToRemove)
+            getNewSelectionOnSurroundingUnMark(text, marker, start, end, markersToRemove)
         }
         return MarkdownResult(newText, newSelection.first, newSelection.second)
     }
@@ -52,7 +50,7 @@ object Markdown {
      *
      * Returns indices of all relevant markers that should be removed.
      */
-    fun markersToRemove(text: String, marker: String, start: Int, end: Int): List<Int> {
+    fun surroundingMarkersToRemove(text: String, marker: String, start: Int, end: Int): List<Int> {
         val actualStart = if (start > end) end else start
         val actualEnd = if (start > end) start else end
         val allMarkers = mutableListOf<Int>()
@@ -116,21 +114,23 @@ object Markdown {
     }
 
     /**
-     * Un-marks text.
+     * For surrounding-type markers. Un-marks text.
      *
      * @return modified text
      */
-    fun getUnMarkedText(text: String, toRemove: String, start: Int, end: Int): String {
-        return getUnMarkedText(
+    fun getSurroundingUnMarkedText(text: String, toRemove: String, start: Int, end: Int): String {
+        return getSurroundingUnMarkedText(
             text,
             toRemove,
             start,
             end,
-            markersToRemove(text, toRemove, start, end)
+            surroundingMarkersToRemove(text, toRemove, start, end)
         )
     }
 
     /**
+     * For surrounding-type markers.
+     *
      * Un-marks text within selection. If start and end are equal (cursor is
      * just clicked somewhere) remove everything. Else, if one or more
      * characters are selected, remove only within selection, and fix on
@@ -144,7 +144,7 @@ object Markdown {
      *
      * @return modified text
      */
-    fun getUnMarkedText(
+    fun getSurroundingUnMarkedText(
         text: String,
         toRemove: String,
         start: Int,
@@ -206,7 +206,7 @@ object Markdown {
     /**
      * Adds the given string to the given text before start and after end.
      */
-    fun getMarkedText(text: String, toAdd: String, start: Int, end: Int): String {
+    fun getSurroundingMarkedText(text: String, toAdd: String, start: Int, end: Int): String {
         val actualStart = if (start > end) end else start
         val actualEnd = if (start > end) start else end
         return if (actualStart == text.length) {
@@ -235,7 +235,7 @@ object Markdown {
      *
      * @return pair of (newStart, newEnd) for selection
      */
-    fun getNewSelectionOnMark(
+    fun getNewSelectionOnSurroundingMark(
         marker: String,
         oldStart: Int,
         oldEnd: Int
@@ -256,7 +256,7 @@ object Markdown {
      *
      * @return pair of (newStart, newEnd) for selection
      */
-    fun getNewSelectionOnUnMark(
+    fun getNewSelectionOnSurroundingUnMark(
         oldText: String,
         marker: String,
         oldStart: Int,

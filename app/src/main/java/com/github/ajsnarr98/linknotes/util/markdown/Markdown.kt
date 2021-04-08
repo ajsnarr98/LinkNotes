@@ -65,7 +65,7 @@ object Markdown {
      */
     fun toggleListMarker(text: String, marker: String, start: Int, end: Int): MarkdownResult {
         val listInfo: ListInfo = getLinesWithList(text, marker, start, end)
-        val hasListMarkers: Boolean = listInfo.linesWithLists.any()
+        val hasListMarkers: Boolean = listInfo.linesWithLists.any { lineHasList -> lineHasList }
         return if (hasListMarkers) {
             // check if there are different list markers in selection
             val hasDifferentListMarkers = listInfo.linesWithLists == listInfo.linesWithGivenListType
@@ -438,7 +438,7 @@ object Markdown {
             return@map if (firstNonWhitespace != null) {
                 LIST_MARKERS.firstOrNull { curMarker ->
                     val trimmed = curMarker.trimStart()
-                    trimmed == text.substring(firstNonWhitespace, trimmed.length)
+                    trimmed == text.substring(firstNonWhitespace, firstNonWhitespace+trimmed.length)
                 } ?: ""
             } else {
                 ""

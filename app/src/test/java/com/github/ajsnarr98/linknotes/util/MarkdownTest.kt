@@ -940,7 +940,176 @@ class MarkdownTest {
 
     @Test
     fun basicUnMarkBulletListTest() {
+        var testName: String
+        var given: String
+        var selection: Pair<Int, Int>
+        var marker: String
+        var expected: String
+        var expectedSelection: Pair<Int, Int>
+        var expectedRes: Markdown.MarkdownResult
+        var actual: Markdown.MarkdownResult
 
+        testName = "one line 1"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(2, 2)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "hello\n- 123\n- abc\n- derp"
+        expectedSelection = Pair(0, 0)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 2"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(3, 3)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "hello\n- 123\n- abc\n- derp"
+        expectedSelection = Pair(1, 1)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 3"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(0, 0)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "hello\n- 123\n- abc\n- derp"
+        expectedSelection = Pair(0, 0)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 4"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(8, 8)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "- hello\n123\n- abc\n- derp"
+        expectedSelection = Pair(8, 8)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 5"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(26, 26)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "- hello\n- 123\n- abc\nderp"
+        expectedSelection = Pair(24, 24)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "multiline 1"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(0, 26)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "hello\n123\nabc\nderp"
+        expectedSelection = Pair(0, 18)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "multiline 2"
+        given = "- hello\n- 123\n- abc\n- derp"
+        selection = Pair(9, 26)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "- hello\n123\nabc\nderp"
+        expectedSelection = Pair(8, 20)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "multiline 3"
+        given = "- hello\n- 123\nabc\n- derp"
+        selection = Pair(9, 24)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "- hello\n123\nabc\nderp"
+        expectedSelection = Pair(8, 20)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "multiline 4"
+        given = "- hello\n123\n- abc\n- derp"
+        selection = Pair(9, 24)
+        marker = Markdown.BULLET_LIST_MARKER
+        expected = "- hello\n123\nabc\nderp"
+        expectedSelection = Pair(9, 20)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.toggleListMarker(given, marker, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
     }
 
     @Test

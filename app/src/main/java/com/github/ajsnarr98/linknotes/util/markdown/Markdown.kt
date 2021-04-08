@@ -68,7 +68,7 @@ object Markdown {
         val hasListMarkers: Boolean = listInfo.linesWithLists.any { lineHasList -> lineHasList }
         return if (hasListMarkers) {
             // check if there are different list markers in selection
-            val hasDifferentListMarkers = listInfo.linesWithLists == listInfo.linesWithGivenListType
+            val hasDifferentListMarkers = listInfo.linesWithLists != listInfo.linesWithGivenListType
             if (hasDifferentListMarkers) {
                 // convert all selected list markers to the given list marker
                 convertOtherListMarkersToGivenMarker(text, listInfo, start, end)

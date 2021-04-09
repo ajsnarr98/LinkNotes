@@ -83,6 +83,40 @@ object Markdown {
     }
 
     /**
+     * Indents the list element(s) at the selection if there are applicable list elements.
+     */
+    fun addListIndent(text: String, start: Int, end: Int): MarkdownResult {
+        // it does not matter what marker we specify, we will just get extra info
+        val listInfo: ListInfo = getLinesWithList(text, LIST_MARKERS[0], start, end)
+        // add an indent on each selected line that has a list
+        val actualStart = if (start > end) end else start
+        val actualEnd = if (start > end) start else end
+        val indentStr = " ".repeat(LIST_INDENT)
+        var pos = 0
+        var newText = ""
+        var startSelectionDiff = 0
+        var endSelectionDiff = 0
+        listInfo.lineStarts.forEachIndexed { i, lineStart ->
+            newText += text.substring(pos, lineStart)
+            newText += indentStr
+            pos = lineStart
+            if (actualStart >= lineStart) {
+                startSelectionDiff += LIST_INDENT
+            }
+            if (actualEnd >= lineStart) {
+                endSelectionDiff += LIST_INDENT
+            }
+        }
+        // get remaining bit of text
+        newText += text.substring(pos)
+        return MarkdownResult(
+            newText = newText,
+            newSelectionStart = actualStart + startSelectionDiff,
+            newSelectionEnd = actualEnd + endSelectionDiff,
+        )
+    }
+
+    /**
      * First finds whether or not the selection between start and end
      * is exactly between two (paired) instances of the given marker, or
      * has instances of the given marker on exactly either end, or if there

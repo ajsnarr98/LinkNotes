@@ -20,13 +20,13 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
     private val binding: ViewMarkdownEditHelperBinding
         = ViewMarkdownEditHelperBinding.bind(inflate(context, R.layout.view_markdown_edit_helper, this)).apply {
 
+        indent.setOnClickListener { actionListener.onIndent() }
         bulletList.setOnClickListener { actionListener.onBulletList() }
         numberedList.setOnClickListener { actionListener.onNumberedList() }
         bold.setOnClickListener { actionListener.onBold() }
         italic.setOnClickListener { actionListener.onItalic() }
         underline.setOnClickListener { actionListener.onUnderline() }
         strikethrough.setOnClickListener { actionListener.onStrikethrough() }
-        header.setOnClickListener { actionListener.onHeader() }
         addLink.setOnClickListener { actionListener.onLink() }
         addPhoto.setOnClickListener { actionListener.onPhoto() }
     }
@@ -43,13 +43,13 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
         val focusedField: MarkdownEditText?
             get() = getActivity(context)?.currentFocus as? MarkdownEditText
 
+        fun onIndent() = focusedField?.addListIndent()
         fun onBulletList() = focusedField?.toggleBulletList()
         fun onNumberedList() = focusedField?.toggleNumberedList()
         fun onBold() = focusedField?.toggleBold()
         fun onItalic() = focusedField?.toggleItalic()
         fun onUnderline() = focusedField?.toggleUnderline()
         fun onStrikethrough() = focusedField?.toggleStrikethrough()
-        fun onHeader() = focusedField?.addHeader()
         fun onLink() = focusedField?.addLink()
         fun onPhoto() = focusedField?.addPhoto()
     }

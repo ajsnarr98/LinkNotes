@@ -18,6 +18,15 @@ class MarkdownEditText : AppCompatEditText {
     )
 
     /**
+     * Indents a list forward if applicable to the current selection.
+     */
+    fun addListIndent() {
+        val modifiedText = Markdown.addListIndent(this.text.toString(), selectionStart, selectionEnd)
+        this.setText(modifiedText.newText)
+        Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
+    }
+
+    /**
      * Adds a bullet list, removes the existing bullet list, or replaces an
      * existing numbered list with a bullet list.
      */
@@ -57,10 +66,6 @@ class MarkdownEditText : AppCompatEditText {
         val modifiedText = Markdown.toggleSurroundingMarker(this.text.toString(), Markdown.STRIKE_THROUGH_MARKER, selectionStart, selectionEnd)
         this.setText(modifiedText.newText)
         Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
-    }
-
-    fun addHeader() {
-
     }
 
     fun addLink() {

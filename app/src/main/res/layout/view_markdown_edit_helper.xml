@@ -23,6 +23,14 @@
         android:gravity="center" >
 
         <ImageButton
+            android:id="@+id/indent"
+            android:layout_width="@dimen/markdown_edit_button_width"
+            android:layout_height="@dimen/markdown_edit_button_height"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/text_size_content_desc"
+            android:src="@drawable/ic_format_indent_increase_24dp" />
+
+        <ImageButton
             android:id="@+id/bullet_list"
             android:layout_width="@dimen/markdown_edit_button_width"
             android:layout_height="@dimen/markdown_edit_button_height"
@@ -69,14 +77,6 @@
             android:scaleType="fitCenter"
             android:contentDescription="@string/strikethrough_content_desc"
             android:src="@drawable/ic_format_strikethrough_24px" />
-
-        <ImageButton
-            android:id="@+id/header"
-            android:layout_width="@dimen/markdown_edit_button_width"
-            android:layout_height="@dimen/markdown_edit_button_height"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/text_size_content_desc"
-            android:src="@drawable/ic_format_size_24px" />
 
         <ImageButton
             android:id="@+id/add_link"

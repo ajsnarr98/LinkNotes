@@ -22,7 +22,9 @@ class MarkdownEditText : AppCompatEditText {
      * existing numbered list with a bullet list.
      */
     fun toggleBulletList() {
-
+        val modifiedText = Markdown.toggleListMarker(this.text.toString(), Markdown.BULLET_LIST_MARKER, selectionStart, selectionEnd)
+        this.setText(modifiedText.newText)
+        Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
 
     /**
@@ -30,17 +32,19 @@ class MarkdownEditText : AppCompatEditText {
      * existing bullet list with a numbered list.
      */
     fun toggleNumberedList() {
-
+        val modifiedText = Markdown.toggleListMarker(this.text.toString(), Markdown.NUMBERED_LIST_MARKER, selectionStart, selectionEnd)
+        this.setText(modifiedText.newText)
+        Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
 
     fun toggleBold() {
-        val modifiedText = Markdown.toggleMarker(this.text.toString(), Markdown.BOLD_MARKER, selectionStart, selectionEnd)
+        val modifiedText = Markdown.toggleSurroundingMarker(this.text.toString(), Markdown.BOLD_MARKER, selectionStart, selectionEnd)
         this.setText(modifiedText.newText)
         Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
 
     fun toggleItalic() {
-        val modifiedText = Markdown.toggleMarker(this.text.toString(), Markdown.ITALICS_MARKER, selectionStart, selectionEnd)
+        val modifiedText = Markdown.toggleSurroundingMarker(this.text.toString(), Markdown.ITALICS_MARKER, selectionStart, selectionEnd)
         this.setText(modifiedText.newText)
         Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }
@@ -50,7 +54,7 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     fun toggleStrikethrough() {
-        val modifiedText = Markdown.toggleMarker(this.text.toString(), Markdown.STRIKE_THROUGH_MARKER, selectionStart, selectionEnd)
+        val modifiedText = Markdown.toggleSurroundingMarker(this.text.toString(), Markdown.STRIKE_THROUGH_MARKER, selectionStart, selectionEnd)
         this.setText(modifiedText.newText)
         Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
     }

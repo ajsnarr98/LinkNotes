@@ -3,6 +3,7 @@ package com.github.ajsnarr98.linknotes.search
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -84,6 +85,8 @@ class SearchActivity : BaseActivity() {
             // start the edit note activity without passing in an existing note
             startActivity(EditNoteActivity.getCreateNoteIntent(this))
         }
+
+        Timber.e("Color:::: ${Color.parseColor("#FF00A3DA")}")
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
 
         shouldAutoSignIn = intent.getBooleanExtra(SHOULD_LOG_IN_INTENT_KEY, true)
 
-        viewModel = ViewModelProvider(this, LoginViewModel.Factory(this))
+        viewModel = ViewModelProvider(this, LoginViewModel.Factory(application))
             .get(LoginViewModel::class.java)
 
         binding.loadingIndicator.visibility = View.VISIBLE

@@ -22,7 +22,8 @@
 - add cool animation for moving tags back and forth in add tags dialog
 - add ability to delete/rename tags in general somehow
 - link to note/entry
-- add markdown editing helpers for lists / links / images / headers
+- make it so lists are continued in markdownedithelperviews
+- add markdown editing helpers for lists-indentation / links / images / headers
 - update bold / italic / strike-through markers to unmark/mark with respect to whitespace
 - add underline functionality to markdown helper
 - link entries based on note/entry type (ex. tag <-> classes <-> people)

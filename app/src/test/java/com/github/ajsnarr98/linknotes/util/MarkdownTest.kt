@@ -1323,4 +1323,134 @@ class MarkdownTest {
             Pair(actual.newSelectionStart, actual.newSelectionEnd)
         )
     }
+
+    @Test
+    fun listIndentTest() {
+        var testName: String
+        var given: String
+        var selection: Pair<Int, Int>
+        var expected: String
+        var expectedSelection: Pair<Int, Int>
+        var expectedRes: Markdown.MarkdownResult
+        var actual: Markdown.MarkdownResult
+
+        testName = "one line 1"
+        given = "1. hello\n1. 123\n- abc\n- derp"
+        selection = Pair(0, 0)
+        expected = "    1. hello\n1. 123\n- abc\n- derp"
+        expectedSelection = Pair(4, 4)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 2"
+        given = "1. hello\n1. 123\n- abc\n- derp"
+        selection = Pair(11, 11)
+        expected = "1. hello\n    1. 123\n- abc\n- derp"
+        expectedSelection = Pair(15, 15)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 3"
+        given = "1. hello\n1. 123\n- abc\n- derp"
+        selection = Pair(18, 18)
+        expected = "1. hello\n1. 123\n    - abc\n- derp"
+        expectedSelection = Pair(22, 22)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 4"
+        given = "1. hello\n1. 123\n- abc\n- derp"
+        selection = Pair(24, 24)
+        expected = "1. hello\n1. 123\n- abc\n    - derp"
+        expectedSelection = Pair(28, 28)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "one line 5"
+        given = "1. hello\n1. 123\n    - abc\n- derp"
+        selection = Pair(18, 18)
+        expected = "1. hello\n1. 123\n        - abc\n- derp"
+        expectedSelection = Pair(22, 22)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "multiline 1"
+        given = "1. hello\n1. 123\n- abc\n- derp"
+        selection = Pair(18, 28)
+        expected = "1. hello\n1. 123\n    - abc\n    - derp"
+        expectedSelection = Pair(22, 36)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+
+        testName = "multiline 2"
+        given = "1. hello\n1. 123\n- abc\n- derp"
+        selection = Pair(0, 28)
+        expected = "    1. hello\n    1. 123\n    - abc\n    - derp"
+        expectedSelection = Pair(4, 44)
+        expectedRes = Markdown.MarkdownResult(
+            newText = expected,
+            newSelectionStart = expectedSelection.first,
+            newSelectionEnd = expectedSelection.second,
+        )
+        actual = Markdown.addListIndent(given, selection.first, selection.second)
+        assertEquals("$testName - text", expectedRes.newText, actual.newText)
+        assertEquals("$testName - selection",
+            Pair(expectedRes.newSelectionStart, expectedRes.newSelectionEnd),
+            Pair(actual.newSelectionStart, actual.newSelectionEnd)
+        )
+    }
 }

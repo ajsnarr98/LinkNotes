@@ -4,12 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.util.getActivity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.github.ajsnarr98.linknotes.util.setOnChildFocusChangeListener
 import timber.log.Timber
 
 /**
@@ -32,6 +30,14 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
     private var recyclerView: RecyclerView? = null
     private val keyboardListeners: MutableSet<(isKeyboardShown: Boolean, focusedView: View) -> Unit> = LinkedHashSet()
     private var oldFocusedView: View? = null
+    private var isSoftKeyboardShown: Boolean = false
+
+    private val childFocusChangedListener = { _: View, hasFocus: Boolean ->
+        if (hasFocus && this.isSoftKeyboardShown) {
+            // report keyboard has been shown when a new view gets focus
+            reportKeyboardShown(this.isSoftKeyboardShown)
+        }
+    }
 
     private fun getRecyclerViewId(attrs: AttributeSet): Int? {
         var ret: Int? = null
@@ -70,7 +76,8 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
         val proposedHeight = MeasureSpec.getSize(heightMeasureSpec)
         val actualHeight = height
         if (actualHeight != proposedHeight && keyboardListeners.isNotEmpty()) {
-            val isSoftKeyboardShown = actualHeight > proposedHeight
+            this.isSoftKeyboardShown = actualHeight > proposedHeight
+            setOnChildFocusChangeListener(childFocusChangedListener)
             reportKeyboardShown(isSoftKeyboardShown)
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -84,25 +91,6 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
         val focusedView: View? = getActivity(this.context)?.currentFocus
         if (focusedView != null && focusedView == oldFocusedView) {
             Timber.w("Old focused view (for keyboard accessory) is the same as current")
-        }
-        if (isSoftKeyboardShown) {
-            // add a listener in case the focus changes
-            oldFocusedView = focusedView
-            focusedView?.setOnFocusChangeListener { v, hasFocus ->
-                if (!hasFocus) {
-                    // remove current listener
-                    v.setOnFocusChangeListener { _, _ -> }
-                    // TODO - find a better way to do this that doesn't involve
-                    //        waiting and hoping for the focus to finish changing
-                    getActivity(this.context)?.lifecycleScope?.launch {
-                        delay(200L)
-                        reportKeyboardShown(true)
-                    }
-                }
-            }
-        } else {
-            // remove current listener
-            oldFocusedView?.setOnFocusChangeListener { _, _ -> }
         }
         for (listener in keyboardListeners) {
             listener(isSoftKeyboardShown, focusedView ?: this)

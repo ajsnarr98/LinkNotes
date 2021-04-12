@@ -2,7 +2,6 @@ package com.github.ajsnarr98.linknotes.util
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.EditText
 
 /**
@@ -41,13 +40,4 @@ fun EditText.addLineCountChangeListener(onLinesChanged: (numLines: Int) -> Unit)
 
 fun EditText.removeLineCountChangeListener(listener: TextWatcher) {
     return this.removeTextChangedListener(listener)
-}
-
-/**
- * Gets the absolute top position of this view in the window.
- */
-fun View.absoluteTopVerticalPos(): Int {
-    val absPos = IntArray(2)
-    this.getLocationInWindow(absPos)
-    return absPos[1]
 }

@@ -40,7 +40,7 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
             defaultVisibility = View.INVISIBLE,
             scrollAmount = context.resources.getDimension(R.dimen.markdown_edit_helper_height).roundToInt(),
             // make sure only show as visible if the selected view supports markdown edit
-            shouldMakeVisible = { actionListener.focusedField != null },
+            shouldMakeVisible = { focusedView -> focusedView is MarkdownEditText },
         )
 
     class ActionListener(val context: Context) {

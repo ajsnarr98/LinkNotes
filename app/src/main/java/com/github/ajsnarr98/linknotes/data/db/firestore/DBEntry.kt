@@ -9,7 +9,7 @@ data class DBEntry(
     val content: DBEntryContent? = null,
     val dateCreated: Date? = null,
     val lastDateEdited: Date? = null,
-    val isDeletable: Boolean? = null,
+    val deletable: Boolean? = null,
     val subEntries: MutableList<DBEntry>? = null
 ): DBObject<com.github.ajsnarr98.linknotes.data.Entry> {
 
@@ -24,7 +24,7 @@ data class DBEntry(
                 content = DBEntryContent.fromAppObject(other.content),
                 dateCreated = other.dateCreated,
                 lastDateEdited = other.lastDateEdited,
-                isDeletable = other.isDeletable,
+                deletable = other.isDeletable,
                 subEntries = other.subEntries.map { fromAppObject(it) }.toMutableList()
             )
         }
@@ -37,7 +37,7 @@ data class DBEntry(
             mContent = this.content!!.toAppObject(),
             dateCreated = this.dateCreated!!,
             lastDateEdited = this.lastDateEdited!!,
-            isDeletable = this.isDeletable ?: true,
+            isDeletable = this.deletable ?: true,
             subEntries = this.subEntries!!.map { it.toAppObject() }.toMutableList()
         )
     }

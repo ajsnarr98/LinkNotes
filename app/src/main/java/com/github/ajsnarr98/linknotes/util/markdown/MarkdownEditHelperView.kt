@@ -8,7 +8,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.databinding.ViewMarkdownEditHelperBinding
 import com.github.ajsnarr98.linknotes.util.getActivity
-import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardBehavior
+import com.github.ajsnarr98.linknotes.util.softkeyboard.SoftKeyboardAccessoryBehavior
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehavior {
@@ -21,7 +22,10 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
         = ViewMarkdownEditHelperBinding.bind(inflate(context, R.layout.view_markdown_edit_helper, this)).apply {
 
         indent.setOnClickListener { actionListener.onIndent() }
-        bulletList.setOnClickListener { actionListener.onBulletList() }
+        bulletList.setOnClickListener { actionListener.onBulletList()
+            val absPos = IntArray(2).also { root.getLocationInWindow(it) }
+            Timber.e("HelperView: current vertical screen position? ${absPos[1]}")
+        }
         numberedList.setOnClickListener { actionListener.onNumberedList() }
         bold.setOnClickListener { actionListener.onBold() }
         italic.setOnClickListener { actionListener.onItalic() }
@@ -32,7 +36,7 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
     }
 
     override fun getBehavior(): CoordinatorLayout.Behavior<*>
-        = SoftKeyboardBehavior<MarkdownEditHelperView>(
+        = SoftKeyboardAccessoryBehavior<MarkdownEditHelperView>(
             defaultVisibility = View.INVISIBLE,
             scrollAmount = context.resources.getDimension(R.dimen.markdown_edit_helper_height).roundToInt(),
             // make sure only show as visible if the selected view supports markdown edit

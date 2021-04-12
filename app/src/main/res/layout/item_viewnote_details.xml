@@ -48,6 +48,8 @@
         android:paddingStart="0sp"
         android:paddingEnd="6sp"
         android:layout_marginStart="@dimen/activity_half_horizontal_padding"
+        android:lines="2"
+        android:maxEms="3"
         android:text="@string/editnote_note_type_text"
         style="?attr/textAppearanceSubtitle1Bold"
         app:layout_constraintEnd_toStartOf="@id/note_type"

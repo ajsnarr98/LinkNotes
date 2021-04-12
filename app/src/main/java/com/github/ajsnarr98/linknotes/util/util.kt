@@ -30,7 +30,7 @@ fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
  *
  * @return the parent activity or null
  */
-fun getActivity(context: Context): Activity? {
+fun getActivity(context: Context?): Activity? {
     return when (context) {
         is Activity -> context
         is ContextWrapper -> getActivity(context.baseContext)

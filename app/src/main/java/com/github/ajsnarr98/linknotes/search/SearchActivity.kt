@@ -85,8 +85,6 @@ class SearchActivity : BaseActivity() {
             // start the edit note activity without passing in an existing note
             startActivity(EditNoteActivity.getCreateNoteIntent(this))
         }
-
-        Timber.e("Color:::: ${Color.parseColor("#FF00A3DA")}")
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

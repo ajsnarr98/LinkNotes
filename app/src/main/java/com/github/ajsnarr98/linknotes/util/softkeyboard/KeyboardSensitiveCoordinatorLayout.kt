@@ -2,9 +2,12 @@ package com.github.ajsnarr98.linknotes.util.softkeyboard
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ajsnarr98.linknotes.R
+import com.github.ajsnarr98.linknotes.util.getActivity
+import timber.log.Timber
 
 /**
  * NOTE: this layout must exist in an activity where softInputMode is "adjustResize"
@@ -24,7 +27,8 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
 
     private val recyclerViewId: Int?
     private var recyclerView: RecyclerView? = null
-    private val keyboardListeners: MutableSet<(isKeyboardShown: Boolean) -> Unit> = LinkedHashSet()
+    private val keyboardListeners: MutableSet<(isKeyboardShown: Boolean, focusedView: View) -> Unit> = LinkedHashSet()
+    private var oldFocusedView: View? = null
 
     private fun getRecyclerViewId(attrs: AttributeSet): Int? {
         var ret: Int? = null
@@ -45,10 +49,10 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
         return ret
     }
 
-    override fun addSoftKeyboardListener(listener: (isKeyboardShown: Boolean) -> Unit): Boolean
+    override fun addSoftKeyboardListener(listener: (isKeyboardShown: Boolean, focusedView: View) -> Unit): Boolean
         = keyboardListeners.add(listener)
 
-    override fun removeSoftKeyboardListener(listener: (isKeyboardShown: Boolean) -> Unit): Boolean
+    override fun removeSoftKeyboardListener(listener: (isKeyboardShown: Boolean, focusedView: View) -> Unit): Boolean
         = keyboardListeners.remove(listener)
 
     override fun scrollVerticallyBy(dy: Int) {
@@ -64,10 +68,36 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
         val actualHeight = height
         if (actualHeight != proposedHeight && keyboardListeners.isNotEmpty()) {
             val isSoftKeyboardShown = actualHeight > proposedHeight
-            for (listener in keyboardListeners) {
-                listener(isSoftKeyboardShown)
-            }
+            reportKeyboardShown(isSoftKeyboardShown)
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
+    /**
+     * Called when the keyboard is shown, disappears, or when the focus
+     * changes while the keyboard is still being shown.
+     */
+    private fun reportKeyboardShown(isSoftKeyboardShown: Boolean) {
+        val focusedView: View? = getActivity(this.context)?.currentFocus
+        if (focusedView != null && focusedView == oldFocusedView) {
+            Timber.w("Old focused view (for keyboard accessory) is the same as current")
+        }
+        if (isSoftKeyboardShown) {
+            // add a listener in case the focus changes
+            oldFocusedView = focusedView
+            focusedView?.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    // remove current listener
+                    v.setOnFocusChangeListener { _, _ -> }
+                    reportKeyboardShown(true)
+                }
+            }
+        } else {
+            // remove current listener
+            oldFocusedView?.setOnFocusChangeListener { _, _ -> }
+        }
+        for (listener in keyboardListeners) {
+            listener(isSoftKeyboardShown, focusedView ?: this)
+        }
     }
 }

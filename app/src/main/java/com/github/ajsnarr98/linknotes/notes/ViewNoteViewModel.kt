@@ -23,7 +23,11 @@ class ViewNoteViewModel(private val noteId: UUID): ViewModel(), DefaultLifecycle
     val lifecycleObservers: MutableCollection<LifecycleObserver>
         get() = arrayListOf(notesCollection, tagCollection, this)
 
-    var note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
+    var note: Note = notesCollection.findByID(noteId) ?: throws(noteId)
+
+    private fun throws(noteId : String): Note {
+        throw IllegalStateException("Invalid note ID provided. $noteId")
+    }
 
     override fun onStart(owner: LifecycleOwner) {
         // update note when lifecycleOwner loads

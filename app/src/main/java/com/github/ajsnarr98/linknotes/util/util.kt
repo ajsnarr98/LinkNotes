@@ -7,6 +7,7 @@ import android.graphics.Point
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.FragmentActivity
+import com.github.ajsnarr98.linknotes.BaseActivity
 import io.noties.markwon.Markwon
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.lang.IllegalArgumentException
@@ -30,9 +31,9 @@ fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {
  *
  * @return the parent activity or null
  */
-fun getActivity(context: Context?): Activity? {
+fun getActivity(context: Context?): BaseActivity? {
     return when (context) {
-        is Activity -> context
+        is BaseActivity -> context
         is ContextWrapper -> getActivity(context.baseContext)
         else -> null
     }

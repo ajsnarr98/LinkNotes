@@ -4,9 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.util.getActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -89,7 +92,12 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
                 if (!hasFocus) {
                     // remove current listener
                     v.setOnFocusChangeListener { _, _ -> }
-                    reportKeyboardShown(true)
+                    // TODO - find a better way to do this that doesn't involve
+                    //        waiting and hoping for the focus to finish changing
+                    getActivity(this.context)?.lifecycleScope?.launch {
+                        delay(200L)
+                        reportKeyboardShown(true)
+                    }
                 }
             }
         } else {

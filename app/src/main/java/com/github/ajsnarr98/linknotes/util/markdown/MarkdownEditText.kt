@@ -4,8 +4,6 @@ import android.content.Context
 import android.text.Selection
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import com.github.ajsnarr98.linknotes.util.selectedVerticalPos
-import timber.log.Timber
 
 /**
  * An EditText that has a few helpers that help markdown editing.
@@ -36,7 +34,6 @@ class MarkdownEditText : AppCompatEditText {
         val modifiedText = Markdown.toggleListMarker(this.text.toString(), Markdown.BULLET_LIST_MARKER, selectionStart, selectionEnd)
         this.setText(modifiedText.newText)
         Selection.setSelection(this.text, modifiedText.newSelectionStart, modifiedText.newSelectionEnd)
-        Timber.e("EditText: current vertical screen position? ${selectedVerticalPos()}")
     }
 
     /**

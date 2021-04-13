@@ -92,6 +92,7 @@ class KeyboardSensitiveCoordinatorLayout : CoordinatorLayout, SoftKeyboardAware 
         if (focusedView != null && focusedView == oldFocusedView) {
             Timber.w("Old focused view (for keyboard accessory) is the same as current")
         }
+        oldFocusedView = focusedView
         for (listener in keyboardListeners) {
             listener(isSoftKeyboardShown, focusedView ?: this)
         }

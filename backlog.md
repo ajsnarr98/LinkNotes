@@ -40,6 +40,6 @@
 - add custom recyclerview-like chipgroup
 
 ## Bugs
-- changing focus between views while soft keyboard is up does not update softkeyboard listener
+- clicking "add" entry copies an existing entry sometimes (found with 2 entries both containing text)
 - editnote saving does not always update entry type?
 - empty entries get saved

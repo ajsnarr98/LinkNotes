@@ -39,6 +39,7 @@ class MarkdownEditHelperView : ConstraintLayout, CoordinatorLayout.AttachedBehav
         = SoftKeyboardAccessoryBehavior<MarkdownEditHelperView>(
             defaultVisibility = View.INVISIBLE,
             scrollAmount = context.resources.getDimension(R.dimen.markdown_edit_helper_height).roundToInt(),
+            topPadding = context.resources.getDimension(R.dimen.markdown_edit_helper_cursor_scroll_padding).roundToInt(),
             // make sure only show as visible if the selected view supports markdown edit
             shouldMakeVisible = { focusedView -> focusedView is MarkdownEditText },
         )

@@ -17,6 +17,7 @@
     <dimen name="markdown_edit_button_width">44dp</dimen>
     <dimen name="markdown_edit_button_height">48dp</dimen>
     <dimen name="markdown_edit_helper_height">48dp</dimen>
+    <dimen name="markdown_edit_helper_cursor_scroll_padding">24dp</dimen>
 
     <dimen name="search_searchbar_corner_radius">12dp</dimen>
     <dimen name="icon_deco_size">32dp</dimen>

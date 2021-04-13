@@ -21,23 +21,15 @@ fun EditText.selectedVerticalPos(): Int? {
  *
  * @return the listener that was created
  */
-fun EditText.addLineCountChangeListener(onLinesChanged: (numLines: Int) -> Unit): TextWatcher {
+fun EditText.addOnTextChangedListener(onTextChange: (text: CharSequence?, numLines: Int) -> Unit): TextWatcher {
     val watcher = object : TextWatcher {
-        var oldLineCount: Int = this@addLineCountChangeListener.lineCount
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun afterTextChanged(s: Editable?) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val curLineCount = this@addLineCountChangeListener.lineCount
-            if (oldLineCount != curLineCount) {
-                oldLineCount = curLineCount
-                onLinesChanged(curLineCount)
-            }
+            val curLineCount = this@addOnTextChangedListener.lineCount
+            onTextChange(s, curLineCount)
         }
     }
     this.addTextChangedListener(watcher)
     return watcher
-}
-
-fun EditText.removeLineCountChangeListener(listener: TextWatcher) {
-    return this.removeTextChangedListener(listener)
 }

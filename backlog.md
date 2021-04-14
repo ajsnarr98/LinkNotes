@@ -36,6 +36,7 @@
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like
 - implement undo button when editing notes
+- save changes to note for recovery in case of crash (discard on cancel or save)
 - add custom recyclerview-like chipgroup
 
 ## Bugs

@@ -1469,12 +1469,14 @@ class MarkdownTest {
             deletePrevious = false,
             listMarker = "",
             listMarkerPos = 0,
+            listMarkerLineStart = 0,
             indent = 0,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         testName = "one line 2"
@@ -1484,12 +1486,14 @@ class MarkdownTest {
             deletePrevious = false,
             listMarker = "- ",
             listMarkerPos = 22,
+            listMarkerLineStart = 22,
             indent = 0,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         testName = "one line 3"
@@ -1499,12 +1503,14 @@ class MarkdownTest {
             deletePrevious = false,
             listMarker = "",
             listMarkerPos = 0,
+            listMarkerLineStart = 0,
             indent = 0,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         testName = "one line 4"
@@ -1514,12 +1520,14 @@ class MarkdownTest {
             deletePrevious = true,
             listMarker = "- ",
             listMarkerPos = 29,
+            listMarkerLineStart = 29,
             indent = 0,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         testName = "one line 5"
@@ -1529,12 +1537,14 @@ class MarkdownTest {
             deletePrevious = false,
             listMarker = "- ",
             listMarkerPos = 26,
+            listMarkerLineStart = 22,
             indent = 4,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         testName = "one line 6"
@@ -1544,12 +1554,14 @@ class MarkdownTest {
             deletePrevious = false,
             listMarker = "",
             listMarkerPos = 0,
+            listMarkerLineStart = 0,
             indent = 0,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         testName = "one line 7"
@@ -1559,12 +1571,14 @@ class MarkdownTest {
             deletePrevious = true,
             listMarker = "- ",
             listMarkerPos = 33,
+            listMarkerLineStart = 29,
             indent = 4,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
 
         // this behavior will possibly change
@@ -1575,12 +1589,14 @@ class MarkdownTest {
             deletePrevious = false,
             listMarker = "",
             listMarkerPos = 0,
+            listMarkerLineStart = 0,
             indent = 0,
         )
         actual = Markdown.getSelectionContinuesList(given, selection.first, selection.second)
         assertEquals("$testName - deletePrevious", expectedRes.deletePrevious, actual.deletePrevious)
         assertEquals("$testName - listMarker", expectedRes.listMarker, actual.listMarker)
         assertEquals("$testName - listMarkerPos", expectedRes.listMarkerPos, actual.listMarkerPos)
+        assertEquals("$testName - listMarkerPos", expectedRes.listMarkerLineStart, actual.listMarkerLineStart)
         assertEquals("$testName - indent", expectedRes.indent, actual.indent)
     }
 }

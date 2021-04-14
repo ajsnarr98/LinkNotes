@@ -22,26 +22,56 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <ImageButton
-                android:id="@+id/close_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="?android:selectableItemBackground"
-                app:srcCompat="@drawable/ic_close_white24dp"
-                android:contentDescription="@string/editnote_cancel_edit_button_desc" />
+            <LinearLayout
+                android:id="@+id/inner_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" >
 
-            <TextView
-                android:id="@+id/save_button"
-                android:layout_width="48dp"
-                android:layout_height="36dp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="12dp"
-                android:background="?android:selectableItemBackground"
-                android:gravity="center"
-                android:text="@string/editnote_save_btn"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                <ImageButton
+                    android:id="@+id/close_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="@dimen/activity_double_horizontal_padding"
+                    android:background="?android:selectableItemBackground"
+                    app:srcCompat="@drawable/ic_close_white24dp"
+                    android:contentDescription="@string/editnote_cancel_edit_button_desc" />
+
+                <ImageButton
+                    android:id="@+id/undo_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="?android:selectableItemBackground"
+                    app:srcCompat="@drawable/ic_undo"
+                    android:contentDescription="@string/editnote_undo_button_desc" />
+
+                <ImageButton
+                    android:id="@+id/redo_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="?android:selectableItemBackground"
+                    app:srcCompat="@drawable/ic_redo"
+                    android:contentDescription="@string/editnote_redo_button_desc" />
+
+                <TextView
+                    android:id="@+id/save_button"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="20dp"
+                    android:background="?android:selectableItemBackground"
+                    android:gravity="center"
+                    android:text="@string/editnote_save_btn"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 

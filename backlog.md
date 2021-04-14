@@ -22,8 +22,7 @@
 - add cool animation for moving tags back and forth in add tags dialog
 - add ability to delete/rename tags in general somehow
 - link to note/entry
-- make it so lists are continued in markdownedithelperviews
-- add markdown editing helpers for lists-indentation / links / images / headers
+- add markdown editing helpers for links / images / headers
 - update bold / italic / strike-through markers to unmark/mark with respect to whitespace
 - add underline functionality to markdown helper
 - link entries based on note/entry type (ex. tag <-> classes <-> people)
@@ -37,9 +36,11 @@
 - add confirmation on save editnote when you try to add new notetype
 - add default entries for pictures and the like
 - implement undo button when editing notes
+- save changes to note for recovery in case of crash (discard on cancel or save)
 - add custom recyclerview-like chipgroup
 
 ## Bugs
 - clicking "add" entry copies an existing entry sometimes (found with 2 entries both containing text)
 - editnote saving does not always update entry type?
 - empty entries get saved
+- preconditions: MarkdownEditText with empty list item at last line; press enter, empty list item not removed

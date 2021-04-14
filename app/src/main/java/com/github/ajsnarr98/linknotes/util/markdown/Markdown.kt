@@ -37,6 +37,27 @@ object Markdown {
         val newSelectionEnd: Int,
     )
 
+    /**
+     * Information about how to continue a list onto the next line.
+     *
+     * @property deletePrevious whether or not to delete the list marker on the
+     *                          previous line, if true, no list marker is added
+     *                          on the next line
+     * @property listMarker the list marker to continue, or empty string if no
+     *                      list to continue
+     * @property listMarkerPos only relevant if listMarker is not an empty string
+     *                         and deletePrevious is true
+     * @property listMarkerLineStart first index of line with list marker on it
+     * @property indent the indent to continue at
+     */
+    data class MarkdownListContinuation(
+        val deletePrevious: Boolean,
+        val listMarker: String,
+        val listMarkerPos: Int,
+        val listMarkerLineStart: Int,
+        val indent: Int,
+    )
+
     fun toggleSurroundingMarker(text: String, marker: String, start: Int, end: Int): MarkdownResult {
         val markersToRemove = surroundingMarkersToRemove(text, marker, start, end)
         val newText = if (markersToRemove.isEmpty()) {
@@ -83,6 +104,21 @@ object Markdown {
     }
 
     /**
+     * Changes all selected lines to have list markers at the given indent.
+     */
+    fun addListMarker(text: String, marker: String, indent: Int, start: Int, end: Int): MarkdownResult {
+        var listInfo: ListInfo = getLinesWithList(text, marker, start, end)
+        // un-mark all selected list markers
+        val unmarked = unMarkListMarkers(text, listInfo, start, end)
+        val newText = unmarked.newText
+        val newStart = unmarked.newSelectionStart
+        val newEnd = unmarked.newSelectionEnd
+        // mark all selected lines
+        listInfo = getLinesWithList(newText, marker, newStart, newEnd)
+        return markListMarkers(newText, listInfo, newStart, newEnd, indent)
+    }
+
+    /**
      * Indents the list element(s) at the selection if there are applicable list elements.
      */
     fun addListIndent(text: String, start: Int, end: Int): MarkdownResult {
@@ -114,6 +150,79 @@ object Markdown {
             newSelectionStart = actualStart + startSelectionDiff,
             newSelectionEnd = actualEnd + endSelectionDiff,
         )
+    }
+
+    /**
+     * Figures out whether or not the current selection is part of a
+     * list, and if so, whether or not that list would be continued if enter
+     * was pressed.
+     *
+     * Based on the start of the selection. Selections before the marker
+     * will do nothing. Selections after a marker that has an empty line
+     * after it should delete the marker on the previous line.
+     */
+    fun getSelectionContinuesList(text: String, start: Int, end: Int): MarkdownListContinuation {
+        val actualStart = if (start > end) end else start
+
+        // it does not matter what marker we specify, we will just get extra info
+        val listInfo: ListInfo = getLinesWithList(text, LIST_MARKERS[0], start, end)
+        val listMarker = listInfo.lineListMarkers[0]
+        val lineStart = listInfo.lineStarts[0]
+        return if (listMarker.isNotEmpty()) {
+            val trimmedMarkerLen = listMarker.trimStart().length
+            val markerBeginningWhitespaces: Int = listMarker.length - trimmedMarkerLen
+            val firstNonWhitespace = requireNotNull(getFirstNonWhitespace(text, lineStart),
+                { "Something is very wrong with MD list handling" })
+            val listMarkerPos = firstNonWhitespace - markerBeginningWhitespaces
+            val indent = listMarkerPos - lineStart
+            if (actualStart >= (firstNonWhitespace + trimmedMarkerLen)) {
+                // we are after the list marker on the line
+                val newLineInd = text.indexOf('\n', firstNonWhitespace)
+                val lineEnd = if (newLineInd >= 0) newLineInd else text.length
+                val lineAfterMarker = if (lineEnd >= firstNonWhitespace + trimmedMarkerLen) {
+                    text.substring(firstNonWhitespace + trimmedMarkerLen, lineEnd)
+                } else {
+                    ""
+                }
+                if (lineAfterMarker.isNotBlank()) {
+                    // we want to continue the list
+                    MarkdownListContinuation(
+                        deletePrevious = false,
+                        listMarker = listMarker,
+                        listMarkerPos = listMarkerPos,
+                        listMarkerLineStart = lineStart,
+                        indent = indent,
+                    )
+                } else {
+                    // we want to delete the last list marker
+                    MarkdownListContinuation(
+                        deletePrevious = true,
+                        listMarker = listMarker,
+                        listMarkerPos = listMarkerPos,
+                        listMarkerLineStart = lineStart,
+                        indent = indent,
+                    )
+                }
+            } else {
+                // we are before the list marker on the line
+                MarkdownListContinuation(
+                    deletePrevious = false,
+                    listMarker = "",
+                    listMarkerPos = 0,
+                    listMarkerLineStart = 0,
+                    indent = 0,
+                )
+            }
+        } else {
+            // there is no list marker on the line
+            MarkdownListContinuation(
+                deletePrevious = false,
+                listMarker = "",
+                listMarkerPos = 0,
+                listMarkerLineStart = 0,
+                indent = 0,
+            )
+        }
     }
 
     /**
@@ -472,7 +581,8 @@ object Markdown {
             return@map if (firstNonWhitespace != null) {
                 LIST_MARKERS.firstOrNull { curMarker ->
                     val trimmed = curMarker.trimStart()
-                    trimmed == text.substring(firstNonWhitespace, firstNonWhitespace+trimmed.length)
+                    (firstNonWhitespace + trimmed.length) <= text.length
+                            && trimmed == text.substring(firstNonWhitespace, firstNonWhitespace+trimmed.length)
                 } ?: ""
             } else {
                 ""
@@ -491,6 +601,7 @@ object Markdown {
      * null if the entire line is whitespace.
      */
     private fun getFirstNonWhitespace(text: String, lineStart: Int): Int? {
+        if (lineStart >= text.length) return null
         // check if next non-whitespace character is a list marker
         var next: Int = lineStart
         while (text[next].isWhitespace() && text[next] != '\n') {
@@ -582,22 +693,23 @@ object Markdown {
     /**
      * Mark all lines in the selection with list markers.
      */
-    private fun markListMarkers(text: String, listInfo: ListInfo, start: Int, end: Int): MarkdownResult {
+    private fun markListMarkers(text: String, listInfo: ListInfo, start: Int, end: Int, indent: Int = 0): MarkdownResult {
         val actualStart = if (start > end) end else start
         val actualEnd = if (start > end) start else end
         var pos = 0
         var newText = ""
         var startSelectionDiff = 0
         var endSelectionDiff = 0
+        val indentStr = " ".repeat(indent)
         listInfo.lineStarts.forEach { lineStart ->
             newText += text.substring(pos, lineStart)
-            newText += listInfo.listMarker
+            newText += indentStr + listInfo.listMarker
             pos = lineStart
             if (actualStart >= lineStart) {
-                startSelectionDiff += listInfo.listMarker.length
+                startSelectionDiff += listInfo.listMarker.length + indent
             }
             if (actualEnd >= lineStart) {
-                endSelectionDiff += listInfo.listMarker.length
+                endSelectionDiff += listInfo.listMarker.length + indent
             }
         }
         // get remaining bit of text

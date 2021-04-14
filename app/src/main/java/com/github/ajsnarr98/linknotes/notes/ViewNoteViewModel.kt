@@ -23,7 +23,13 @@ class ViewNoteViewModel(private val noteId: UUID): ViewModel(), DefaultLifecycle
     val lifecycleObservers: MutableCollection<LifecycleObserver>
         get() = arrayListOf(notesCollection, tagCollection, this)
 
-    var note: Note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
+    private var _note: Lazy<Note> = lazy {
+        notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
+    }
+    var note: Note
+        get() = _note.value
+        set(value) { _note = lazy { value } }
+
 
     override fun onStart(owner: LifecycleOwner) {
         // update note when lifecycleOwner loads

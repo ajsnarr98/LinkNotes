@@ -12,7 +12,7 @@ data class Entry(val id: UUID,
             var dateCreated: Date = Date(),
             var lastDateEdited: Date = Date(),
             var isDeletable: Boolean = true,
-            val subEntries: MutableList<Entry> = mutableListOf()
+            val subEntries: MutableList<Entry> = mutableListOf(),
 ): AppDataObject, Parcelable {
 
     /**
@@ -34,6 +34,19 @@ data class Entry(val id: UUID,
             mContent = value
             field = value
         }
+
+    /** Deep copy */
+    fun copy(): Entry {
+        return Entry(
+            id = this.id,
+            type = this.type.copy(),
+            mContent = this.mContent.copy(),
+            dateCreated = this.dateCreated,
+            lastDateEdited = this.lastDateEdited,
+            isDeletable = this.isDeletable,
+            subEntries = this.subEntries.map { it }.toMutableList(),
+        )
+    }
 
     /**
      * Add a new sub entry.

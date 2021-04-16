@@ -178,6 +178,26 @@ open class EditNoteActivity : BaseActivity() {
         // set up save button
         binding.saveButton.setOnClickListener { mRecyclerActionListener.onSaveButtonPress() }
 
+        // set up undo button
+        binding.undoButton.setOnClickListener {
+            viewModel.undo()
+            recyclerAdapter.notifyDataSetChanged()
+        }
+        viewModel.canUndo.observe(this) { canUndo ->
+            binding.undoButton.isEnabled = canUndo
+        }
+        binding.undoButton.isEnabled = false
+
+        // set up redo button
+        binding.redoButton.setOnClickListener {
+            viewModel.redo()
+            recyclerAdapter.notifyDataSetChanged()
+        }
+        viewModel.canRedo.observe(this) { canRedo ->
+            binding.redoButton.isEnabled = canRedo
+        }
+        binding.redoButton.isEnabled = false
+
         // set up recycler view
         val recyclerManager = LinearLayoutManager(this)
         recyclerAdapter = EditNoteAdapter(viewModel, mRecyclerActionListener)

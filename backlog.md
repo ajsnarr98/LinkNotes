@@ -39,7 +39,6 @@
 - add default entries for pictures and the like
 - implement undo button when editing notes
 - save changes to note for recovery in case of crash (discard on cancel or save)
-- confirm that user wants to discard changes on cancel edit note
 - add custom recyclerview-like chipgroup
 
 ## Bugs

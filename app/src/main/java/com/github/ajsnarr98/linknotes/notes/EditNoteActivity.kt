@@ -173,7 +173,7 @@ open class EditNoteActivity : BaseActivity() {
         viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // set up close button
-        binding.closeButton.setOnClickListener { onBackPressed(skipConfirmation = true) }
+        binding.closeButton.setOnClickListener { onBackPressed(skipConfirmation = false) }
 
         // set up save button
         binding.saveButton.setOnClickListener { mRecyclerActionListener.onSaveButtonPress() }

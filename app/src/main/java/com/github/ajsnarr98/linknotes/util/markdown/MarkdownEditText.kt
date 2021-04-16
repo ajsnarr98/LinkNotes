@@ -6,7 +6,6 @@ import android.text.Selection
 import android.text.TextWatcher
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import org.w3c.dom.Text
 import timber.log.Timber
 
 /**
@@ -25,46 +24,20 @@ class MarkdownEditText : AppCompatEditText {
         defStyleAttr
     )
 
-    private val lineTextWatcher: ListEditTextWatcher = ListEditTextWatcher()
+    private val masterTextWatcher: MasterTextWatcher = MasterTextWatcher()
 
     init {
         // add listener on edits to continue a list if the previous line was
         // part of a list
-        addTextChangedListener(lineTextWatcher)
-    }
-
-    /**
-     * Does not update the wrapped textWatcher if the ListEditTextWatcher
-     * is about to modify this changed text.
-     */
-    private inner class TextWatcherWrapper(private val wrapped: TextWatcher) : TextWatcher {
-
-        private var ignoreChange = false
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            wrapped.beforeTextChanged(s, start, count, after)
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            this.ignoreChange = this@MarkdownEditText.lineTextWatcher.willTextChangeBeOverwritten(s, start, before, count)
-            if (!ignoreChange) {
-                // only call this watcher if text will not be overwritten by the lineTextWatcher
-                wrapped.onTextChanged(s, start, before, count)
-            }
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-            if (!ignoreChange) {
-                wrapped.afterTextChanged(s)
-            }
-            ignoreChange = false
-        }
+        addTextChangedListener(masterTextWatcher)
     }
 
     /**
      * Text watcher used for continuing lists onto the next line.
+     *
+     * Also controls updates to other TextWatchers.
      */
-    private inner class ListEditTextWatcher : TextWatcher {
+    private inner class MasterTextWatcher : TextWatcher {
         private var mListContinuationInfo = Markdown.MarkdownListContinuation(
             deletePrevious = false,
             listMarker = "",
@@ -76,13 +49,16 @@ class MarkdownEditText : AppCompatEditText {
         private var mNewlinePos = -1
 
         /**
-         * Called from another textwatcher during onTextChange(). Returns true
-         * if text will be overwritten again during this watcher's
-         * AfterTextChanged() method, or false otherwise.
+         * TextWatchers that are listening to normal changes.
          */
-        fun willTextChangeBeOverwritten(s: CharSequence?, start: Int, before: Int, count: Int): Boolean {
-            val newlineAdded = s != null && '\n' in s.substring(start, start + count)
-            return newlineAdded && mListContinuationInfo.listMarker.isNotEmpty()
+        private val subListeners: MutableSet<TextWatcher> = LinkedHashSet()
+
+        fun addTextChangedListener(watcher: TextWatcher?) {
+            if (watcher != null) subListeners.add(watcher)
+        }
+
+        fun removeTextChangedListener(watcher: TextWatcher?) {
+            if (watcher != null) subListeners.remove(watcher)
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -92,6 +68,7 @@ class MarkdownEditText : AppCompatEditText {
                     this@MarkdownEditText.selectionStart,
                     this@MarkdownEditText.selectionEnd,
                 )
+                subListeners.forEach { it.beforeTextChanged(s, start, count, after) }
             } catch (e: Exception) {
                 Timber.e(e)
                 throw e
@@ -101,6 +78,11 @@ class MarkdownEditText : AppCompatEditText {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             mNewlinePos = s?.substring(0, start + count)?.lastIndexOf('\n') ?: -1
             mWasNewlineAdded = s != null && '\n' in s.substring(start, start + count)
+            if (!mWasNewlineAdded || mListContinuationInfo.listMarker.isEmpty()) {
+                // only update other listeners if this one is not about to
+                // modify the updated text
+                subListeners.forEach { it.onTextChanged(s, start, before, count) }
+            }
         }
 
         override fun afterTextChanged(s: Editable?) {
@@ -155,6 +137,8 @@ class MarkdownEditText : AppCompatEditText {
                             )
                         }
                     }
+                } else {
+                    subListeners.forEach { it.afterTextChanged(s) }
                 }
                 this.mWasNewlineAdded = false
                 this.mListContinuationInfo = Markdown.MarkdownListContinuation(
@@ -172,19 +156,17 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     override fun addTextChangedListener(watcher: TextWatcher?) {
-        if (watcher == null) return
-        val listener: TextWatcher = when (watcher) {
-            is ListEditTextWatcher -> watcher
-            else -> TextWatcherWrapper(watcher)
+        when (watcher) {
+            is MasterTextWatcher -> super.addTextChangedListener(watcher)
+            else -> this.masterTextWatcher.addTextChangedListener(watcher)
         }
-        listeners[watcher] = listener
-        super.addTextChangedListener(listener)
     }
 
     override fun removeTextChangedListener(watcher: TextWatcher?) {
-        if (watcher == null) return
-        val listener: TextWatcher = listeners.remove(watcher) ?: return
-        super.removeTextChangedListener(listener)
+        when (watcher) {
+            is MasterTextWatcher -> super.removeTextChangedListener(watcher)
+            else -> this.masterTextWatcher.removeTextChangedListener(watcher)
+        }
     }
 
     /**

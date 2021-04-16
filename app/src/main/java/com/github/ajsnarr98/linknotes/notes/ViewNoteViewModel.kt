@@ -33,7 +33,7 @@ class ViewNoteViewModel(private val noteId: UUID): ViewModel(), DefaultLifecycle
 
     override fun onStart(owner: LifecycleOwner) {
         // update note when lifecycleOwner loads
-        note = notesCollection.findByID(noteId) ?: Note(id="TEST") // throw IllegalStateException("Invalid note ID provided. $noteId")
+        note = notesCollection.findByID(noteId) ?: throw IllegalStateException("Invalid note ID provided. $noteId")
     }
 
     /**

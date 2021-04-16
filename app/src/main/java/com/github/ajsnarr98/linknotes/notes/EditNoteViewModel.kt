@@ -8,11 +8,18 @@ import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.UUID
+import java.util.*
+import kotlin.NoSuchElementException
 
 /**
  * If passed in noteID is null, creates a new note.
  */
 class EditNoteViewModel(noteID: UUID?): ViewModel() {
+
+    companion object {
+        // used for undo/redo
+        private const val MAX_STORED_CHANGES = 50
+    }
 
     val notesCollection: NoteCollection = Providers.noteCollection!!
     private val tagCollection: TagCollection = Providers.tagCollection!!
@@ -24,7 +31,18 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         get() = arrayListOf(notesCollection, tagCollection)
 
     // grab a copy of the existing note (to modify) or create a new empty note
-    val note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
+    var note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
+
+    private val undoStack: Deque<Note> = LinkedList()
+    private val redoStack: Deque<Note> = LinkedList()
+
+    private val mutableCanUndo = MutableLiveData(false)
+    private val mutableCanRedo = MutableLiveData(false)
+
+    val canUndo: LiveData<Boolean>
+        get() = mutableCanUndo
+    val canRedo: LiveData<Boolean>
+        get() = mutableCanRedo
 
     val entries: MutableList<Entry>
         get() = note.entries
@@ -36,9 +54,10 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         set(value) { note.type = value }
 
     val hasMadeChanges: Boolean
-        get() = !note.exactEquals(notesCollection.findByID(note.id))
+        get() = undoStack.isNotEmpty()
 
     fun addNewEntry() {
+        onChangeMade()
         note.addNewEntry()
     }
 
@@ -46,6 +65,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
      * Adds tags only if there isn't a matching tag in the note.
      */
     fun addTags(tags: Collection<Tag>) {
+        onChangeMade()
         note.tags.addAll(tags)
     }
 
@@ -53,6 +73,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
      * Sets this notes tags to contain only the tags given.
      */
     fun setTags(tags: Collection<Tag>) {
+        onChangeMade()
         note.tags.clear()
         note.tags.addAll(tags)
     }
@@ -61,15 +82,44 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
      * Tries to remove a tag from this note.
      */
     fun removeTag(tag: Tag) {
+        onChangeMade()
         note.tags.remove(tag)
     }
 
     fun updateExistingEntry(updated: Entry): Boolean {
+        onChangeMade()
         return note.updateExistingEntry(updated)
     }
 
     fun deleteEntry(entry: Entry) {
+        onChangeMade()
         note.deleteEntry(entry)
+    }
+
+    /**
+     * Redoes an undo.
+     */
+    fun redo() {
+        try {
+            val change = redoStack.pop()
+            undoStack.push(change)
+            if (canUndo.value == false) mutableCanUndo.value = true
+            if (redoStack.isEmpty()) mutableCanRedo.value = false
+            this.note = change
+        } catch (_: NoSuchElementException) {}
+    }
+
+    /**
+     * Undoes a change.
+     */
+    fun undo() {
+        try {
+            val change = undoStack.pop()
+            redoStack.push(change)
+            if (canRedo.value == false) mutableCanRedo.value = true
+            if (undoStack.isEmpty()) mutableCanUndo.value = false
+            this.note = change
+        } catch (_: NoSuchElementException) {}
     }
 
     /**
@@ -79,6 +129,24 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         val toSave = this.note.copy()
         toSave.fillDefaults()
         notesCollection.add(toSave)
+        undoStack.clear()
+    }
+
+    /**
+     * Call this right before the change is made.
+     */
+    private fun onChangeMade() {
+        if (!redoStack.isEmpty()) {
+            redoStack.clear()
+            mutableCanRedo.value = false
+        }
+        undoStack.push(note.copy())
+        if (canUndo.value == false) {
+            mutableCanUndo.value = true
+        }
+        if (undoStack.size > MAX_STORED_CHANGES) {
+            undoStack.removeLast()
+        }
     }
 
     /**

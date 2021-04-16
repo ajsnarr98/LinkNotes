@@ -1,7 +1,8 @@
 # TODO:
 
 ## Refactors
--
+- Separate LiveData and basic sets into separate classes
+- replace notifyDataSetChanged() calls with the efficient alternative
 
 ## Backend TODO
 - See/update google OAuth consent screen credentials at https://console.developers.google.com/apis/credentials
@@ -12,6 +13,7 @@
 - Update firestore permissions
 
 ## Features
+- fix proguard/r8 rules for firebase DB classes
 - make default profile image a square
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
@@ -37,6 +39,7 @@
 - add default entries for pictures and the like
 - implement undo button when editing notes
 - save changes to note for recovery in case of crash (discard on cancel or save)
+- confirm that user wants to discard changes on cancel edit note
 - add custom recyclerview-like chipgroup
 
 ## Bugs
@@ -44,3 +47,4 @@
 - editnote saving does not always update entry type?
 - empty entries get saved
 - preconditions: MarkdownEditText with empty list item at last line; press enter, empty list item not removed
+- Have multiple lines, where first line has no list. Select multiple lines with lists, indent. First (unselected) line gets list for some reason.

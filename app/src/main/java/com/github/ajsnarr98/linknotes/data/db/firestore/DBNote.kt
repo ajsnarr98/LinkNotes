@@ -58,7 +58,7 @@ data class DBNote(
     }
 
     override fun toAppObject(): com.github.ajsnarr98.linknotes.data.Note {
-        return com.github.ajsnarr98.linknotes.data.Note(
+        return Note(
             id = this.id!!,
             _type = this.type!!,
             _name = this.name!!,

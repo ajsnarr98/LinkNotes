@@ -34,6 +34,8 @@
     <string name="editnote_remove_tag_confirmation">Are you sure you want to remove the %s tag from this note?</string>
     <string name="editnote_create_new_tag_confirmation">The tag \"%s\" does not yet exist. Are you sure you want to create it?</string>
     <string name="editnote_cancel_edit_confirmation">Are you sure you want to discard these changes?</string>
+    <string name="editnote_undo_button_desc">Undo</string>
+    <string name="editnote_redo_button_desc">Redo</string>
 
     <!-- Text editing -->
     <string name="bold_content_desc">Bold</string>

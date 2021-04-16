@@ -67,6 +67,25 @@ data class Note(
     }
 
     /**
+     * Makes a deep copy of this note.
+     */
+    fun copy(): Note {
+        return Note(
+            id = this.id,
+            _type = this._type,
+            _name = this._name,
+            dateCreated = this.dateCreated,
+            lastDateEdited = this.lastDateEdited,
+            nicknames = this.nicknames.map { it }.toMutableList(),
+            mainPicture = this.mainPicture,
+            pictures = this.pictures.map { it }.toMutableList(),
+            tags = this.tags.map { it.copy() }.toMutableSet(),
+            entries = EntryList.fromCollection(this.entries.map { it.copy() }),
+            notes = this.notes?.map { it.copy() }?.toMutableList(),
+        )
+    }
+
+    /**
      * Deletes an entry matching the given entry's id.
      */
     fun deleteEntry(entry: Entry) {

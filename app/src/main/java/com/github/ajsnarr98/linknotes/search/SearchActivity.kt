@@ -19,6 +19,7 @@ import com.github.ajsnarr98.linknotes.databinding.ActivitySearchBinding
 import com.github.ajsnarr98.linknotes.login.LoginActivity
 import com.github.ajsnarr98.linknotes.notes.EditNoteActivity
 import com.github.ajsnarr98.linknotes.notes.ViewNoteActivity
+import com.github.ajsnarr98.linknotes.util.dialogs.ConfirmationDialogFragment
 import com.github.ajsnarr98.linknotes.util.hideKeyboardFrom
 import timber.log.Timber
 import java.lang.IllegalStateException
@@ -84,6 +85,21 @@ class SearchActivity : BaseActivity() {
         binding.addNoteButton.setOnClickListener {
             // start the edit note activity without passing in an existing note
             startActivity(EditNoteActivity.getCreateNoteIntent(this))
+        }
+
+        // check for unsaved changes
+        if (viewModel.hasUnsavedChanges()) {
+            ConfirmationDialogFragment.newInstance(
+                message = getString(R.string.unsaved_changes_recovery_confirmation),
+                onConfirm = { startActivity(EditNoteActivity.getUnsavedChangesIntent(this)) },
+                onCancel = {
+                           ConfirmationDialogFragment.newInstance(
+                               message = getString(R.string.unsaved_changes_recovery_second_confirmaton),
+                               onConfirm = { viewModel.discardUnsavedChanges() },
+                               onCancel = { startActivity(EditNoteActivity.getUnsavedChangesIntent(this)) },
+                           ).show(supportFragmentManager, "fragment_alert_search_unsaved_changes_second")
+                },
+            ).show(supportFragmentManager, "fragment_alert_search_unsaved_changes")
         }
     }
 

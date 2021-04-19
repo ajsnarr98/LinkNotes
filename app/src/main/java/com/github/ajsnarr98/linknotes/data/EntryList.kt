@@ -3,10 +3,11 @@ package com.github.ajsnarr98.linknotes.data
 import android.os.Parcelable
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 import java.math.BigInteger
 
 @Parcelize
-class EntryList: ArrayList<Entry>(), Parcelable {
+class EntryList: ArrayList<Entry>(), Parcelable, Serializable {
     companion object {
         fun getEmpty(): EntryList {
             return EntryList()

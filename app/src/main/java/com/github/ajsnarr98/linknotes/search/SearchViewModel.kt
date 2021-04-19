@@ -33,6 +33,7 @@ class SearchViewModel: ViewModel() {
 
     val notesCollection: NoteCollection = Providers.noteCollection!!
     private val tagCollection: TagCollection = Providers.tagCollection!!
+    private val unsavedChangeStore = Providers.unsavedChangeStore
 
     /**
      * All lifecycle observers known by this ViewModel.
@@ -55,6 +56,18 @@ class SearchViewModel: ViewModel() {
     val filteredForSearch get() = orderForSearch(filterForSearch(notesCollection.toList()))
 
     private val isValidSearch: Boolean get() = searchStr.length >= MIN_SEARCH_LENGTH
+
+    /**
+     * Returns true when there were unsaved changes to a note last time the
+     * app closed.
+     */
+    fun hasUnsavedChanges(): Boolean {
+        return unsavedChangeStore?.getNote() != null
+    }
+
+    fun discardUnsavedChanges() {
+        unsavedChangeStore?.clearNote()
+    }
 
     fun onSearchTypesSelected(selectedTypes: List<SearchType>) {
         // reset search type values

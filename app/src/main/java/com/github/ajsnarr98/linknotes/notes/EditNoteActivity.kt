@@ -27,9 +27,16 @@ open class EditNoteActivity : BaseActivity() {
     companion object {
 
         const val NOTE_INTENT_KEY = "note"
+        const val UNSAVED_CHANGES_INTENT_KEY = "has_unsaved_changes"
 
         fun getCreateNoteIntent(context: Context): Intent {
             return Intent(context, EditNoteActivity::class.java)
+        }
+
+        fun getUnsavedChangesIntent(context: Context): Intent {
+            return Intent(context, EditNoteActivity::class.java).apply {
+                putExtra(UNSAVED_CHANGES_INTENT_KEY, true)
+            }
         }
 
         fun getEditNoteIntent(context: Context, note: Note): Intent {
@@ -43,6 +50,7 @@ open class EditNoteActivity : BaseActivity() {
         fun getEditNoteIntent(context: Context, noteID: UUID): Intent {
             return Intent(context, EditNoteActivity::class.java).apply {
                 putExtra(NOTE_INTENT_KEY, noteID)
+                putExtra(UNSAVED_CHANGES_INTENT_KEY, false)
             }
         }
     }
@@ -168,8 +176,11 @@ open class EditNoteActivity : BaseActivity() {
         setContentView(binding.root)
 
         val inNoteID: UUID? = intent.getStringExtra(NOTE_INTENT_KEY)
+        val hasUnsavedChanges: Boolean = intent.getBooleanExtra(UNSAVED_CHANGES_INTENT_KEY, false)
 
-        viewModel = ViewModelProvider(this, EditNoteViewModel.Factory(inNoteID)).get(EditNoteViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this, EditNoteViewModel.Factory(inNoteID, hasUnsavedChanges)
+        ).get(EditNoteViewModel::class.java)
         viewModel.lifecycleObservers.forEach { lifecycle.addObserver(it) }
 
         // set up close button
@@ -218,12 +229,13 @@ open class EditNoteActivity : BaseActivity() {
      */
     private fun onBackPressed(skipConfirmation: Boolean) {
         if (skipConfirmation || !viewModel.hasMadeChanges) {
+            viewModel.onCancel()
             super.onBackPressed()
         } else {
             ConfirmationDialogFragment.newInstance(
                 message = this.getString(R.string.editnote_cancel_edit_confirmation),
                 confirmButtonMessage = this.getString(R.string.discard),
-                onConfirm = { super.onBackPressed() },
+                onConfirm = { viewModel.onCancel(); super.onBackPressed() },
                 onCancel = {},
             ).show(supportFragmentManager, "fragment_alert_cancel_confirmation")
         }

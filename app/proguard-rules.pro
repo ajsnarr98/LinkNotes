@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# keep classes that will be saved to firestore
+-keep class com.github.ajsnarr98.linknotes.data.db.firestore.DB** { *; }
+
+# classes that are being parcelized
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator CREATOR;
+}

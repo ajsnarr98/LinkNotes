@@ -6,6 +6,7 @@ import com.github.ajsnarr98.linknotes.data.UUID
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreNoteCollection
 import com.github.ajsnarr98.linknotes.data.db.firestore.FirestoreTagCollection
 import com.github.ajsnarr98.linknotes.data.local.AccountStore
+import com.github.ajsnarr98.linknotes.data.local.UnsavedChangeStore
 import com.github.ajsnarr98.linknotes.login.AuthHandler
 import com.github.ajsnarr98.linknotes.login.FirebaseAuthHandler
 import java.lang.IllegalStateException
@@ -20,6 +21,9 @@ object Providers {
     val authHandler: AuthHandler?
         get() = authHandlerProvider.instance
 
+    val unsavedChangeStore: UnsavedChangeStore?
+        get() = unsavedChangeStoreProvider.instance
+
     val noteCollection: NoteCollection?
         get() = noteCollectionProvider.instance
 
@@ -31,6 +35,8 @@ object Providers {
         = BasicProvider(null)
     var authHandlerProvider: Provider<AuthHandler?>
         = RepeatProvider { FirebaseAuthHandler() }
+    var unsavedChangeStoreProvider: Provider<UnsavedChangeStore?>
+        = BasicProvider(null)
     var noteCollectionProvider: Provider<NoteCollection?>
         = UserDependantLazyProvider { userId ->
             FirestoreNoteCollection(userId = userId ?: throw IllegalStateException("Cannot access notes for null user"))

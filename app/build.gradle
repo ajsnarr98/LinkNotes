@@ -18,6 +18,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.debug
     }
     buildFeatures {
         viewBinding = true
@@ -26,13 +27,16 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
         }
         dev {
             // used for CI building
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
         }
         debug {
+            minifyEnabled false
             debuggable true
         }
     }

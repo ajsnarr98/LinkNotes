@@ -64,9 +64,9 @@ class MarkdownEditText : AppCompatEditText {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             try {
                 mListContinuationInfo = Markdown.getSelectionContinuesList(
-                    this@MarkdownEditText.text.toString(),
-                    this@MarkdownEditText.selectionStart,
-                    this@MarkdownEditText.selectionEnd,
+                    s.toString(),
+                    start,
+                    start + count,
                 )
                 subListeners.forEach { it.beforeTextChanged(s, start, count, after) }
             } catch (e: Exception) {

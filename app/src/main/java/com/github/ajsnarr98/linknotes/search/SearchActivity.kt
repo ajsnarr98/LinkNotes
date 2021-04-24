@@ -3,7 +3,6 @@ package com.github.ajsnarr98.linknotes.search
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +10,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajsnarr98.linknotes.BaseActivity
 import com.github.ajsnarr98.linknotes.R
@@ -21,6 +21,9 @@ import com.github.ajsnarr98.linknotes.notes.EditNoteActivity
 import com.github.ajsnarr98.linknotes.notes.ViewNoteActivity
 import com.github.ajsnarr98.linknotes.util.dialogs.ConfirmationDialogFragment
 import com.github.ajsnarr98.linknotes.util.hideKeyboardFrom
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.IllegalStateException
 
@@ -88,6 +91,7 @@ class SearchActivity : BaseActivity() {
         }
 
         // check for unsaved changes
+        // TODO - make this a non-blocking call
         if (viewModel.hasUnsavedChanges()) {
             ConfirmationDialogFragment.newInstance(
                 message = getString(R.string.unsaved_changes_recovery_confirmation),

@@ -2,6 +2,7 @@ package com.github.ajsnarr98.linknotes.search
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
@@ -10,6 +11,12 @@ import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.login.AuthHandler
 import com.github.ajsnarr98.linknotes.util.fuzzyMatch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -62,11 +69,15 @@ class SearchViewModel: ViewModel() {
      * app closed.
      */
     fun hasUnsavedChanges(): Boolean {
-        return unsavedChangeStore?.getNote() != null
+        return runBlocking {
+            unsavedChangeStore?.hasUnsavedChanges()?.single() == true
+        }
     }
 
     fun discardUnsavedChanges() {
-        unsavedChangeStore?.clearNote()
+        viewModelScope.launch (Dispatchers.IO) {
+            unsavedChangeStore?.clearNote()?.collect()
+        }
     }
 
     fun onSearchTypesSelected(selectedTypes: List<SearchType>) {

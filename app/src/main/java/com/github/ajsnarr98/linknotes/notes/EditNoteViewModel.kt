@@ -8,13 +8,19 @@ import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.data.UUID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import kotlin.NoSuchElementException
 
 /**
  * If passed in noteID is null, creates a new note.
  */
-class EditNoteViewModel(noteID: UUID?): ViewModel() {
+class EditNoteViewModel(noteID: UUID?, hasUnsavedChanges: Boolean): ViewModel() {
 
     companion object {
         // used for undo/redo
@@ -23,6 +29,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
 
     val notesCollection: NoteCollection = Providers.noteCollection!!
     private val tagCollection: TagCollection = Providers.tagCollection!!
+    private val unsavedChangeStore = Providers.unsavedChangeStore
 
     /**
      * All lifecycle observers known by this ViewModel.
@@ -31,7 +38,13 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         get() = arrayListOf(notesCollection, tagCollection)
 
     // grab a copy of the existing note (to modify) or create a new empty note
-    var note: Note = notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
+    var note: Note = runBlocking {
+        if (hasUnsavedChanges) {
+            requireNotNull(unsavedChangeStore?.getNote()?.single(), { "Unsaved changes not found" })
+        } else {
+            notesCollection.findByID(noteID)?.copy() ?: Note.newEmpty()
+        }
+    }
 
     private val undoStack: Deque<Note> = LinkedList()
     private val redoStack: Deque<Note> = LinkedList()
@@ -59,6 +72,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
     fun addNewEntry() {
         onChangeMade()
         note.addNewEntry()
+        onPostChangeMade()
     }
 
     /**
@@ -67,6 +81,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
     fun addTags(tags: Collection<Tag>) {
         onChangeMade()
         note.tags.addAll(tags)
+        onPostChangeMade()
     }
 
     /**
@@ -76,6 +91,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         onChangeMade()
         note.tags.clear()
         note.tags.addAll(tags)
+        onPostChangeMade()
     }
 
     /**
@@ -84,16 +100,20 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
     fun removeTag(tag: Tag) {
         onChangeMade()
         note.tags.remove(tag)
+        onPostChangeMade()
     }
 
     fun updateExistingEntry(updated: Entry): Boolean {
         onChangeMade()
-        return note.updateExistingEntry(updated)
+        return note.updateExistingEntry(updated).also {
+            onPostChangeMade()
+        }
     }
 
     fun deleteEntry(entry: Entry) {
         onChangeMade()
         note.deleteEntry(entry)
+        onPostChangeMade()
     }
 
     /**
@@ -102,7 +122,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
     fun redo() {
         try {
             val change = redoStack.pop()
-            undoStack.push(change)
+            undoStack.push(this.note.copy())
             if (canUndo.value == false) mutableCanUndo.value = true
             if (redoStack.isEmpty()) mutableCanRedo.value = false
             this.note = change
@@ -115,7 +135,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
     fun undo() {
         try {
             val change = undoStack.pop()
-            redoStack.push(change)
+            redoStack.push(this.note.copy())
             if (canRedo.value == false) mutableCanRedo.value = true
             if (undoStack.isEmpty()) mutableCanUndo.value = false
             this.note = change
@@ -130,6 +150,18 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
         toSave.fillDefaults()
         notesCollection.add(toSave)
         undoStack.clear()
+        viewModelScope.launch (Dispatchers.IO) {
+            unsavedChangeStore?.clearNote()?.collect()
+        }
+    }
+
+    /**
+     * Call when ready to cancel changes to this note.
+     */
+    fun onCancel() {
+        viewModelScope.launch (Dispatchers.IO) {
+            unsavedChangeStore?.clearNote()?.collect()
+        }
     }
 
     /**
@@ -140,6 +172,7 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
             redoStack.clear()
             mutableCanRedo.value = false
         }
+        // TODO - update undo with current selection
         undoStack.push(note.copy())
         if (canUndo.value == false) {
             mutableCanUndo.value = true
@@ -150,13 +183,22 @@ class EditNoteViewModel(noteID: UUID?): ViewModel() {
     }
 
     /**
+     * Call this after a change is made.
+     */
+    private fun onPostChangeMade() {
+        viewModelScope.launch(Dispatchers.IO) {
+            unsavedChangeStore?.persistNote(note)?.collect()
+        }
+    }
+
+    /**
      * If passed in inNote is null, creates a new note.
      */
-    class Factory(private val inNoteID: UUID?) : ViewModelProvider.Factory {
+    class Factory(private val inNoteID: UUID?, private val hasUnsavedChanges: Boolean = false) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return if (modelClass.isAssignableFrom(EditNoteViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                EditNoteViewModel(inNoteID) as T
+                EditNoteViewModel(inNoteID, hasUnsavedChanges) as T
             } else {
                 throw IllegalArgumentException("ViewModel Not Found")
             }

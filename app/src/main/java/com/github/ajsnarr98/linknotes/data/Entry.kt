@@ -3,6 +3,7 @@ package com.github.ajsnarr98.linknotes.data
 import android.os.Parcelable
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 import java.util.*
 
 @Parcelize
@@ -13,7 +14,7 @@ data class Entry(val id: UUID,
             var lastDateEdited: Date = Date(),
             var isDeletable: Boolean = true,
             val subEntries: MutableList<Entry> = mutableListOf(),
-): AppDataObject, Parcelable {
+): AppDataObject, Parcelable, Serializable {
 
     /**
      * Note containing this list of entries.

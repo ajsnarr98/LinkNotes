@@ -8,7 +8,6 @@
     <string name="cancel">Cancel</string>
     <string name="discard">Discard</string>
 
-
     <!-- Editnote Activity -->
     <string name="editnote_activity_title">Add New Note</string>
     <string name="editnote_title_suggestion">Note Title...</string>
@@ -70,5 +69,9 @@
 
     <string name="generic_confirm">Confirm</string>
     <string name="generic_cancel">Cancel</string>
+
+    <!-- Misc -->
+    <string name="unsaved_changes_recovery_confirmation">You have unsaved changes. Would you like to recover them?</string>
+    <string name="unsaved_changes_recovery_second_confirmaton">Are you sure you want to discard your unsaved changes?</string>
 
 </resources>

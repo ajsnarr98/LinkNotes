@@ -2,6 +2,7 @@ package com.github.ajsnarr98.linknotes.search
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.R
 import com.github.ajsnarr98.linknotes.data.Note
@@ -10,6 +11,12 @@ import com.github.ajsnarr98.linknotes.data.Tag
 import com.github.ajsnarr98.linknotes.data.TagCollection
 import com.github.ajsnarr98.linknotes.login.AuthHandler
 import com.github.ajsnarr98.linknotes.util.fuzzyMatch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -33,6 +40,7 @@ class SearchViewModel: ViewModel() {
 
     val notesCollection: NoteCollection = Providers.noteCollection!!
     private val tagCollection: TagCollection = Providers.tagCollection!!
+    private val unsavedChangeStore = Providers.unsavedChangeStore
 
     /**
      * All lifecycle observers known by this ViewModel.
@@ -55,6 +63,22 @@ class SearchViewModel: ViewModel() {
     val filteredForSearch get() = orderForSearch(filterForSearch(notesCollection.toList()))
 
     private val isValidSearch: Boolean get() = searchStr.length >= MIN_SEARCH_LENGTH
+
+    /**
+     * Returns true when there were unsaved changes to a note last time the
+     * app closed.
+     */
+    fun hasUnsavedChanges(): Boolean {
+        return runBlocking {
+            unsavedChangeStore?.hasUnsavedChanges()?.single() == true
+        }
+    }
+
+    fun discardUnsavedChanges() {
+        viewModelScope.launch (Dispatchers.IO) {
+            unsavedChangeStore?.clearNote()?.collect()
+        }
+    }
 
     fun onSearchTypesSelected(selectedTypes: List<SearchType>) {
         // reset search type values

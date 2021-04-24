@@ -53,7 +53,7 @@ class AddTagDialog : DialogFragment() {
                 },
                 onCancel = {},
                 message = requireContext().getString(R.string.editnote_create_new_tag_confirmation, tagText),
-            ).show(parentFragmentManager, "confirm_tag_create_dialog")
+            ).show(requireParentFragment().requireFragmentManager(), "confirm_tag_create_dialog")
         } else {
             viewModel.addTagToQueue(tag)
         }

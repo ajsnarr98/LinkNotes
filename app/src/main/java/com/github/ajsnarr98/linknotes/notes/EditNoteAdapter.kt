@@ -210,7 +210,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
     class NoteDetailViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
         ViewHolder(view) {
 
-        private lateinit var binding: ItemEditnoteDetailsBinding
+        private val binding = ItemEditnoteDetailsBinding.bind(itemView)
 
         private var titleWatcher: TextWatcher? = null
         private var noteTypeWatcher: TextWatcher? = null
@@ -218,7 +218,6 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
         fun onBind() {
             Timber.d("onBindNoteDetails")
-            binding = ItemEditnoteDetailsBinding.bind(itemView)
 
             // remove old update listeners before refreshing views
             removeListeners()

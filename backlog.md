@@ -40,6 +40,7 @@
 - implement undo button when editing notes
 - save changes to note for recovery in case of crash (discard on cancel or save)
 - add custom recyclerview-like chipgroup
+- add sign config for release to the release build
 
 ## Bugs
 - clicking "add" entry copies an existing entry sometimes (found with 2 entries both containing text)

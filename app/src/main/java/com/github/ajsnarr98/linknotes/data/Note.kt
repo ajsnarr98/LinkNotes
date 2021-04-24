@@ -2,6 +2,7 @@ package com.github.ajsnarr98.linknotes.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 import java.util.*
 
 @Parcelize
@@ -17,7 +18,7 @@ data class Note(
     val tags: MutableSet<Tag> = mutableSetOf(),
     val entries: EntryList = EntryList.getEmpty(),
     val notes: MutableList<Note>? = null // for noteGroup types
-) : AppDataObject, Parcelable {
+) : AppDataObject, Parcelable, Serializable {
 
     init {
         entries.parentNote = this

@@ -15,6 +15,7 @@
 ## Features
 - fix proguard/r8 rules for firebase DB classes
 - make default profile image a square
+- add ability to collapse/expand entries in a note
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
 - display loading indicator in note screen when loading notes from firebase

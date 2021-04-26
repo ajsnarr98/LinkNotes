@@ -8,13 +8,35 @@ import java.util.*
 
 @Parcelize
 data class Entry(val id: UUID,
-            var type: EntryType = EntryType.DEFAULT,
+            var type: EntryType = EntryType.DEFAULT(),
             private var mContent: EntryContent = EntryContent.EMPTY,
+            var priority: EntryPriority = EntryPriority.LOWEST,
             var dateCreated: Date = Date(),
             var lastDateEdited: Date = Date(),
             var isDeletable: Boolean = true,
             val subEntries: MutableList<Entry> = mutableListOf(),
 ): AppDataObject, Parcelable, Serializable {
+
+    companion object {
+        fun forType(
+            id: UUID,
+            type: EntryType,
+            isDeletable: Boolean = true,
+            priority: EntryPriority = EntryPriority.LOWEST,
+        ): Entry {
+            return when (type) {
+                is EntryType.DEFAULT -> Entry(id = id, type = type, priority = priority, isDeletable = isDeletable)
+                is EntryType.IMAGES  -> Entry(
+                    id = id,
+                    type = type,
+                    mContent = EntryContent.IMAGES_START,
+                    priority = priority,
+                    isDeletable = isDeletable,
+                )
+                is EntryType.CUSTOM -> Entry(id = id, type = type, priority = priority, isDeletable = isDeletable)
+            }
+        }
+    }
 
     /**
      * Note containing this list of entries.
@@ -40,12 +62,12 @@ data class Entry(val id: UUID,
     fun copy(): Entry {
         return Entry(
             id = this.id,
-            type = this.type.copy(),
+            type = this.type,
             mContent = this.mContent.copy(),
             dateCreated = this.dateCreated,
             lastDateEdited = this.lastDateEdited,
             isDeletable = this.isDeletable,
-            subEntries = this.subEntries.map { it }.toMutableList(),
+            subEntries = this.subEntries.map { it.copy() }.toMutableList(),
         )
     }
 
@@ -59,7 +81,7 @@ data class Entry(val id: UUID,
      * incomplete new note.
      */
     fun fillDefaults() {
-        if (type.value.isEmpty()) type = EntryType.DEFAULT
+        if (type.value.isEmpty()) type = EntryType.DEFAULT()
         for (entry in subEntries) {
             entry.fillDefaults()
         }

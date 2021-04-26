@@ -3,6 +3,8 @@ package com.github.ajsnarr98.linknotes.notes
 import androidx.lifecycle.*
 import com.github.ajsnarr98.linknotes.Providers
 import com.github.ajsnarr98.linknotes.data.Entry
+import com.github.ajsnarr98.linknotes.data.EntryPriority
+import com.github.ajsnarr98.linknotes.data.EntryType
 import com.github.ajsnarr98.linknotes.data.Note
 import com.github.ajsnarr98.linknotes.data.NoteCollection
 import com.github.ajsnarr98.linknotes.data.Tag

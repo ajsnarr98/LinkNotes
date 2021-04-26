@@ -18,6 +18,7 @@ import com.github.ajsnarr98.linknotes.databinding.ItemEditnoteEntryBinding
 import com.google.android.material.chip.Chip
 import timber.log.Timber
 import java.lang.IllegalArgumentException
+import java.util.*
 
 
 class EditNoteAdapter(private val viewModel: EditNoteViewModel,
@@ -93,17 +94,18 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_entry, parent, false),
-                viewModel, actionListener
+                actionListener,
             )
             NOTE_DETAILS_TYPE -> NoteDetailViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_editnote_details, parent, false),
-                    viewModel, actionListener
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_editnote_details, parent, false),
+                viewModel,
+                actionListener,
             )
             ADD_ENTRY_BUTTON_TYPE -> AddButtonViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_add_btn, parent, false),
-                viewModel, actionListener
+                actionListener,
             )
             BOTTOM_SPACING_TYPE -> BasicViewHolder(
                 LayoutInflater.from(parent.context)
@@ -160,7 +162,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
     class BasicViewHolder(view: View) : ViewHolder(view)
 
 
-    class EntryViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+    class EntryViewHolder(view: View, private val actionListener: ActionListener) :
         ViewHolder(view) {
 
         private val binding = ItemEditnoteEntryBinding.bind(itemView)
@@ -184,9 +186,9 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
             // add listeners
             entryTypeListener = AfterTextChangedWatcher {
-                val type: String? = it?.toString()
+                val type: String? = it?.toString()?.toLowerCase(Locale.US)
                 val newEntry = this.entry.copy()
-                newEntry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
+                newEntry.type = if (type != null) EntryType.forValue(type) else EntryType.DEFAULT()
                 this.entry = actionListener.onEditEntry(newEntry) ?: this.entry // update stored entry if successful
             }.also { binding.entryType.addTextChangedListener(it) }
 
@@ -207,7 +209,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    class NoteDetailViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+    class NoteDetailViewHolder(view: View, private val viewModel: EditNoteViewModel, private val actionListener: ActionListener) :
         ViewHolder(view) {
 
         private val binding = ItemEditnoteDetailsBinding.bind(itemView)
@@ -287,7 +289,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    class AddButtonViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+    class AddButtonViewHolder(view: View, private val actionListener: ActionListener) :
             ViewHolder(view) {
 
         private lateinit var binding: ItemEditnoteAddBtnBinding

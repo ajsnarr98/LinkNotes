@@ -3,17 +3,17 @@ package com.github.ajsnarr98.linknotes.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.graphics.Point
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.FragmentActivity
 import com.github.ajsnarr98.linknotes.BaseActivity
 import io.noties.markwon.Markwon
+import io.noties.markwon.image.glide.GlideImagesPlugin
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import java.lang.IllegalArgumentException
 import java.math.BigInteger
 
 fun createMarkwonInstance(context: Context): Markwon = Markwon.builder(context)
+    .usePlugin(GlideImagesPlugin.create(context))
     .build()
 
 fun fuzzyMatch(searchStr: String, matchTo: String): Boolean {

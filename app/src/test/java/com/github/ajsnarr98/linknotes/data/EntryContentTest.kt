@@ -53,4 +53,50 @@ class EntryContentTest {
         val actual: List<String> = EntryContent(text).images.toList()
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun deleteImageTest1() {
+        val toRemove = "image.png"
+        val text = "faldflj\n" +
+                "hello 123 [derp](derp.com)\n" +
+                "![derp image](derp.png)\n" +
+                "Hi this line also has an image ![image](image.png) would you look at that\n" +
+                "![](derp.png)\n" +
+                "close but not an image: !](derp.png)" +
+                "![] whoops this is not an image here" +
+                "(hello.png)"
+        val expected = "faldflj\n" +
+                "hello 123 [derp](derp.com)\n" +
+                "![derp image](derp.png)\n" +
+                "Hi this line also has an image would you look at that\n" +
+                "![](derp.png)\n" +
+                "close but not an image: !](derp.png)" +
+                "![] whoops this is not an image here" +
+                "(hello.png)"
+        val actual: String = EntryContent(text).apply { removeImage(toRemove) }.value
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun deleteImageTest2() {
+        val toRemove = "derp.png"
+        val text = "faldflj\n" +
+                "hello 123 [derp](derp.com)\n" +
+                "![derp image](derp.png)\n" +
+                "Hi this line also has an image ![image](image.png) would you look at that\n" +
+                "![](derp.png)\n" +
+                "close but not an image: !](derp.png)" +
+                "![] whoops this is not an image here" +
+                "(hello.png)"
+        val expected = "faldflj\n" +
+                "hello 123 [derp](derp.com)\n" +
+                "\n" +
+                "Hi this line also has an image ![image](image.png) would you look at that\n" +
+                "![](derp.png)\n" +
+                "close but not an image: !](derp.png)" +
+                "![] whoops this is not an image here" +
+                "(hello.png)"
+        val actual: String = EntryContent(text).apply { removeImage(toRemove) }.value
+        assertEquals(expected, actual)
+    }
 }

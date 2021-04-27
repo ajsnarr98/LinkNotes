@@ -25,7 +25,8 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                       private val actionListener: ActionListener) : RecyclerView.Adapter<EditNoteAdapter.ViewHolder>() {
 
     companion object {
-        const val ENTRY_TYPE = 0
+        const val DEFAULT_ENTRY_TYPE = 0
+        const val IMAGE_ENTRY_TYPE = -1
         const val NOTE_DETAILS_TYPE = 1
         const val ADD_ENTRY_BUTTON_TYPE = 2
         const val BOTTOM_SPACING_TYPE = 3
@@ -91,10 +92,19 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return when (viewType) {
-            ENTRY_TYPE -> EntryViewHolder(
+            DEFAULT_ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_entry, parent, false),
                 actionListener,
+            )
+            IMAGE_ENTRY_TYPE -> SpecialEntryViewHolder(
+                ImageEntryView(
+                    context = parent.context,
+                    isEditable = true,
+                    addImageListener = { entry: Entry, imageUrl: String ->
+                        actionListener.onEditEntry(entry.copy().apply { appendImage(imageUrl) })
+                    }
+                )
             )
             NOTE_DETAILS_TYPE -> NoteDetailViewHolder(
                 LayoutInflater.from(parent.context)
@@ -120,7 +130,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             0 -> NOTE_DETAILS_TYPE
             itemCount - 2 -> ADD_ENTRY_BUTTON_TYPE
             itemCount - 1 -> BOTTOM_SPACING_TYPE
-            else -> ENTRY_TYPE
+            else -> when (viewModel.note.entries[position - 1].type) {
+                is EntryType.IMAGES -> IMAGE_ENTRY_TYPE
+                is EntryType.DEFAULT, is EntryType.CUSTOM -> DEFAULT_ENTRY_TYPE
+            }
         }
     }
 
@@ -128,10 +141,11 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return when (holder) {
-            is EntryViewHolder      -> holder.onBind(viewModel.note.entries[position - 1])
-            is NoteDetailViewHolder -> holder.onBind()
-            is AddButtonViewHolder  -> holder.onBind()
-            is BasicViewHolder      -> { /* no-op */ }
+            is EntryViewHolder        -> holder.onBind(viewModel.note.entries[position - 1])
+            is SpecialEntryViewHolder -> holder.onBind(viewModel.note.entries[position - 1])
+            is NoteDetailViewHolder   -> holder.onBind()
+            is AddButtonViewHolder    -> holder.onBind()
+            is BasicViewHolder        -> { /* no-op */ }
             else -> throw IllegalArgumentException("Unhandled viewType: ${holder::class.qualifiedName}")
         }
     }
@@ -161,6 +175,12 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
     class BasicViewHolder(view: View) : ViewHolder(view)
 
+    /** Holds a special type of entry view that has implemented EntryView. */
+    class SpecialEntryViewHolder(val entryView: EntryView) : ViewHolder(entryView.view) {
+        fun onBind(entry: Entry) {
+            entryView.bind(entry)
+        }
+    }
 
     class EntryViewHolder(view: View, private val actionListener: ActionListener) :
         ViewHolder(view) {

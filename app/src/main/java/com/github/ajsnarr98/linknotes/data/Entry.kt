@@ -72,6 +72,26 @@ data class Entry(val id: UUID,
     }
 
     /**
+     * Meant for entries of type EntryType.IMAGES.
+     *
+     * Adds an image to the end of the entry.
+     */
+    fun appendImage(imageUrl: String) {
+        mContent.appendImage(imageUrl)
+    }
+
+    /**
+     * Meant for entries of type EntryType.IMAGES.
+     *
+     * Removes the first instance of an image with a matching url.
+     *
+     * @return true if successful, false if not
+     */
+    fun removeImage(imageUrl: String): Boolean {
+        return mContent.removeImage(imageUrl)
+    }
+
+    /**
      * Add a new sub entry.
      */
     fun addSubEntry(subEntry: Entry) = subEntries.add(subEntry)

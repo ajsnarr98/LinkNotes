@@ -26,7 +26,8 @@ class ImageEntryView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     private val isEditable: Boolean = true,
-    var addImageListener: ((entry: Entry, imageUrl: String) -> Unit)? = null,
+    var addImageListener: (entry: Entry, imageUrl: String) -> Unit = { _, _ -> },
+    var onDeleteEntryPress: (entry: Entry) -> Unit = {},
 ): ConstraintLayout(context, attrs, defStyleAttr), EntryView {
 
     init {
@@ -59,6 +60,8 @@ class ImageEntryView @JvmOverloads constructor(
             onSuccess(testImages.random())
         }
 
+        deleteButton.setOnClickListener { onDeleteEntryPress(entry) }
+
         if (isEditable) {
             deleteButton.visibility = View.VISIBLE
             addImage.visibility = View.VISIBLE
@@ -80,6 +83,7 @@ class ImageEntryView @JvmOverloads constructor(
     override fun bind(entry: Entry) {
         if (entry.type !is EntryType.IMAGES) throw IllegalStateException("Entry should be an image entry")
         this.entry = entry
+        binding.deleteButton.visibility = if (isEditable && entry.isDeletable) View.VISIBLE else View.GONE
         this.recyclerAdapter.setImages(entry.content.images.toList())
     }
 

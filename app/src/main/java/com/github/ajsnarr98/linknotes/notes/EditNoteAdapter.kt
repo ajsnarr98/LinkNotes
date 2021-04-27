@@ -103,7 +103,8 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                     isEditable = true,
                     addImageListener = { entry: Entry, imageUrl: String ->
                         actionListener.onEditEntry(entry.copy().apply { appendImage(imageUrl) })
-                    }
+                    },
+                    onDeleteEntryPress = { entry -> actionListener.onDeleteEntryPress(entry) },
                 )
             )
             NOTE_DETAILS_TYPE -> NoteDetailViewHolder(

@@ -18,13 +18,15 @@ import com.github.ajsnarr98.linknotes.databinding.ItemEditnoteEntryBinding
 import com.google.android.material.chip.Chip
 import timber.log.Timber
 import java.lang.IllegalArgumentException
+import java.util.*
 
 
 class EditNoteAdapter(private val viewModel: EditNoteViewModel,
                       private val actionListener: ActionListener) : RecyclerView.Adapter<EditNoteAdapter.ViewHolder>() {
 
     companion object {
-        const val ENTRY_TYPE = 0
+        const val DEFAULT_ENTRY_TYPE = 0
+        const val IMAGE_ENTRY_TYPE = -1
         const val NOTE_DETAILS_TYPE = 1
         const val ADD_ENTRY_BUTTON_TYPE = 2
         const val BOTTOM_SPACING_TYPE = 3
@@ -90,20 +92,31 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return when (viewType) {
-            ENTRY_TYPE -> EntryViewHolder(
+            DEFAULT_ENTRY_TYPE -> EntryViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_entry, parent, false),
-                viewModel, actionListener
+                actionListener,
+            )
+            IMAGE_ENTRY_TYPE -> SpecialEntryViewHolder(
+                ImageEntryView(
+                    context = parent.context,
+                    isEditable = true,
+                    addImageListener = { entry: Entry, imageUrl: String ->
+                        actionListener.onEditEntry(entry.copy().apply { appendImage(imageUrl) })
+                    },
+                    onDeleteEntryPress = { entry -> actionListener.onDeleteEntryPress(entry) },
+                )
             )
             NOTE_DETAILS_TYPE -> NoteDetailViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_editnote_details, parent, false),
-                    viewModel, actionListener
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_editnote_details, parent, false),
+                viewModel,
+                actionListener,
             )
             ADD_ENTRY_BUTTON_TYPE -> AddButtonViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_editnote_add_btn, parent, false),
-                viewModel, actionListener
+                actionListener,
             )
             BOTTOM_SPACING_TYPE -> BasicViewHolder(
                 LayoutInflater.from(parent.context)
@@ -118,7 +131,10 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
             0 -> NOTE_DETAILS_TYPE
             itemCount - 2 -> ADD_ENTRY_BUTTON_TYPE
             itemCount - 1 -> BOTTOM_SPACING_TYPE
-            else -> ENTRY_TYPE
+            else -> when (viewModel.note.entries[position - 1].type) {
+                is EntryType.IMAGES -> IMAGE_ENTRY_TYPE
+                is EntryType.DEFAULT, is EntryType.CUSTOM -> DEFAULT_ENTRY_TYPE
+            }
         }
     }
 
@@ -126,10 +142,11 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return when (holder) {
-            is EntryViewHolder      -> holder.onBind(viewModel.note.entries[position - 1])
-            is NoteDetailViewHolder -> holder.onBind()
-            is AddButtonViewHolder  -> holder.onBind()
-            is BasicViewHolder      -> { /* no-op */ }
+            is EntryViewHolder        -> holder.onBind(viewModel.note.entries[position - 1])
+            is SpecialEntryViewHolder -> holder.onBind(viewModel.note.entries[position - 1])
+            is NoteDetailViewHolder   -> holder.onBind()
+            is AddButtonViewHolder    -> holder.onBind()
+            is BasicViewHolder        -> { /* no-op */ }
             else -> throw IllegalArgumentException("Unhandled viewType: ${holder::class.qualifiedName}")
         }
     }
@@ -159,8 +176,14 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
     class BasicViewHolder(view: View) : ViewHolder(view)
 
+    /** Holds a special type of entry view that has implemented EntryView. */
+    class SpecialEntryViewHolder(val entryView: EntryView) : ViewHolder(entryView.view) {
+        fun onBind(entry: Entry) {
+            entryView.bind(entry)
+        }
+    }
 
-    class EntryViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+    class EntryViewHolder(view: View, private val actionListener: ActionListener) :
         ViewHolder(view) {
 
         private val binding = ItemEditnoteEntryBinding.bind(itemView)
@@ -184,9 +207,9 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
 
             // add listeners
             entryTypeListener = AfterTextChangedWatcher {
-                val type: String? = it?.toString()
+                val type: String? = it?.toString()?.toLowerCase(Locale.US)
                 val newEntry = this.entry.copy()
-                newEntry.type = if (type != null) EntryType(value = type) else EntryType.DEFAULT
+                newEntry.type = if (type != null) EntryType.forValue(type) else EntryType.DEFAULT()
                 this.entry = actionListener.onEditEntry(newEntry) ?: this.entry // update stored entry if successful
             }.also { binding.entryType.addTextChangedListener(it) }
 
@@ -207,7 +230,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    class NoteDetailViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+    class NoteDetailViewHolder(view: View, private val viewModel: EditNoteViewModel, private val actionListener: ActionListener) :
         ViewHolder(view) {
 
         private val binding = ItemEditnoteDetailsBinding.bind(itemView)
@@ -287,7 +310,7 @@ class EditNoteAdapter(private val viewModel: EditNoteViewModel,
         }
     }
 
-    class AddButtonViewHolder(view: View, protected val viewModel: EditNoteViewModel, protected val actionListener: ActionListener) :
+    class AddButtonViewHolder(view: View, private val actionListener: ActionListener) :
             ViewHolder(view) {
 
         private lateinit var binding: ItemEditnoteAddBtnBinding

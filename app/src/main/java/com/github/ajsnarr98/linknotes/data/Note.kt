@@ -43,7 +43,10 @@ data class Note(
         private const val DEFAULT_TYPE = Type.DEFAULT
 
         fun newEmpty(): Note {
-            return Note(null)
+            return Note(null).apply {
+                // add default images entry
+                addNewEntry(EntryType.IMAGES(), isDeletable = false, priority = EntryPriority.PINNED)
+            }
         }
     }
 
@@ -64,6 +67,27 @@ data class Note(
      */
     fun addNewEntry() {
         entries.add(Entry(id = entries.nextEntryID))
+        sortEntriesByPriority()
+        onEditNote()
+    }
+
+    /**
+     * Add a new entry of the given type to this note.
+     */
+    fun addNewEntry(
+        type: EntryType,
+        isDeletable: Boolean = true,
+        priority: EntryPriority = EntryPriority.LOWEST
+    ) {
+        entries.add(
+            Entry.forType(
+                id = entries.nextEntryID,
+                type = type,
+                isDeletable = isDeletable,
+                priority = priority,
+            )
+        )
+        sortEntriesByPriority()
         onEditNote()
     }
 
@@ -153,12 +177,24 @@ data class Note(
     }
 
     /**
+     * Sort entries by priority, not modifying relative order.
+     */
+    fun sortEntriesByPriority() {
+        entries.sortBy { entry -> entry.priority.value ?: Int.MAX_VALUE }
+    }
+
+    /**
      * Updates the existing entry with the matching ID.
      *
      * @return true if succesfully updated or false if failure
      */
     fun updateExistingEntry(updated: Entry): Boolean {
-        return entries.updateExisting(updated).also { isUpdated -> if (isUpdated) onEditNote() }
+        return entries.updateExisting(updated).also { isUpdated ->
+            if (isUpdated) {
+                sortEntriesByPriority()
+                onEditNote()
+            }
+        }
     }
 
     /**

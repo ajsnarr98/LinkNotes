@@ -15,6 +15,7 @@
 ## Features
 - fix proguard/r8 rules for firebase DB classes
 - make default profile image a square
+- add ability to collapse/expand entries in a note
 - sort entries in some fashion (maybe most recent, with special entries, like pics, at top)
 - better delete button
 - display loading indicator in note screen when loading notes from firebase
@@ -31,7 +32,6 @@
 - set default values for a new note on save
 - make viewnote screen look nicer
 - prompt to save in edit mode on back button hit, if changes were made
-- add images to entries
 - add default special entry types, like a value bar
 - add ability to add custom templates for new notes to start out with?
 - add real editnote screen/boxes
@@ -41,6 +41,7 @@
 - save changes to note for recovery in case of crash (discard on cancel or save)
 - add custom recyclerview-like chipgroup
 - add sign config for release to the release build
+- get images to resize smoothly when loading
 
 ## Bugs
 - clicking "add" entry copies an existing entry sometimes (found with 2 entries both containing text)

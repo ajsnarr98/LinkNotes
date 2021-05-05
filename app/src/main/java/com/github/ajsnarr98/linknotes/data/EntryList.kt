@@ -58,5 +58,4 @@ class EntryList: ArrayList<Entry>(), Parcelable, Serializable {
         }
         return false
     }
-
 }

@@ -68,7 +68,7 @@ class EntryContentTest {
         val expected = "faldflj\n" +
                 "hello 123 [derp](derp.com)\n" +
                 "![derp image](derp.png)\n" +
-                "Hi this line also has an image would you look at that\n" +
+                "Hi this line also has an image  would you look at that\n" +
                 "![](derp.png)\n" +
                 "close but not an image: !](derp.png)" +
                 "![] whoops this is not an image here" +
@@ -85,16 +85,16 @@ class EntryContentTest {
                 "![derp image](derp.png)\n" +
                 "Hi this line also has an image ![image](image.png) would you look at that\n" +
                 "![](derp.png)\n" +
-                "close but not an image: !](derp.png)" +
-                "![] whoops this is not an image here" +
+                "close but not an image: !](derp.png)\n" +
+                "![] whoops this is not an image here\n" +
                 "(hello.png)"
         val expected = "faldflj\n" +
                 "hello 123 [derp](derp.com)\n" +
                 "\n" +
                 "Hi this line also has an image ![image](image.png) would you look at that\n" +
                 "![](derp.png)\n" +
-                "close but not an image: !](derp.png)" +
-                "![] whoops this is not an image here" +
+                "close but not an image: !](derp.png)\n" +
+                "![] whoops this is not an image here\n" +
                 "(hello.png)"
         val actual: String = EntryContent(text).apply { removeImage(toRemove) }.value
         assertEquals(expected, actual)

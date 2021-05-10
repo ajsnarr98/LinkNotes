@@ -13,6 +13,8 @@
     <color name="black_87">#de000000</color>
     <color name="black_54">#8a000000</color>
 
+    <color name="entry_card_background">#0FAAAAAA</color>
+
     <color name="grayedOnColorPrimary">#5d9490</color>
 
     <color name="transparent">#00000000</color>

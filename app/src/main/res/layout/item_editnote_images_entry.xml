@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/activity_quarter_vertical_padding"
     android:layout_marginBottom="@dimen/activity_quarter_vertical_padding"
-    app:cardBackgroundColor="#0FAAAAAA"
+    app:cardBackgroundColor="@color/entry_card_background"
     app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

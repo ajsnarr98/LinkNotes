@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
@@ -28,10 +28,13 @@ class ImageEntryView @JvmOverloads constructor(
     private val isEditable: Boolean = true,
     var addImageListener: (entry: Entry, imageUrl: String) -> Unit = { _, _ -> },
     var onDeleteEntryPress: (entry: Entry) -> Unit = {},
-): ConstraintLayout(context, attrs, defStyleAttr), EntryView {
+): LinearLayout(context, attrs, defStyleAttr), EntryView {
 
     init {
-        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        // default attributes
+        if (attrs == null) {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 300)
+        }
     }
 
     private val recyclerAdapter: ImageEntryAdapter = ImageEntryAdapter()
@@ -39,7 +42,7 @@ class ImageEntryView @JvmOverloads constructor(
     private val binding = ItemEditnoteImagesEntryBinding.inflate(
         LayoutInflater.from(context),
         this,
-        true,
+        false,
     ).apply {
         // set up recyclerview
         images.apply {
@@ -75,6 +78,8 @@ class ImageEntryView @JvmOverloads constructor(
             entryTypeTitle.visibility = View.GONE
             entryTypeStatic.visibility = View.VISIBLE
         }
+    }.also {
+        this@ImageEntryView.addView(it.root)
     }
 
     /**
@@ -127,7 +132,7 @@ class ImageEntryView @JvmOverloads constructor(
 
         override fun getItemCount(): Int = images.size
 
-        class ViewHolder(private val view: ImageView) : RecyclerView.ViewHolder(view) {
+        inner class ViewHolder(private val view: ImageView) : RecyclerView.ViewHolder(view) {
             fun bind(imageUrl: String) {
                 Glide.with(view)
                     .load(imageUrl)

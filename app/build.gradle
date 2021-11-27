@@ -24,6 +24,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    packagingOptions {
+        pickFirst 'protobuf.meta'
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -99,6 +103,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.api-client:google-api-client:1.31.2'
 
+    // google photos
+    implementation ('com.google.photos.library:google-photos-library-client:1.6.1') {
+        exclude group: "com.google.api.grpc" // module: "jetified-proto-google-common-protos-2.0.1"
+        exclude group: "com.google.protobuf" // , module: "jetified-protobuf-java-4.0.0-rc-2"
+    }
+
     // testing
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.robolectric:robolectric:4.4'
@@ -124,5 +134,3 @@ dependencies {
     // fuzzy string matching
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 }
-
-apply plugin: 'com.google.gms.google-services'

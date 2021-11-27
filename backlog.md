@@ -42,6 +42,7 @@
 - add custom recyclerview-like chipgroup
 - add sign config for release to the release build
 - get images to resize smoothly when loading
+- update keyboard accessory using new IME features? https://developer.android.com/about/versions/11/features#text_and_input
 
 ## Bugs
 - clicking "add" entry copies an existing entry sometimes (found with 2 entries both containing text)

@@ -35,7 +35,7 @@
     <string name="editnote_cancel_edit_confirmation">Are you sure you want to discard these changes?</string>
     <string name="editnote_undo_button_desc">Undo</string>
     <string name="editnote_redo_button_desc">Redo</string>
-    <string name="editnote_add_image">Add Image</string>
+    <string name="editnote_add_image">Add from Google Photos</string>
 
     <!-- Text editing -->
     <string name="bold_content_desc">Bold</string>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.ajsnarr98.linknotes">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <!--
@@ -20,7 +19,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".login.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,13 +28,16 @@
         </activity>
         <activity
             android:name=".search.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="false">
         </activity>
         <activity
             android:name=".notes.EditNoteActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".notes.ViewNoteActivity" />
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false" />
+        <activity android:name=".notes.ViewNoteActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

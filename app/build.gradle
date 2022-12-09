@@ -4,9 +4,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'com.google.gms.google-services'
+
 def build_param = "${build}";
 
 android {
+    namespace = "com.github.ajsnarr98.linknotes"
+
     compileSdkVersion 31
     defaultConfig {
         applicationId "com.github.ajsnarr98.linknotes"
@@ -124,5 +128,3 @@ dependencies {
     // fuzzy string matching
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 }
-
-apply plugin: 'com.google.gms.google-services'

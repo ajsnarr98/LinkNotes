@@ -1,7 +1,8 @@
-package com.github.ajsnarr98.linknotes.data.db.firestore
+package com.github.ajsnarr98.linknotes.network.storage.firestore
 
-import com.github.ajsnarr98.linknotes.data.Note
-import com.github.ajsnarr98.linknotes.data.db.DBCollectionObject
+import com.github.ajsnarr98.linknotes.network.domain.Note
+import com.github.ajsnarr98.linknotes.network.storage.DBCollectionObject
+import com.github.ajsnarr98.linknotes.network.domain.EntryList
 import java.util.*
 
 
@@ -9,14 +10,14 @@ data class DBNote(
     override val id: String? = null, // if ID is null or blank string (at most whitespace chars), creates a new id when it is inserted
     val type: String? = null,
     val name: String? = null,
-    val dateCreated: Date? = null,
-    val lastDateEdited: Date? = null,
-    val nicknames: MutableList<String>? = null,
+    val timeCreated: Date? = null,
+    val lastTimeEdited: Date? = null,
+    val nicknames: List<String>? = null,
     val mainPicture: DBPicture? = null,
-    val pictures: MutableList<DBPicture>? = null,
-    val tags: MutableList<DBTag>? = null,
-    val entries: MutableList<DBEntry>? = null,
-    val notes: MutableList<DBNote>? = null
+    val pictures: List<DBPicture>? = null,
+    val tags: List<DBTag>? = null,
+    val entries: List<DBEntry>? = null,
+    val notes: List<DBNote>? = null
 ) : DBCollectionObject<Note> {
 
     companion object {
@@ -25,11 +26,11 @@ data class DBNote(
                 id = other.id,
                 type = other.type,
                 name = other.name,
-                dateCreated = other.dateCreated,
-                lastDateEdited = other.lastDateEdited,
+                timeCreated = other.timeCreated,
+                lastTimeEdited = other.lastTimeEdited,
                 nicknames = other.nicknames,
                 mainPicture = if (other.mainPicture != null) DBPicture.fromAppObject(
-                    other.mainPicture!!
+                    other.mainPicture
                 ) else null,
                 pictures = other.pictures.map { url ->
                     DBPicture.fromAppObject(
@@ -56,13 +57,13 @@ data class DBNote(
         return this.copy(id=id)
     }
 
-    override fun toAppObject(): com.github.ajsnarr98.linknotes.data.Note {
+    override fun toAppObject(): Note {
         return Note(
             id = this.id!!,
-            _type = this.type!!,
-            _name = this.name!!,
-            dateCreated = this.dateCreated!!,
-            lastDateEdited = this.lastDateEdited!!,
+            type = this.type!!,
+            name = this.name!!,
+            timeCreated = this.timeCreated!!,
+            lastTimeEdited = this.lastTimeEdited!!,
             nicknames = this.nicknames!!,
             mainPicture = this.mainPicture?.url,
             pictures = this.pictures!!.map { it.url!! }.toMutableList(),
@@ -72,8 +73,8 @@ data class DBNote(
         )
     }
 
-    private fun toAppEntryList(): com.github.ajsnarr98.linknotes.data.EntryList {
-        return com.github.ajsnarr98.linknotes.data.EntryList.fromCollection(
+    private fun toAppEntryList(): EntryList {
+        return EntryList.fromCollection(
             entries?.map { it.toAppObject() } ?: listOf()
         )
     }

@@ -15,6 +15,8 @@ class FirestoreNotesRepository(
 
     // TODO add logging
 
+    // TODO save pending changes locally
+
     override val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val notes: MutableStateFlow<Set<Note>> = MutableStateFlow(emptySet())
 

@@ -14,6 +14,8 @@ class FirestoreTagsRepository(
     private val notesRepository: NotesRepository,
 ) : TagsRepository {
 
+    // TODO save pending changes locally
+
     override val isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val tags: MutableStateFlow<TagSet> = MutableStateFlow(TagSet(emptyList()))
     override val pending: MutableStateFlow<List<TagsRepository.PendingChange>> = MutableStateFlow(

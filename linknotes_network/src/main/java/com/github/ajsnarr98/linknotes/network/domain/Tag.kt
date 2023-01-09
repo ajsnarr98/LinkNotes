@@ -1,10 +1,12 @@
 package com.github.ajsnarr98.linknotes.network.domain
 
+import com.github.ajsnarr98.linknotes.network.annotation.ColorInt
+import com.github.ajsnarr98.linknotes.network.util.Color
 import java.io.Serializable
 
 data class Tag(
     val text: String,
-    val color: Color = Color.randomTagColor(),
+    @ColorInt val color: Int = Color.randomTagColor(),
 ) : AppDataObject, Serializable {
 
     override fun equals(other: Any?): Boolean {

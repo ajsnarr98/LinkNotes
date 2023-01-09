@@ -1,6 +1,7 @@
 package com.github.ajsnarr98.linknotes.network.domain
 
 import com.github.ajsnarr98.linknotes.network.TagsRepository
+import com.github.ajsnarr98.linknotes.network.util.Color
 
 // TODO test this
 

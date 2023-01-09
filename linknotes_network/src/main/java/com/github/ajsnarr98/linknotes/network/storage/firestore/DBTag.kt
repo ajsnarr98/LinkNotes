@@ -5,7 +5,7 @@ import com.github.ajsnarr98.linknotes.network.domain.Tag
 
 data class DBTag(
     val text: String? = null,
-    val color: DBColor? = null,
+    val color: Int? = null,
 ) : DBCollectionObject<Tag> {
 
     override val id: String = text!!
@@ -14,7 +14,7 @@ data class DBTag(
         fun fromAppObject(other: Tag) : DBTag {
             return DBTag(
                 text = other.text,
-                color = DBColor.fromAppObject(other.color)
+                color = other.color,
             )
         }
     }
@@ -22,7 +22,7 @@ data class DBTag(
     override fun toAppObject(): Tag {
         return Tag(
             text = text!!,
-            color = color!!.toAppObject()
+            color = color!!,
         )
     }
 

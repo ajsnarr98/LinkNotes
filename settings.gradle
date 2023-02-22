@@ -1,2 +1,3 @@
 include ':app'
 include ':linknotes_network'
+include ':desktop'

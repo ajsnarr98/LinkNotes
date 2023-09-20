@@ -1,35 +1,22 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-//    kotlin("jvm") version "1.6.10"
-    id("org.jetbrains.compose") version "1.2.2"
-    java
+    kotlin("jvm")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
-//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-//    kotlinOptions {
-//        jvmTarget = "11"
-//    }
-//}
-
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
-}
+group = "com.github.ajsnarr98"
+version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation(compose.desktop.currentOs)
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    testImplementation(kotlin("test"))
 }
 
-//compose.desktop {
-//    application {
-//        mainClass = "MainKt"
-//    }
-//}
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}

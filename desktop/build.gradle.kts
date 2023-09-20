@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlin.jvm)
 }
 
 group = "com.github.ajsnarr98"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 dependencies {
     testImplementation(kotlin("test"))

@@ -90,6 +90,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":linknotes_network"))
+
     testImplementation(kotlin("test"))
 }
 

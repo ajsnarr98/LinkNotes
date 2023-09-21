@@ -8,6 +8,8 @@ group = "com.github.ajsnarr98"
 version = "1.0"
 
 dependencies {
+    implementation(project(":linknotes_network"))
+
     testImplementation(kotlin("test"))
 }
 

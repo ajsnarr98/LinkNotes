@@ -19,5 +19,5 @@ dependencyResolutionManagement {
 rootProject.name = "LinkNotes"
 include(":desktop")
 include(":app")
-include(":network")
+include(":linknotes_network")
 

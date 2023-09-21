@@ -1,0 +1,7 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="colorIconPrimary">@color/colorIconPrimary</item>
+        <item name="colorIconSecondary">@color/colorIconSecondary</item>
+    </style>
+</resources>

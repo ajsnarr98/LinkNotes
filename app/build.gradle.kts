@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
-group = "com.github.ajsnarr98"
+group = "com.github.ajsnarr98.linknotes.android"
 version = "1.0-SNAPSHOT"
 
 val keystoreProperties = Properties().apply {
@@ -29,11 +29,11 @@ android {
         }
     }
 
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.github.ajsnarr98.linknotes"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         multiDexEnabled = true
         versionCode = 1
         versionName =  "1.0"
@@ -91,6 +91,9 @@ android {
 
 dependencies {
     implementation(project(":linknotes_network"))
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime)
 
     testImplementation(kotlin("test"))
 }

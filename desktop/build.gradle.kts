@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":linknotes_network"))
 
     implementation(compose.desktop.currentOs)
+    implementation(libs.kotlin.reflect)
 
     testImplementation(kotlin("test"))
 }

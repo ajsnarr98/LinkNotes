@@ -60,3 +60,4 @@ fastlane/readme.md
 
 # misc
 .DS_Store
+**/keystore.properties

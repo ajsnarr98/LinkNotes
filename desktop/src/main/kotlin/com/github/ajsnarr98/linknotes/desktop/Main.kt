@@ -11,6 +11,10 @@ import com.github.ajsnarr98.linknotes.desktop.login.LoginScreen
 import com.github.ajsnarr98.linknotes.desktop.navigation.NavController
 import com.github.ajsnarr98.linknotes.desktop.navigation.WindowInfo
 import com.github.ajsnarr98.linknotes.desktop.navigation.castDrawState
+import com.github.ajsnarr98.linknotes.desktop.res.AmericanEnglishStringRes
+import com.github.ajsnarr98.linknotes.desktop.res.ImageRes
+import com.github.ajsnarr98.linknotes.desktop.res.LinkNotesDesktopTheme
+import com.github.ajsnarr98.linknotes.desktop.res.StringRes
 import com.github.ajsnarr98.linknotes.network.util.DefaultDispatcherProvider
 import com.github.ajsnarr98.linknotes.network.util.DispatcherProvider
 import kotlinx.coroutines.*
@@ -23,6 +27,8 @@ fun main() = application {
         DependencyGraph().setDependencies {
             set(DispatcherProvider::class) { DefaultDispatcherProvider() }
             set(CoroutineContext::class) { mainContext }
+            set(StringRes::class) { AmericanEnglishStringRes() }
+            set(ImageRes::class) { ImageRes }
         }
     }
 
@@ -52,11 +58,14 @@ fun main() = application {
                     content = content,
                 )
             }
+            // push first screen
             push(WindowInfo.Tag.Main, LoginScreen::class)
         }
     }
 
     for (window in navController.windows()) {
-        navController.drawWindow(this, WindowInfo.Tag.Main)
+        LinkNotesDesktopTheme {
+            navController.drawWindow(this, WindowInfo.Tag.Main)
+        }
     }
 }

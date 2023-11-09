@@ -13,6 +13,8 @@ class DependencyGraph {
     private val constructors: DependencyConstructorMap = mutableMapOf()
     private val topDownRelations: MutableMap<KClass<out Any>, Set<KClass<out Any>>> = mutableMapOf()
 
+    inline fun <reified T : Any> get() = get(T::class)
+
     operator fun <T : Any> get(key: KClass<T>): T {
         @Suppress("UNCHECKED_CAST")
         return this.instantiated[key] as? T ?: throw ClassNotFoundException("Dependency map missing class $key")

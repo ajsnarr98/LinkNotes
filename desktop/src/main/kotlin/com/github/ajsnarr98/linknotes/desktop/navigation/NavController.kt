@@ -66,9 +66,10 @@ class NavController(
     }
 
     /**
-     * Gets all registered windows.
+     * Gets all registered windows that have a screen up.
      */
     fun windows(): Iterable<WindowInfo.Tag> = windows.keys
+        .filter { window -> windowBackstacks[window]?.isNotEmpty() == true }
 
     /**
      * Draws given window and the current screen on it.

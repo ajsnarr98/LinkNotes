@@ -7,6 +7,7 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.github.ajsnarr98.linknotes.desktop.di.DependencyGraph
+import com.github.ajsnarr98.linknotes.desktop.di.get
 import com.github.ajsnarr98.linknotes.desktop.login.LoginScreen
 import com.github.ajsnarr98.linknotes.desktop.navigation.NavController
 import com.github.ajsnarr98.linknotes.desktop.navigation.WindowInfo
@@ -15,7 +16,7 @@ import com.github.ajsnarr98.linknotes.desktop.res.AmericanEnglishStringRes
 import com.github.ajsnarr98.linknotes.desktop.res.ImageRes
 import com.github.ajsnarr98.linknotes.desktop.res.LinkNotesDesktopTheme
 import com.github.ajsnarr98.linknotes.desktop.res.StringRes
-import com.github.ajsnarr98.linknotes.network.util.DefaultDispatcherProvider
+import com.github.ajsnarr98.linknotes.desktop.util.DefaultDispatcherProvider
 import com.github.ajsnarr98.linknotes.network.util.DispatcherProvider
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -27,6 +28,9 @@ fun main() = application {
         DependencyGraph().setDependencies {
             set(DispatcherProvider::class) { DefaultDispatcherProvider() }
             set(CoroutineContext::class) { mainContext }
+            set(CoroutineScope::class, dependencies = setOf(CoroutineContext::class)) { deps ->
+                CoroutineScope(deps.get<CoroutineContext>())
+            }
             set(StringRes::class) { AmericanEnglishStringRes() }
             set(ImageRes::class) { ImageRes }
         }

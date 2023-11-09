@@ -9,10 +9,3 @@ interface DispatcherProvider {
     fun unconfined(): CoroutineDispatcher
     fun io(): CoroutineDispatcher
 }
-
-class DefaultDispatcherProvider : DispatcherProvider {
-    override fun default(): CoroutineDispatcher = Dispatchers.Default
-    override fun main(): CoroutineDispatcher = Dispatchers.Main
-    override fun unconfined(): CoroutineDispatcher = Dispatchers.Unconfined
-    override fun io(): CoroutineDispatcher = Dispatchers.IO
-}

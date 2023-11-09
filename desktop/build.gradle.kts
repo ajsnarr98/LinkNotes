@@ -20,6 +20,7 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlin.reflect)
+    implementation(libs.coroutines.swing)
 
     testImplementation(kotlin("test"))
 }

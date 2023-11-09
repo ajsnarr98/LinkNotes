@@ -7,4 +7,8 @@ class LoginController(
     dependencyGraph: DependencyGraph,
     args: Map<String, Any?>,
 ) : UiModelController(dependencyGraph) {
+
+    fun onClickSignInWithGoogleButton() {
+
+    }
 }

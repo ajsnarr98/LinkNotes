@@ -2,27 +2,57 @@ package com.github.ajsnarr98.linknotes.desktop.di
 
 import com.github.ajsnarr98.linknotes.desktop.util.appendToSet
 import com.github.ajsnarr98.linknotes.desktop.util.removeFromSet
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.reflect.KClass
 
-private typealias DependencyMap = MutableMap<KClass<out Any>, Any>
+typealias DependencyMap = MutableMap<KClass<out Any>, Any>
+private typealias ObservableDependencyMap = MutableMap<KClass<out Any>, MutableStateFlow<Any>>
 private typealias DependencyConstructorEntry = Pair<Set<KClass<*>>, (DependencyMap) -> Any>
 private typealias DependencyConstructorMap = MutableMap<KClass<out Any>, DependencyConstructorEntry>
 
+inline fun <reified T> DependencyMap.get(): T = get(T::class) as? T
+    ?: throw ClassNotFoundException("Dependency map missing class ${T::class}")
+
+/**
+ * Set this to have the values of other without re-instantiating any flows.
+ *
+ * Any keys that are missing in other are removed from this.
+ */
+private fun ObservableDependencyMap.applyFrom(other: DependencyMap) {
+    val keysToLose = this.keys - other.keys
+    for (key in keysToLose) {
+        this.remove(key)
+    }
+
+    for ((key, value) in other.entries) {
+        if (this.containsKey(key)) {
+            this[key]!!.value = value
+        } else {
+            this[key] = MutableStateFlow(value)
+        }
+    }
+}
+
+private fun ObservableDependencyMap.toDependencyMap(): DependencyMap {
+    return this.mapValuesTo(HashMap()) { (_, valueFlow: StateFlow<Any>) -> valueFlow.value }
+}
+
 class DependencyGraph {
-    private val instantiated: DependencyMap = mutableMapOf()
+    private val instantiated: ObservableDependencyMap = mutableMapOf()
     private val constructors: DependencyConstructorMap = mutableMapOf()
     private val topDownRelations: MutableMap<KClass<out Any>, Set<KClass<out Any>>> = mutableMapOf()
 
-    inline fun <reified T : Any> get() = get(T::class)
+    inline fun <reified T : Any> get(): StateFlow<T> = get(T::class)
 
-    operator fun <T : Any> get(key: KClass<T>): T {
+    operator fun <T : Any> get(key: KClass<T>): StateFlow<T> {
         @Suppress("UNCHECKED_CAST")
-        return this.instantiated[key] as? T ?: throw ClassNotFoundException("Dependency map missing class $key")
+        return this.instantiated[key] as? StateFlow<T> ?: throw ClassNotFoundException("Dependency map missing class $key")
     }
 
     fun setDependencies(block: Builder.() -> Unit): DependencyGraph {
         return Builder(
-            instantiatedDependencies = HashMap(this.instantiated),
+            instantiatedDependencies = HashMap(this.instantiated.toDependencyMap()),
             constructors = HashMap(this.constructors),
             topDownRelations = HashMap(this.topDownRelations),
         )
@@ -126,8 +156,7 @@ class DependencyGraph {
                 }
             }
 
-            outParam.instantiated.clear()
-            outParam.instantiated.putAll(this.instantiatedDependencies)
+            outParam.instantiated.applyFrom(this.instantiatedDependencies)
             outParam.constructors.clear()
             outParam.constructors.putAll(this.constructors)
             outParam.topDownRelations.clear()

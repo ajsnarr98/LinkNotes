@@ -99,7 +99,7 @@ sealed class AbstractTagTreeNode<T : AbstractTagTreeNode<T>>: Set<Tag>, AppDataO
 
     class NonRootNode(
         override val value: String,
-        val color: Color,
+        val color: Int,
         override val children: Set<NonRootNode>,
     ) : AbstractTagTreeNode<NonRootNode>() {
 
@@ -129,7 +129,7 @@ sealed class AbstractTagTreeNode<T : AbstractTagTreeNode<T>>: Set<Tag>, AppDataO
          */
         constructor(
             value: String,
-            color: Color,
+            color: Int,
             collection: Collection<Pair<Tag, String>>,
         ) : this(
             value = value,
@@ -153,7 +153,7 @@ sealed class AbstractTagTreeNode<T : AbstractTagTreeNode<T>>: Set<Tag>, AppDataO
                         color = nextColor,
                         collection = values.mapNotNull { (tag, rest) -> if (rest == null) null else (tag to rest) }
                     )
-                }.toSet()
+                }.toSet<NonRootNode>()
         )
 
         override fun isEmpty(): Boolean {

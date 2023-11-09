@@ -20,9 +20,9 @@ class DependencyGraph {
 
     fun setDependencies(block: Builder.() -> Unit): DependencyGraph {
         return Builder(
-            instantiatedDependencies = this.instantiated,
-            constructors = this.constructors,
-            topDownRelations = this.topDownRelations,
+            instantiatedDependencies = HashMap(this.instantiated),
+            constructors = HashMap(this.constructors),
+            topDownRelations = HashMap(this.topDownRelations),
         )
             .apply(block)
             .build(this)
@@ -89,7 +89,7 @@ class DependencyGraph {
             // make sure all dependencies needed for this constructor are instantiated
             for (parentDep in constructorInfo.first) {
                 // check if dep is instantiated already
-                if (instantiatedDependencies.contains(parentDep)) continue
+                if (instantiatedDependencies.containsKey(parentDep)) continue
 
                 // if not, try to instantiate it
                 val parentConstructorInfo: DependencyConstructorEntry = constructors[parentDep]

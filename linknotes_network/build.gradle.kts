@@ -1,6 +1,7 @@
 
 plugins {
-    java
+    alias(libs.plugins.kotlin.jvm)
+    `java-library`
 }
 
 dependencies {
@@ -10,4 +11,12 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+kotlin {
+    jvmToolchain(11)
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }

@@ -17,6 +17,10 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
+plugins {
+    // for java toolchain auto-resolution
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.4.0")
+}
 
 rootProject.name = "LinkNotes"
 include(":desktop")

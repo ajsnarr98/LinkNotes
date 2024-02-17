@@ -1,11 +1,23 @@
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.ksp)
     `java-library`
 }
 
 dependencies {
     implementation(libs.coroutines.core)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.kotlin.codegen)
+
+    implementation(libs.google.api.client)
+    implementation(libs.google.oauth.client.jetty)
+    implementation(libs.google.photos)
 }
 
 java {
@@ -20,3 +32,5 @@ kotlin {
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
+
+

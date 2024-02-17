@@ -58,6 +58,10 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
+# secrets
+**/resources/secrets/*
+!**/resources/secrets/secrets-needed.md
+
 # misc
 .DS_Store
 **/keystore.properties

@@ -1,15 +1,37 @@
 [versions]
 android-gradle-plugin = "8.0.2"
-androidx-lifecycle = "2.6.2"
+androidx-lifecycle = "2.7.0"
 androidx-core-ktx = "1.12.0"
-kotlin = "1.9.10"
 compose-desktop = "1.5.1"
 coroutines = "1.7.1"
+google-api-client = "2.3.0"
+google-api-client-extensions = "1.6.0-beta"
+google-oauth-client-jetty = "1.35.0"
+google-photos-library = "1.7.3"
+gradle-buildconfig-plugin = "5.3.5"
+kotlin = "1.9.10"
+ksp = "1.9.10-1.0.13"
+okhttp = "4.12.0"
+retrofit = "2.9.0"
+moshi = "1.15.0"
 
 [libraries]
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+
+google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "google-api-client" }
+google-api-client-extensions = { module = "com.google.api-client:google-api-client-extensions", version.ref = "google-api-client-extensions" }
+google-oauth-client-jetty = { module = "com.google.oauth-client:google-oauth-client-jetty", version.ref = "google-oauth-client-jetty" }
+
+google-photos = { module = "com.google.photos.library:google-photos-library-client", version.ref = "google-photos-library" }
 
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref="androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref="androidx-lifecycle" }
@@ -21,6 +43,7 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 compose-desktop = { id = "org.jetbrains.compose", version.ref = "compose-desktop" }
+buildconfig-gradle = { id = "com.github.gmazzo.buildconfig", version.ref = "gradle-buildconfig-plugin" }

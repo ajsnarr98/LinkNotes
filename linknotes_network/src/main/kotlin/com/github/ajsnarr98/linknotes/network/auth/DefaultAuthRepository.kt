@@ -1,5 +1,6 @@
-package com.github.ajsnarr98.linknotes.network
+package com.github.ajsnarr98.linknotes.network.auth
 
+import com.github.ajsnarr98.linknotes.network.ResultStatus
 import com.github.ajsnarr98.linknotes.network.domain.User
 import com.github.ajsnarr98.linknotes.network.storage.local.LocalStorage
 

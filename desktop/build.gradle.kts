@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.*
 
 fun mainResourceFile(resourcePath: String): File {
     return project.file("src/main/resources/$resourcePath")
@@ -8,6 +9,7 @@ fun mainResourceFile(resourcePath: String): File {
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.compose.desktop)
+    alias(libs.plugins.buildconfig.gradle)
 }
 
 val desktopBasePackageName = "com.github.ajsnarr98.linknotes.desktop"
@@ -15,12 +17,20 @@ val desktopBasePackageName = "com.github.ajsnarr98.linknotes.desktop"
 group = desktopBasePackageName
 version = "1.0.0"
 
+buildConfig {
+    buildConfigField("DEBUG", (externalVarOrNull("isRelease") ?: false) == false)
+}
+
 dependencies {
     implementation(project(":linknotes_network"))
 
     implementation(compose.desktop.currentOs)
     implementation(libs.kotlin.reflect)
     implementation(libs.coroutines.swing)
+
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.moshi.kotlin)
 
     testImplementation(kotlin("test"))
 }
@@ -59,4 +69,14 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "17"
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun externalVarOrNull(key: String): String? {
+    return (project.ext.get("externalVarOrNull") as (String) -> String?)(key)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun externalVar(key: String): String {
+    return (project.ext.get("externalVar") as (String) -> String)(key)
 }

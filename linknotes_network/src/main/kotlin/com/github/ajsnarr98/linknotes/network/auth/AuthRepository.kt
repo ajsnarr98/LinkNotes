@@ -1,6 +1,7 @@
-package com.github.ajsnarr98.linknotes.network
+package com.github.ajsnarr98.linknotes.network.auth
 
 import com.github.ajsnarr98.linknotes.data.UUID
+import com.github.ajsnarr98.linknotes.network.ResultStatus
 import com.github.ajsnarr98.linknotes.network.domain.User
 
 interface AuthRepository {

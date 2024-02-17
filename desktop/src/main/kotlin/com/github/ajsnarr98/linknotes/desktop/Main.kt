@@ -8,6 +8,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.github.ajsnarr98.linknotes.desktop.di.DependencyGraph
 import com.github.ajsnarr98.linknotes.desktop.di.get
+import com.github.ajsnarr98.linknotes.desktop.di.setNewApi
 import com.github.ajsnarr98.linknotes.desktop.login.LoginScreen
 import com.github.ajsnarr98.linknotes.desktop.navigation.NavController
 import com.github.ajsnarr98.linknotes.desktop.navigation.WindowInfo
@@ -17,8 +18,17 @@ import com.github.ajsnarr98.linknotes.desktop.res.ImageRes
 import com.github.ajsnarr98.linknotes.desktop.res.LinkNotesDesktopTheme
 import com.github.ajsnarr98.linknotes.desktop.res.StringRes
 import com.github.ajsnarr98.linknotes.desktop.util.DefaultDispatcherProvider
+import com.github.ajsnarr98.linknotes.desktop.util.DesktopLoggingProvider
+import com.github.ajsnarr98.linknotes.network.auth.FirebaseAuthApi
+import com.github.ajsnarr98.linknotes.network.http.MoshiHelper
+import com.github.ajsnarr98.linknotes.network.http.OkHttpHelper
+import com.github.ajsnarr98.linknotes.network.http.RetrofitBuilder
+import com.github.ajsnarr98.linknotes.network.logging.LoggingProvider
 import com.github.ajsnarr98.linknotes.network.util.DispatcherProvider
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.*
+import okhttp3.Call
+import okhttp3.OkHttpClient
 import kotlin.coroutines.CoroutineContext
 
 fun main() = application {
@@ -31,8 +41,31 @@ fun main() = application {
             set(CoroutineScope::class, dependencies = setOf(CoroutineContext::class)) { deps ->
                 CoroutineScope(deps.get<CoroutineContext>())
             }
+            set(LoggingProvider::class) { DesktopLoggingProvider() }
             set(StringRes::class) { AmericanEnglishStringRes() }
             set(ImageRes::class) { ImageRes }
+
+            // http stuff
+            set(Moshi::class) { MoshiHelper.buildMoshi() }
+            set(OkHttpClient::class, dependencies = setOf(LoggingProvider::class)) { deps ->
+                OkHttpHelper.buildOkHttpClient(
+                    loggingProvider = deps.get()
+                )
+            }
+            set(Call.Factory::class, dependencies = setOf(OkHttpClient::class)) { deps -> deps.get<OkHttpClient>() }
+
+            set(RetrofitBuilder::class, dependencies = setOf(Call.Factory::class, Moshi::class)) { deps ->
+                RetrofitBuilder(
+                    callFactory = deps.get(),
+                    moshi = deps.get(),
+                )
+            }
+
+            // build api instances
+            setNewApi<FirebaseAuthApi>(FirebaseAuthApi.BASE_URL)
+
+            // login
+
         }
     }
 

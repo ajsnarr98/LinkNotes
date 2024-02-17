@@ -3,6 +3,8 @@ package com.github.ajsnarr98.linknotes.desktop.res
 interface StringRes {
     val languageTitle: String
 
+    val appTitle: String
+
     // login
     val login: Login
     interface Login {
@@ -13,6 +15,8 @@ interface StringRes {
 
 class AmericanEnglishStringRes : StringRes {
     override val languageTitle: String = "English (US)"
+
+    override val appTitle: String = "Link Notes"
 
     override val login = object : StringRes.Login {
         override val title: String = "Login"

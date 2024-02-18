@@ -4,15 +4,16 @@ import com.github.ajsnarr98.linknotes.desktop.util.appendToSet
 import com.github.ajsnarr98.linknotes.desktop.util.removeFromSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlin.reflect.KClass
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
-typealias DependencyMap = MutableMap<KClass<out Any>, Any>
-private typealias ObservableDependencyMap = MutableMap<KClass<out Any>, MutableStateFlow<Any>>
-private typealias DependencyConstructorEntry = Pair<Set<KClass<*>>, (DependencyMap) -> Any>
-private typealias DependencyConstructorMap = MutableMap<KClass<out Any>, DependencyConstructorEntry>
+typealias DependencyMap = MutableMap<KType, Any>
+private typealias ObservableDependencyMap = MutableMap<KType, MutableStateFlow<Any>>
+private typealias DependencyConstructorEntry = Pair<Set<KType>, (DependencyMap) -> Any>
+private typealias DependencyConstructorMap = MutableMap<KType, DependencyConstructorEntry>
 
-inline fun <reified T> DependencyMap.get(): T = get(T::class) as? T
-    ?: throw ClassNotFoundException("Dependency map missing class ${T::class}")
+inline fun <reified T> DependencyMap.get(): T = get(typeOf<T>()) as? T
+    ?: throw ClassNotFoundException("Dependency map missing class ${typeOf<T>()}")
 
 /**
  * Set this to have the values of other without re-instantiating any flows.
@@ -41,11 +42,14 @@ private fun ObservableDependencyMap.toDependencyMap(): DependencyMap {
 class DependencyGraph {
     private val instantiated: ObservableDependencyMap = mutableMapOf()
     private val constructors: DependencyConstructorMap = mutableMapOf()
-    private val topDownRelations: MutableMap<KClass<out Any>, Set<KClass<out Any>>> = mutableMapOf()
+    private val topDownRelations: MutableMap<KType, Set<KType>> = mutableMapOf()
 
-    inline fun <reified T : Any> get(): StateFlow<T> = get(T::class)
+    inline fun <reified T : Any> get(): StateFlow<T> = get(typeOf<T>())
 
-    operator fun <T : Any> get(key: KClass<T>): StateFlow<T> {
+    /**
+     * This function should only be used directly when one cannot use the inline get().
+     */
+    fun <T : Any> get(key: KType): StateFlow<T> {
         @Suppress("UNCHECKED_CAST")
         return this.instantiated[key] as? StateFlow<T> ?: throw ClassNotFoundException("Dependency map missing class $key")
     }
@@ -63,53 +67,79 @@ class DependencyGraph {
     class Builder(
         private val instantiatedDependencies: DependencyMap,
         private val constructors: DependencyConstructorMap,
-        private val topDownRelations: MutableMap<KClass<out Any>, Set<KClass<out Any>>>,
+        private val topDownRelations: MutableMap<KType, Set<KType>>,
     ) {
-        private val failedToInstantiate: MutableSet<KClass<out Any>> = mutableSetOf()
+        private val failedToInstantiate: MutableSet<KType> = mutableSetOf()
 
-        fun <T : Any> set(clazz: KClass<T>, constructor: (DependencyMap) -> T) = set(
-            clazz = clazz,
-            dependencies = emptySet(),
-            constructor = constructor,
-        )
+        inline fun <reified T : Any> set(noinline constructor: (DependencyMap) -> T) {
+            set<T>(
+                type = typeOf<T>(),
+                dependencies = emptySet(),
+                constructor = constructor,
+            )
+        }
 
-        fun <T : Any> set(
-            clazz: KClass<T>,
-            dependencies: Set<KClass<*>>,
-            constructor: (DependencyMap) -> T,
+        inline fun <reified T : Any> set(
+            dependencies: Set<KType>,
+            noinline constructor: (DependencyMap) -> T,
         ) {
+            set<T>(
+                type = typeOf<T>(),
+                dependencies = dependencies,
+                constructor = constructor,
+            )
+        }
+
+        /**
+         * Type must match T.
+         */
+        fun <T : Any> set(
+            type: KType,
+            dependencies: Set<KType>,
+            constructor: (DependencyMap) -> T,
+        ): Unit {
             // if there were already any relationships for this entry, clear them
-            clear(clazz, clearConstructor = true)
+            clear(type, clearConstructor = true)
 
             for (parentDep in dependencies) {
-                topDownRelations.appendToSet(parentDep, clazz)
+                topDownRelations.appendToSet(parentDep, type)
             }
 
-            constructors[clazz] = dependencies to constructor
+            constructors[type] = dependencies to constructor
         }
 
         /**
          * Clears this dependency and anything depending on it from the graph.
          */
-        fun clear(clazz: KClass<out Any>, clearConstructor: Boolean = true) {
-            // if there was no constructor, this never got instantiated
-            if (!constructors.containsKey(clazz)) return
+        inline fun <reified T : Any> clear(clearConstructor: Boolean = true) {
+            clear(
+                type = typeOf<T>(),
+                clearConstructor = clearConstructor,
+            )
+        }
 
-            instantiatedDependencies.remove(clazz)
+        /**
+         * Clears this dependency and anything depending on it from the graph.
+         */
+        fun clear(type: KType, clearConstructor: Boolean = true) {
+            // if there was no constructor, this never got instantiated
+            if (!constructors.containsKey(type)) return
+
+            instantiatedDependencies.remove(type)
 
             // remove any instantiated values for child dependencies that depend on this one
-            val childDependencies: Set<KClass<out Any>> = topDownRelations[clazz] ?: emptySet()
+            val childDependencies: Set<KType> = topDownRelations[type] ?: emptySet()
             for (childDep in childDependencies) {
                 clear(childDep, clearConstructor = false)
             }
 
             if (clearConstructor) {
-                val constructorEntry = constructors.remove(clazz)
-                val parents: Set<KClass<out Any>> = constructorEntry?.first ?: emptySet()
+                val constructorEntry = constructors.remove(type)
+                val parents: Set<KType> = constructorEntry?.first ?: emptySet()
 
                 // clear stored relationships to parents
                 for (parentDep in parents) {
-                    topDownRelations.removeFromSet(parentDep, clazz)
+                    topDownRelations.removeFromSet(parentDep, type)
                 }
             }
         }
@@ -117,7 +147,7 @@ class DependencyGraph {
         /**
          * Return true if successful, false if not
          */
-        private fun buildDependency(clazz: KClass<out Any>, constructorInfo: DependencyConstructorEntry): Boolean {
+        private fun buildDependency(type: KType, constructorInfo: DependencyConstructorEntry): Boolean {
             // make sure all dependencies needed for this constructor are instantiated
             for (parentDep in constructorInfo.first) {
                 // check if dep is instantiated already
@@ -138,7 +168,7 @@ class DependencyGraph {
                 }
             }
             // instantiate
-            instantiatedDependencies[clazz] = constructorInfo.second(instantiatedDependencies)
+            instantiatedDependencies[type] = constructorInfo.second(instantiatedDependencies)
             return true
         }
 
@@ -146,7 +176,7 @@ class DependencyGraph {
          * DO NOT call outside of [DependencyGraph] class implementation.
          */
         fun build(outParam: DependencyGraph): DependencyGraph {
-            for ((dep: KClass<out Any>, constructorInfo: DependencyConstructorEntry) in constructors.entries) {
+            for ((dep: KType, constructorInfo: DependencyConstructorEntry) in constructors.entries) {
                 // check if dep is instantiated already or instantiation was attempted and failed
                 if (instantiatedDependencies.containsKey(dep) || dep in failedToInstantiate) continue
 

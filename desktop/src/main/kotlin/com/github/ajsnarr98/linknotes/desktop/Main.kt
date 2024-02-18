@@ -30,31 +30,32 @@ import kotlinx.coroutines.*
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.typeOf
 
 fun main() = application {
     val mainContext: CoroutineContext = remember { Dispatchers.Main + Job() }
 
     val dependencyGraph = remember {
         DependencyGraph().setDependencies {
-            set(DispatcherProvider::class) { DefaultDispatcherProvider() }
-            set(CoroutineContext::class) { mainContext }
-            set(CoroutineScope::class, dependencies = setOf(CoroutineContext::class)) { deps ->
+            set<DispatcherProvider> { DefaultDispatcherProvider() }
+            set<CoroutineContext> { mainContext }
+            set<CoroutineScope>(dependencies = setOf(typeOf<CoroutineContext>())) { deps ->
                 CoroutineScope(deps.get<CoroutineContext>())
             }
-            set(LoggingProvider::class) { DesktopLoggingProvider() }
-            set(StringRes::class) { AmericanEnglishStringRes() }
-            set(ImageRes::class) { ImageRes }
+            set<LoggingProvider> { DesktopLoggingProvider() }
+            set<StringRes> { AmericanEnglishStringRes() }
+            set<ImageRes> { ImageRes }
 
             // http stuff
-            set(Moshi::class) { MoshiHelper.buildMoshi() }
-            set(OkHttpClient::class, dependencies = setOf(LoggingProvider::class)) { deps ->
+            set<Moshi> { MoshiHelper.buildMoshi() }
+            set<OkHttpClient>(dependencies = setOf(typeOf<LoggingProvider>())) { deps ->
                 OkHttpHelper.buildOkHttpClient(
                     loggingProvider = deps.get()
                 )
             }
-            set(Call.Factory::class, dependencies = setOf(OkHttpClient::class)) { deps -> deps.get<OkHttpClient>() }
+            set<Call.Factory>(dependencies = setOf(typeOf<OkHttpClient>())) { deps -> deps.get<OkHttpClient>() }
 
-            set(RetrofitBuilder::class, dependencies = setOf(Call.Factory::class, Moshi::class)) { deps ->
+            set<RetrofitBuilder>(dependencies = setOf(typeOf<Call.Factory>(), typeOf<Moshi>())) { deps ->
                 RetrofitBuilder(
                     callFactory = deps.get(),
                     moshi = deps.get(),

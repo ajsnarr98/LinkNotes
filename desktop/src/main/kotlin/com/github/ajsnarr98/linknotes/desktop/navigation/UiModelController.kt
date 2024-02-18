@@ -12,13 +12,12 @@ import kotlin.coroutines.CoroutineContext
  * a [DependencyGraph] and arguments Map<String, Any?>.
  */
 abstract class UiModelController(
-    dependencyGraph: DependencyGraph,
+    val dispatcherProvider: DispatcherProvider,
+    appScope: CoroutineScope,
 ) : AutoCloseable {
 
-    val dispatcherProvider: DispatcherProvider = dependencyGraph.get<DispatcherProvider>().value
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    val controllerContext: CoroutineContext = dependencyGraph.get<CoroutineScope>().value.newCoroutineContext(
+    val controllerContext: CoroutineContext = appScope.newCoroutineContext(
         dispatcherProvider.main()
     )
     val controllerScope: CoroutineScope = CoroutineScope(controllerContext)

@@ -30,5 +30,6 @@ interface FirebaseAuthApi {
         val firstName: String? = null,
         val lastName: String? = null,
         val fullName: String? = null,
+        val localId: String? = null,
     )
 }

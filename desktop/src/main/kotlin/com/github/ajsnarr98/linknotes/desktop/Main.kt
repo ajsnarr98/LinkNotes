@@ -10,6 +10,9 @@ import com.github.ajsnarr98.linknotes.desktop.di.DependencyGraph
 import com.github.ajsnarr98.linknotes.desktop.di.get
 import com.github.ajsnarr98.linknotes.desktop.di.setNewApi
 import com.github.ajsnarr98.linknotes.desktop.login.LoginScreen
+import com.github.ajsnarr98.linknotes.desktop.login.api.AuthProviderDesktop
+import com.github.ajsnarr98.linknotes.desktop.login.api.GoogleOAuth
+import com.github.ajsnarr98.linknotes.desktop.login.api.RealGoogleOAuth
 import com.github.ajsnarr98.linknotes.desktop.navigation.NavController
 import com.github.ajsnarr98.linknotes.desktop.navigation.WindowInfo
 import com.github.ajsnarr98.linknotes.desktop.navigation.castDrawState
@@ -17,14 +20,21 @@ import com.github.ajsnarr98.linknotes.desktop.res.AmericanEnglishStringRes
 import com.github.ajsnarr98.linknotes.desktop.res.ImageRes
 import com.github.ajsnarr98.linknotes.desktop.res.LinkNotesDesktopTheme
 import com.github.ajsnarr98.linknotes.desktop.res.StringRes
+import com.github.ajsnarr98.linknotes.desktop.storage.UserStore
 import com.github.ajsnarr98.linknotes.desktop.util.DefaultDispatcherProvider
 import com.github.ajsnarr98.linknotes.desktop.util.DesktopLoggingProvider
+import com.github.ajsnarr98.linknotes.network.auth.AuthRepository
+import com.github.ajsnarr98.linknotes.network.auth.DefaultAuthRepository
 import com.github.ajsnarr98.linknotes.network.auth.FirebaseAuthApi
+import com.github.ajsnarr98.linknotes.network.domain.User
 import com.github.ajsnarr98.linknotes.network.http.MoshiHelper
 import com.github.ajsnarr98.linknotes.network.http.OkHttpHelper
 import com.github.ajsnarr98.linknotes.network.http.RetrofitBuilder
 import com.github.ajsnarr98.linknotes.network.logging.LoggingProvider
+import com.github.ajsnarr98.linknotes.network.storage.local.LocalStorage
 import com.github.ajsnarr98.linknotes.network.util.DispatcherProvider
+import com.google.api.client.json.JsonFactory
+import com.google.api.client.json.gson.GsonFactory
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.*
 import okhttp3.Call
@@ -39,8 +49,8 @@ fun main() = application {
         DependencyGraph().setDependencies {
             set<DispatcherProvider> { DefaultDispatcherProvider() }
             set<CoroutineContext> { mainContext }
-            set<CoroutineScope>(dependencies = setOf(typeOf<CoroutineContext>())) { deps ->
-                CoroutineScope(deps.get<CoroutineContext>())
+            set<CoroutineScope>(dependencies = setOf(typeOf<CoroutineContext>())) { dependencies ->
+                CoroutineScope(dependencies.get<CoroutineContext>())
             }
             set<LoggingProvider> { DesktopLoggingProvider() }
             set<StringRes> { AmericanEnglishStringRes() }
@@ -48,17 +58,18 @@ fun main() = application {
 
             // http stuff
             set<Moshi> { MoshiHelper.buildMoshi() }
-            set<OkHttpClient>(dependencies = setOf(typeOf<LoggingProvider>())) { deps ->
+            set<JsonFactory> { GsonFactory.getDefaultInstance() }
+            set<OkHttpClient>(dependencies = setOf(typeOf<LoggingProvider>())) { dependencies ->
                 OkHttpHelper.buildOkHttpClient(
-                    loggingProvider = deps.get()
+                    loggingProvider = dependencies.get()
                 )
             }
-            set<Call.Factory>(dependencies = setOf(typeOf<OkHttpClient>())) { deps -> deps.get<OkHttpClient>() }
+            set<Call.Factory>(dependencies = setOf(typeOf<OkHttpClient>())) { dependencies -> dependencies.get<OkHttpClient>() }
 
-            set<RetrofitBuilder>(dependencies = setOf(typeOf<Call.Factory>(), typeOf<Moshi>())) { deps ->
+            set<RetrofitBuilder>(dependencies = setOf(typeOf<Call.Factory>(), typeOf<Moshi>())) { dependencies ->
                 RetrofitBuilder(
-                    callFactory = deps.get(),
-                    moshi = deps.get(),
+                    callFactory = dependencies.get(),
+                    moshi = dependencies.get(),
                 )
             }
 
@@ -66,7 +77,36 @@ fun main() = application {
             setNewApi<FirebaseAuthApi>(FirebaseAuthApi.BASE_URL)
 
             // login
-
+            set<GoogleOAuth>(dependencies = setOf(
+                typeOf<JsonFactory>(),
+                typeOf<Moshi>(),
+            )) { dependencies ->
+                RealGoogleOAuth(
+                    jsonFactory = dependencies.get(),
+                    moshi = dependencies.get(),
+                )
+            }
+            set<AuthRepository.AuthProvider>(dependencies = setOf(
+                typeOf<FirebaseAuthApi>(),
+                typeOf<DispatcherProvider>(),
+                typeOf<GoogleOAuth>(),
+            )) { dependencies ->
+                AuthProviderDesktop(
+                    authApi = dependencies.get(),
+                    dispatcherProvider = dependencies.get(),
+                    googleOAuth = dependencies.get(),
+                )
+            }
+            set<LocalStorage<User>> { UserStore() }
+            set<AuthRepository>(dependencies = setOf(
+                typeOf<AuthRepository.AuthProvider>(),
+                typeOf<LocalStorage<User>>(),
+            )) { dependencies ->
+                DefaultAuthRepository(
+                    authProvider = dependencies.get(),
+                    accountStore = dependencies.get(),
+                )
+            }
         }
     }
 

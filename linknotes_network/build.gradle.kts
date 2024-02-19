@@ -14,10 +14,6 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
-
-    implementation(libs.google.api.client)
-    implementation(libs.google.oauth.client.jetty)
-    implementation(libs.google.photos)
 }
 
 java {

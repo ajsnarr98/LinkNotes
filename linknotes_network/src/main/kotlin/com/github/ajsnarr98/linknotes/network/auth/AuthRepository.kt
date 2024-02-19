@@ -5,6 +5,7 @@ import com.github.ajsnarr98.linknotes.network.ResultStatus
 import com.github.ajsnarr98.linknotes.network.domain.User
 
 interface AuthRepository {
+
     /**
      * Attempt to sign in with stored user credentials.
      */
@@ -13,7 +14,7 @@ interface AuthRepository {
     /**
      * Attempt to sign in with google.
      */
-    suspend fun signInWithGoogle(googleId: String, googleIdToken: String): ResultStatus<User?>
+    suspend fun signInWithGoogle(): ResultStatus<User?>
 
     /**
      * Return success.
@@ -24,7 +25,7 @@ interface AuthRepository {
         /**
          * Sign in with google and return firebase user id.
          */
-        suspend fun signInWithGoogle(googleIdToken: String): ResultStatus<UUID?>
+        suspend fun signInWithGoogle(): ResultStatus<UUID?>
 
         /**
          * Find validity of given google id token.
@@ -38,6 +39,10 @@ interface AuthRepository {
     }
 
     companion object {
+        private const val GOOGLE_PHOTOS_READONLY_SCOPE = "https://www.googleapis.com/auth/photoslibrary.readonly"
+
+        val GOOGLE_SCOPES: Set<String> = setOf(GOOGLE_PHOTOS_READONLY_SCOPE)
+
         const val USER_FILE = "com.github.ajsnarr98.linknotes.data.local.UserStore"
     }
 }

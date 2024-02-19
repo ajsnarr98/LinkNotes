@@ -61,6 +61,7 @@ fastlane/readme.md
 # secrets
 **/resources/secrets/*
 !**/resources/secrets/secrets-needed.md
+**/tokens/*
 
 # misc
 .DS_Store

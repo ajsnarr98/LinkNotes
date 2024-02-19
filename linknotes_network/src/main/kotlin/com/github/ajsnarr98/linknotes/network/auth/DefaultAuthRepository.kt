@@ -20,20 +20,21 @@ class DefaultAuthRepository(
             ?: return ResultStatus.Error(null, ResultStatus.ErrorType.LocalWarning.NoSavedServiceId)
 
         return if (authProvider.isValidGoogleToken(googleIdToken)) {
-            signInWithGoogle(googleId, googleIdToken)
+            TODO()
+//            signInWithGoogle(googleId, googleIdToken)
         } else {
             ResultStatus.Error(null, ResultStatus.ErrorType.LocalWarning.InvalidToken)
         }
     }
 
-    override suspend fun signInWithGoogle(googleId: String, googleIdToken: String): ResultStatus<User?> {
-        return when (val authResult = authProvider.signInWithGoogle(googleIdToken)) {
+    override suspend fun signInWithGoogle(): ResultStatus<User?> {
+        return when (val authResult = authProvider.signInWithGoogle()) {
             is ResultStatus.Success -> {
                 val user = User(
                     id = authResult.result
                         ?: throw IllegalStateException("Success result did not have a user id"),
-                    googleID = googleId,
-                    googleIDToken = googleIdToken,
+//                    googleID = googleId,
+//                    googleIDToken = googleIdToken,
                 )
 
                 accountStore.save(AuthRepository.USER_FILE, user)

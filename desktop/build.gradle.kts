@@ -32,6 +32,10 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.moshi.kotlin)
 
+    implementation(libs.google.api.client)
+    implementation(libs.google.oauth.client.jetty)
+    implementation(libs.google.photos)
+
     testImplementation(kotlin("test"))
 }
 

@@ -1,5 +1,6 @@
 package com.github.ajsnarr98.linknotes.desktop.login.api
 
+import com.github.ajsnarr98.linknotes.desktop.util.ResourceFileLoader
 import com.github.ajsnarr98.linknotes.network.auth.AuthRepository
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
@@ -16,11 +17,13 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 import java.util.stream.Collectors
 
 class RealGoogleOAuth(
     private val jsonFactory: JsonFactory,
     moshi: Moshi,
+    private val resourceFileLoader: ResourceFileLoader,
 ) : GoogleOAuth {
 
     companion object {
@@ -34,6 +37,14 @@ class RealGoogleOAuth(
     }
 
     private val googleTokenAdapter = moshi.adapter(GoogleTokenResponse::class.java)
+
+    /** Only read in an IO suspend context **/
+    private val linkNotesGoogleOauthSecrets: GoogleClientSecrets by lazy {
+        GoogleClientSecrets.load(
+            jsonFactory,
+            InputStreamReader(resourceFileLoader.load("/secrets/linknotes_oauth_creds_desktop.json"))
+        )
+    }
 
     override suspend fun authorizeUsingDefaultBrowser(): GoogleTokenResponse {
         // TODO handle errors
@@ -56,7 +67,7 @@ class RealGoogleOAuth(
             val redirectUri: String = receiver.getRedirectUri()
             val authorizationUrl: AuthorizationCodeRequestUrl = GoogleAuthorizationCodeRequestUrl(
                 authorizationServerEncodedUrl,
-                linkNotesGoogleOauthSecrets.details.clientId,
+                linkNotesGoogleOauthSecrets.installed.clientId,
                 redirectUri,
                 scopes,
             )
@@ -82,8 +93,8 @@ class RealGoogleOAuth(
             httpTransport,
             jsonFactory,
             tokenServerEncodedUrl,
-            linkNotesGoogleOauthSecrets.details.clientId,
-            linkNotesGoogleOauthSecrets.details.clientSecret,
+            linkNotesGoogleOauthSecrets.installed.clientId,
+            linkNotesGoogleOauthSecrets.installed.clientSecret,
             authorizationCode,
             redirectUri
         )

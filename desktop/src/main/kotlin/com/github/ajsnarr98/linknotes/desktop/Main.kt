@@ -23,6 +23,8 @@ import com.github.ajsnarr98.linknotes.desktop.res.StringRes
 import com.github.ajsnarr98.linknotes.desktop.storage.UserStore
 import com.github.ajsnarr98.linknotes.desktop.util.DefaultDispatcherProvider
 import com.github.ajsnarr98.linknotes.desktop.util.DesktopLoggingProvider
+import com.github.ajsnarr98.linknotes.desktop.util.RealResourceFileLoader
+import com.github.ajsnarr98.linknotes.desktop.util.ResourceFileLoader
 import com.github.ajsnarr98.linknotes.network.auth.AuthRepository
 import com.github.ajsnarr98.linknotes.network.auth.DefaultAuthRepository
 import com.github.ajsnarr98.linknotes.network.auth.FirebaseAuthApi
@@ -55,6 +57,7 @@ fun main() = application {
             set<LoggingProvider> { DesktopLoggingProvider() }
             set<StringRes> { AmericanEnglishStringRes() }
             set<ImageRes> { ImageRes }
+            set<ResourceFileLoader> { RealResourceFileLoader() }
 
             // http stuff
             set<Moshi> { MoshiHelper.buildMoshi() }
@@ -80,21 +83,27 @@ fun main() = application {
             set<GoogleOAuth>(dependencies = setOf(
                 typeOf<JsonFactory>(),
                 typeOf<Moshi>(),
+                typeOf<ResourceFileLoader>(),
             )) { dependencies ->
                 RealGoogleOAuth(
                     jsonFactory = dependencies.get(),
                     moshi = dependencies.get(),
+                    resourceFileLoader = dependencies.get(),
                 )
             }
             set<AuthRepository.AuthProvider>(dependencies = setOf(
                 typeOf<FirebaseAuthApi>(),
                 typeOf<DispatcherProvider>(),
                 typeOf<GoogleOAuth>(),
+                typeOf<Moshi>(),
+                typeOf<ResourceFileLoader>(),
             )) { dependencies ->
                 AuthProviderDesktop(
                     authApi = dependencies.get(),
                     dispatcherProvider = dependencies.get(),
                     googleOAuth = dependencies.get(),
+                    moshi = dependencies.get(),
+                    resourceFileLoader = dependencies.get(),
                 )
             }
             set<LocalStorage<User>> { UserStore() }

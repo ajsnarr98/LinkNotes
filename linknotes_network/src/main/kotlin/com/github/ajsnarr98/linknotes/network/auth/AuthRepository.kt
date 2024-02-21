@@ -1,20 +1,21 @@
 package com.github.ajsnarr98.linknotes.network.auth
 
 import com.github.ajsnarr98.linknotes.data.UUID
-import com.github.ajsnarr98.linknotes.network.ResultStatus
+import com.github.ajsnarr98.linknotes.network.result.ResultStatus
 import com.github.ajsnarr98.linknotes.network.domain.User
+import com.github.ajsnarr98.linknotes.network.result.ErrorType
 
 interface AuthRepository {
 
     /**
      * Attempt to sign in with stored user credentials.
      */
-    suspend fun attemptSignIn(): ResultStatus<User?>
+    suspend fun attemptSignIn(): ResultStatus<User?, ErrorType>
 
     /**
      * Attempt to sign in with google.
      */
-    suspend fun signInWithGoogle(): ResultStatus<User?>
+    suspend fun signInWithGoogle(): ResultStatus<User?, ErrorType>
 
     /**
      * Return success.
@@ -25,7 +26,7 @@ interface AuthRepository {
         /**
          * Sign in with google and return firebase user id.
          */
-        suspend fun signInWithGoogle(): ResultStatus<UUID?>
+        suspend fun signInWithGoogle(): ResultStatus<UUID?, ErrorType>
 
         /**
          * Find validity of given google id token.

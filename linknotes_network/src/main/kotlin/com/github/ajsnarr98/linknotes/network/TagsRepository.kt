@@ -2,6 +2,8 @@ package com.github.ajsnarr98.linknotes.network
 
 import com.github.ajsnarr98.linknotes.network.domain.Tag
 import com.github.ajsnarr98.linknotes.network.domain.TagSet
+import com.github.ajsnarr98.linknotes.network.result.ErrorType
+import com.github.ajsnarr98.linknotes.network.result.ResultStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface TagsRepository {
@@ -12,7 +14,7 @@ interface TagsRepository {
 
     data class PendingChange(
         val action: Action,
-        val resultStatus: ResultStatus<Boolean>,
+        val resultStatus: ResultStatus<Boolean, ErrorType>,
         val tag: Tag,
     )
 
@@ -29,7 +31,7 @@ interface TagsRepository {
      *
      * Gives warning if pending changes exist.
      */
-    suspend fun refresh(): ResultStatus<Unit>
+    suspend fun refresh(): ResultStatus<Unit, ErrorType>
 
     /**
      * Gives tag if tag was added. False with a success result
@@ -37,7 +39,7 @@ interface TagsRepository {
      *
      * Updates list of tags respectively.
      */
-    suspend fun addTag(tag: Tag): ResultStatus<Boolean>
+    suspend fun addTag(tag: Tag): ResultStatus<Boolean, ErrorType>
 
     /**
      * Deletes a tag. This action will fail if any notes exist that contain
@@ -48,7 +50,7 @@ interface TagsRepository {
      *
      * Updates list of tags respectively.
      */
-    suspend fun deleteTag(tag: Tag): ResultStatus<Boolean>
+    suspend fun deleteTag(tag: Tag): ResultStatus<Boolean, ErrorType>
 
     /**
      * Gives a list of suggested tags based on the tag start. List is ordered
@@ -68,7 +70,7 @@ interface TagsRepository {
     /**
      * Discard pending changes.
      */
-    suspend fun discardPendingChanges(): ResultStatus<Unit>
+    suspend fun discardPendingChanges(): ResultStatus<Unit, ErrorType>
 
     companion object {
 

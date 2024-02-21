@@ -4,7 +4,12 @@ interface LoggingProvider {
     /**
      * Error logging. TODO
      */
-    fun e()
+    fun e(error: Throwable)
+
+    /**
+     * Error logging. TODO
+     */
+    fun e(message: String)
 
     /**
      * Debug logging: TODO

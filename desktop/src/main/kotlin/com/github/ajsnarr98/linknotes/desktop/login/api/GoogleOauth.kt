@@ -2,6 +2,7 @@ package com.github.ajsnarr98.linknotes.desktop.login.api
 
 import com.github.ajsnarr98.linknotes.desktop.util.ResourceFileLoader
 import com.github.ajsnarr98.linknotes.network.auth.AuthRepository
+import com.github.ajsnarr98.linknotes.network.auth.GoogleOAuthApi
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
@@ -13,16 +14,12 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.GenericUrl
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
-import com.squareup.moshi.JsonDataException
-import com.squareup.moshi.Moshi
-import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.util.stream.Collectors
 
 class RealGoogleOAuth(
     private val jsonFactory: JsonFactory,
-    moshi: Moshi,
+    private val googleOAuthApi: GoogleOAuthApi,
     private val resourceFileLoader: ResourceFileLoader,
 ) : GoogleOAuth {
 
@@ -36,8 +33,6 @@ class RealGoogleOAuth(
         private val scopes: Set<String> = AuthRepository.GOOGLE_SCOPES + "openid email"
     }
 
-    private val googleTokenAdapter = moshi.adapter(GoogleTokenResponse::class.java)
-
     /** Only read in an IO suspend context **/
     private val linkNotesGoogleOauthSecrets: GoogleClientSecrets by lazy {
         GoogleClientSecrets.load(
@@ -46,7 +41,7 @@ class RealGoogleOAuth(
         )
     }
 
-    override suspend fun authorizeUsingDefaultBrowser(): GoogleTokenResponse {
+    override suspend fun authorizeUsingDefaultBrowser(): GoogleOAuthApi.GoogleTokenResponse {
         // TODO handle errors
         val (code, redirectUri) = getAuthorizationCodeFromUser()
         return requestAccessAndIdTokenFromAuthorizationCode(authorizationCode = code, redirectUri = redirectUri)
@@ -87,24 +82,13 @@ class RealGoogleOAuth(
     private suspend fun requestAccessAndIdTokenFromAuthorizationCode(
         authorizationCode: String,
         redirectUri: String,
-        httpTransport: NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport(),
-    ): GoogleTokenResponse {
-        val newTokenRequest = GoogleAuthorizationCodeTokenRequest(
-            httpTransport,
-            jsonFactory,
-            tokenServerEncodedUrl,
-            linkNotesGoogleOauthSecrets.installed.clientId,
-            linkNotesGoogleOauthSecrets.installed.clientSecret,
-            authorizationCode,
-            redirectUri
+    ): GoogleOAuthApi.GoogleTokenResponse {
+        return googleOAuthApi.oauthSignIn(
+            code = authorizationCode,
+            clientSecret = linkNotesGoogleOauthSecrets.installed.clientSecret,
+            clientId = linkNotesGoogleOauthSecrets.installed.clientId,
+            redirectUri = redirectUri,
         )
-            .setScopes(scopes)
-
-        return googleTokenAdapter.fromJson(
-            BufferedReader(
-                newTokenRequest.executeUnparsed().content.reader()
-            ).lines().collect(Collectors.joining("\n"))
-        ) ?: throw JsonDataException("Got null from parser")
     }
 }
 
@@ -112,5 +96,5 @@ interface GoogleOAuth {
     /**
      * Uses the default browser to ask the user for an oauth code.
      */
-    suspend fun authorizeUsingDefaultBrowser(): GoogleTokenResponse
+    suspend fun authorizeUsingDefaultBrowser(): GoogleOAuthApi.GoogleTokenResponse
 }

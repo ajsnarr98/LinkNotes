@@ -35,14 +35,13 @@ class AuthProviderDesktop(
 
     override suspend fun signInWithGoogle(): ResultStatus<UUID?, ErrorType> {
         return withContext(dispatcherProvider.io()) {
-//            val cred = googleOAuth.authorizeUsingDefaultBrowser()
+            val cred = googleOAuth.authorizeUsingDefaultBrowser()
 
             val oauthResponse = authApi.oauthSignIn(
-                apiKey = "tmp", // googleServicesJson.client.first().apiKey.first().currentKey,
+                apiKey = googleServicesJson.client.first().apiKey.first().currentKey,
                 request = FirebaseAuthApi.OAuthRequest(
                     requestUri = "http://localhost",
-//                    postBody = "id_token=${cred.idToken}&providerId=$PROVIDER_ID",
-                    postBody = "id_token=SOME_TOKEN&providerId=$PROVIDER_ID",
+                    postBody = "id_token=${cred.idToken}&providerId=$PROVIDER_ID",
                     returnIdpCredential = false,
                 ),
             )

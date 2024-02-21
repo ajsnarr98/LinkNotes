@@ -28,6 +28,7 @@ import com.github.ajsnarr98.linknotes.desktop.util.ResourceFileLoader
 import com.github.ajsnarr98.linknotes.network.auth.AuthRepository
 import com.github.ajsnarr98.linknotes.network.auth.DefaultAuthRepository
 import com.github.ajsnarr98.linknotes.network.auth.FirebaseAuthApi
+import com.github.ajsnarr98.linknotes.network.auth.GoogleOAuthApi
 import com.github.ajsnarr98.linknotes.network.domain.User
 import com.github.ajsnarr98.linknotes.network.http.MoshiHelper
 import com.github.ajsnarr98.linknotes.network.http.OkHttpHelper
@@ -44,79 +45,85 @@ import okhttp3.OkHttpClient
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.typeOf
 
+private fun createInitialDependencyGraph(mainContext: CoroutineContext): DependencyGraph {
+    return DependencyGraph().setDependencies {
+        set<DispatcherProvider> { DefaultDispatcherProvider() }
+        set<CoroutineContext> { mainContext }
+        set<CoroutineScope>(dependencies = setOf(typeOf<CoroutineContext>())) { dependencies ->
+            CoroutineScope(dependencies.get<CoroutineContext>())
+        }
+        set<LoggingProvider> { DesktopLoggingProvider() }
+        set<StringRes> { AmericanEnglishStringRes() }
+        set<ImageRes> { ImageRes }
+        set<ResourceFileLoader> { RealResourceFileLoader() }
+
+        // http stuff
+        set<Moshi> { MoshiHelper.buildMoshi() }
+        set<JsonFactory> { GsonFactory.getDefaultInstance() }
+        set<OkHttpClient>(dependencies = setOf(typeOf<LoggingProvider>())) { dependencies ->
+            OkHttpHelper.buildOkHttpClient(
+                loggingProvider = dependencies.get()
+            )
+        }
+        set<Call.Factory>(dependencies = setOf(typeOf<OkHttpClient>())) { dependencies -> dependencies.get<OkHttpClient>() }
+
+        set<RetrofitBuilder>(dependencies = setOf(typeOf<Call.Factory>(), typeOf<Moshi>())) { dependencies ->
+            RetrofitBuilder(
+                callFactory = dependencies.get(),
+                moshi = dependencies.get(),
+            )
+        }
+
+        // build api instances
+        setNewApi<FirebaseAuthApi>(FirebaseAuthApi.BASE_URL)
+        setNewApi<GoogleOAuthApi>(GoogleOAuthApi.BASE_URL)
+
+        // login
+        set<GoogleOAuth>(dependencies = setOf(
+            typeOf<JsonFactory>(),
+            typeOf<GoogleOAuthApi>(),
+            typeOf<ResourceFileLoader>(),
+        )) { dependencies ->
+            RealGoogleOAuth(
+                jsonFactory = dependencies.get(),
+                googleOAuthApi = dependencies.get(),
+                resourceFileLoader = dependencies.get(),
+            )
+        }
+        set<AuthRepository.AuthProvider>(dependencies = setOf(
+            typeOf<FirebaseAuthApi>(),
+            typeOf<DispatcherProvider>(),
+            typeOf<GoogleOAuth>(),
+            typeOf<Moshi>(),
+            typeOf<ResourceFileLoader>(),
+        )) { dependencies ->
+            AuthProviderDesktop(
+                authApi = dependencies.get(),
+                dispatcherProvider = dependencies.get(),
+                googleOAuth = dependencies.get(),
+                moshi = dependencies.get(),
+                resourceFileLoader = dependencies.get(),
+            )
+        }
+        set<LocalStorage<User>> { UserStore() }
+        set<AuthRepository>(dependencies = setOf(
+            typeOf<AuthRepository.AuthProvider>(),
+            typeOf<LocalStorage<User>>(),
+        )) { dependencies ->
+            DefaultAuthRepository(
+                authProvider = dependencies.get(),
+                accountStore = dependencies.get(),
+            )
+        }
+    }
+}
 fun main() = application {
-    val mainContext: CoroutineContext = remember { Dispatchers.Main + Job() }
+    val mainContext: CoroutineContext = remember {
+        Dispatchers.Main + Job() // CoroutineExceptionHandler { _, throwable -> throw throwable }
+    }
 
     val dependencyGraph = remember {
-        DependencyGraph().setDependencies {
-            set<DispatcherProvider> { DefaultDispatcherProvider() }
-            set<CoroutineContext> { mainContext }
-            set<CoroutineScope>(dependencies = setOf(typeOf<CoroutineContext>())) { dependencies ->
-                CoroutineScope(dependencies.get<CoroutineContext>())
-            }
-            set<LoggingProvider> { DesktopLoggingProvider() }
-            set<StringRes> { AmericanEnglishStringRes() }
-            set<ImageRes> { ImageRes }
-            set<ResourceFileLoader> { RealResourceFileLoader() }
-
-            // http stuff
-            set<Moshi> { MoshiHelper.buildMoshi() }
-            set<JsonFactory> { GsonFactory.getDefaultInstance() }
-            set<OkHttpClient>(dependencies = setOf(typeOf<LoggingProvider>())) { dependencies ->
-                OkHttpHelper.buildOkHttpClient(
-                    loggingProvider = dependencies.get()
-                )
-            }
-            set<Call.Factory>(dependencies = setOf(typeOf<OkHttpClient>())) { dependencies -> dependencies.get<OkHttpClient>() }
-
-            set<RetrofitBuilder>(dependencies = setOf(typeOf<Call.Factory>(), typeOf<Moshi>())) { dependencies ->
-                RetrofitBuilder(
-                    callFactory = dependencies.get(),
-                    moshi = dependencies.get(),
-                )
-            }
-
-            // build api instances
-            setNewApi<FirebaseAuthApi>(FirebaseAuthApi.BASE_URL)
-
-            // login
-            set<GoogleOAuth>(dependencies = setOf(
-                typeOf<JsonFactory>(),
-                typeOf<Moshi>(),
-                typeOf<ResourceFileLoader>(),
-            )) { dependencies ->
-                RealGoogleOAuth(
-                    jsonFactory = dependencies.get(),
-                    moshi = dependencies.get(),
-                    resourceFileLoader = dependencies.get(),
-                )
-            }
-            set<AuthRepository.AuthProvider>(dependencies = setOf(
-                typeOf<FirebaseAuthApi>(),
-                typeOf<DispatcherProvider>(),
-                typeOf<GoogleOAuth>(),
-                typeOf<Moshi>(),
-                typeOf<ResourceFileLoader>(),
-            )) { dependencies ->
-                AuthProviderDesktop(
-                    authApi = dependencies.get(),
-                    dispatcherProvider = dependencies.get(),
-                    googleOAuth = dependencies.get(),
-                    moshi = dependencies.get(),
-                    resourceFileLoader = dependencies.get(),
-                )
-            }
-            set<LocalStorage<User>> { UserStore() }
-            set<AuthRepository>(dependencies = setOf(
-                typeOf<AuthRepository.AuthProvider>(),
-                typeOf<LocalStorage<User>>(),
-            )) { dependencies ->
-                DefaultAuthRepository(
-                    authProvider = dependencies.get(),
-                    accountStore = dependencies.get(),
-                )
-            }
-        }
+        createInitialDependencyGraph(mainContext)
     }
 
     val mainWindowState = rememberWindowState(

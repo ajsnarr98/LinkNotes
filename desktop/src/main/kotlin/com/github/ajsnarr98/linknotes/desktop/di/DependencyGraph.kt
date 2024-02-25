@@ -1,7 +1,9 @@
 package com.github.ajsnarr98.linknotes.desktop.di
 
+import com.github.ajsnarr98.linknotes.desktop.util.DesktopLoggingProvider
 import com.github.ajsnarr98.linknotes.desktop.util.appendToSet
 import com.github.ajsnarr98.linknotes.desktop.util.removeFromSet
+import com.github.ajsnarr98.linknotes.network.logging.LoggingProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.reflect.KType
@@ -39,7 +41,7 @@ private fun ObservableDependencyMap.toDependencyMap(): DependencyMap {
     return this.mapValuesTo(HashMap()) { (_, valueFlow: StateFlow<Any>) -> valueFlow.value }
 }
 
-class DependencyGraph {
+class DependencyGraph(private val log: LoggingProvider) {
     private val instantiated: ObservableDependencyMap = mutableMapOf()
     private val constructors: DependencyConstructorMap = mutableMapOf()
     private val topDownRelations: MutableMap<KType, Set<KType>> = mutableMapOf()
@@ -59,6 +61,7 @@ class DependencyGraph {
             instantiatedDependencies = HashMap(this.instantiated.toDependencyMap()),
             constructors = HashMap(this.constructors),
             topDownRelations = HashMap(this.topDownRelations),
+            log = this.log,
         )
             .apply(block)
             .build(this)
@@ -68,6 +71,7 @@ class DependencyGraph {
         private val instantiatedDependencies: DependencyMap,
         private val constructors: DependencyConstructorMap,
         private val topDownRelations: MutableMap<KType, Set<KType>>,
+        private val log: LoggingProvider,
     ) {
         private val failedToInstantiate: MutableSet<KType> = mutableSetOf()
 
@@ -156,13 +160,13 @@ class DependencyGraph {
                 // if not, try to instantiate it
                 val parentConstructorInfo: DependencyConstructorEntry = constructors[parentDep]
                     ?: run {
-                        println("Unable to construct an instance of '$parentDep'. No constructor info added")
+                        log.w("Unable to construct an instance of '$parentDep'. No constructor info added")
                         failedToInstantiate.add(parentDep)
                         return false
                     }
 
                 if (!buildDependency(parentDep, parentConstructorInfo)) {
-                    println("Unable to construct an instance of '$parentDep'")
+                    log.w("Unable to construct an instance of '$parentDep'")
                     failedToInstantiate.add(parentDep)
                     return false
                 }

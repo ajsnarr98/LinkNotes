@@ -31,12 +31,31 @@ interface GoogleOAuthApi {
         @Field("client_secret") clientSecret: String,
         @Field("client_id") clientId: String,
         @Field("redirect_uri") redirectUri: String,
-    ): GoogleTokenResponse
+    ): GoogleOAuthTokenResponse
+
+    @FormUrlEncoded
+    @POST("/token")
+    suspend fun oauthRefresh(
+        @Field("grant_type") grantType: String = "authorization_code",
+        @Field("refresh_token") refreshToken: String,
+        @Field("client_secret") clientSecret: String,
+        @Field("client_id") clientId: String,
+        @Field("redirect_uri") redirectUri: String,
+    ): GoogleOAuthRefreshResponse
 
     @JsonClass(generateAdapter = true)
-    data class GoogleTokenResponse(
+    data class GoogleOAuthTokenResponse(
         @Json(name = "access_token") val accessToken: String,
         @Json(name = "refresh_token") val refreshToken: String,
+        @Json(name = "expires_in") val expiresInSeconds: Long,
+        @Json(name = "scope") val scope: String,
+        @Json(name = "token_type") val tokenType: String,
+        @Json(name = "id_token") val idToken: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class GoogleOAuthRefreshResponse(
+        @Json(name = "access_token") val accessToken: String,
         @Json(name = "expires_in") val expiresInSeconds: Long,
         @Json(name = "scope") val scope: String,
         @Json(name = "token_type") val tokenType: String,

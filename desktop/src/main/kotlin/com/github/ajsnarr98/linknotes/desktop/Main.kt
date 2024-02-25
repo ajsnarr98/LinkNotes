@@ -11,8 +11,6 @@ import com.github.ajsnarr98.linknotes.desktop.di.get
 import com.github.ajsnarr98.linknotes.desktop.di.setNewApi
 import com.github.ajsnarr98.linknotes.desktop.login.LoginScreen
 import com.github.ajsnarr98.linknotes.desktop.login.api.AuthProviderDesktop
-import com.github.ajsnarr98.linknotes.desktop.login.api.GoogleOAuth
-import com.github.ajsnarr98.linknotes.desktop.login.api.RealGoogleOAuth
 import com.github.ajsnarr98.linknotes.desktop.navigation.NavController
 import com.github.ajsnarr98.linknotes.desktop.navigation.WindowInfo
 import com.github.ajsnarr98.linknotes.desktop.navigation.castDrawState
@@ -36,8 +34,8 @@ import com.github.ajsnarr98.linknotes.network.http.RetrofitBuilder
 import com.github.ajsnarr98.linknotes.network.logging.LoggingProvider
 import com.github.ajsnarr98.linknotes.network.storage.local.LocalStorage
 import com.github.ajsnarr98.linknotes.network.util.DispatcherProvider
-import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp.Browser
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.*
 import okhttp3.Call
@@ -46,20 +44,20 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.typeOf
 
 private fun createInitialDependencyGraph(mainContext: CoroutineContext): DependencyGraph {
-    return DependencyGraph().setDependencies {
+    val loggingProvider = DesktopLoggingProvider()
+    return DependencyGraph(log = loggingProvider).setDependencies {
         set<DispatcherProvider> { DefaultDispatcherProvider() }
         set<CoroutineContext> { mainContext }
         set<CoroutineScope>(dependencies = setOf(typeOf<CoroutineContext>())) { dependencies ->
             CoroutineScope(dependencies.get<CoroutineContext>())
         }
-        set<LoggingProvider> { DesktopLoggingProvider() }
+        set<LoggingProvider> { loggingProvider }
         set<StringRes> { AmericanEnglishStringRes() }
         set<ImageRes> { ImageRes }
         set<ResourceFileLoader> { RealResourceFileLoader() }
 
         // http stuff
         set<Moshi> { MoshiHelper.buildMoshi() }
-        set<JsonFactory> { GsonFactory.getDefaultInstance() }
         set<OkHttpClient>(dependencies = setOf(typeOf<LoggingProvider>())) { dependencies ->
             OkHttpHelper.buildOkHttpClient(
                 loggingProvider = dependencies.get()
@@ -79,30 +77,22 @@ private fun createInitialDependencyGraph(mainContext: CoroutineContext): Depende
         setNewApi<GoogleOAuthApi>(GoogleOAuthApi.BASE_URL)
 
         // login
-        set<GoogleOAuth>(dependencies = setOf(
-            typeOf<JsonFactory>(),
-            typeOf<GoogleOAuthApi>(),
-            typeOf<ResourceFileLoader>(),
-        )) { dependencies ->
-            RealGoogleOAuth(
-                jsonFactory = dependencies.get(),
-                googleOAuthApi = dependencies.get(),
-                resourceFileLoader = dependencies.get(),
-            )
-        }
+        set<Browser> { AuthorizationCodeInstalledApp.DefaultBrowser() }
         set<AuthRepository.AuthProvider>(dependencies = setOf(
             typeOf<FirebaseAuthApi>(),
+            typeOf<GoogleOAuthApi>(),
             typeOf<DispatcherProvider>(),
-            typeOf<GoogleOAuth>(),
             typeOf<Moshi>(),
             typeOf<ResourceFileLoader>(),
+            typeOf<Browser>(),
         )) { dependencies ->
             AuthProviderDesktop(
                 authApi = dependencies.get(),
+                googleOAuthApi = dependencies.get(),
                 dispatcherProvider = dependencies.get(),
-                googleOAuth = dependencies.get(),
                 moshi = dependencies.get(),
                 resourceFileLoader = dependencies.get(),
+                browser = dependencies.get(),
             )
         }
         set<LocalStorage<User>> { UserStore() }

@@ -92,7 +92,7 @@ class RetrofitErrorCallAdapter<S, E : Any>(
     }
 
     class Factory(
-        val loggingProvider: LoggingProvider,
+        private val loggingProvider: LoggingProvider,
     ) : CallAdapter.Factory() {
         override fun get(
             returnType: Type,

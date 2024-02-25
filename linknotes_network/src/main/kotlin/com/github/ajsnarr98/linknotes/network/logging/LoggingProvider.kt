@@ -12,6 +12,11 @@ interface LoggingProvider {
     fun e(message: String)
 
     /**
+     * Warning logging. TODO
+     */
+    fun w(message: String)
+
+    /**
      * Debug logging: TODO
      */
     fun d(message: String)

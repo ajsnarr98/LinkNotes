@@ -11,6 +11,10 @@ class DesktopLoggingProvider : LoggingProvider {
         println(message)
     }
 
+    override fun w(message: String) {
+        println(message)
+    }
+
     override fun d(message: String) {
         println(message)
     }
